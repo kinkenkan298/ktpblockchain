@@ -12,11 +12,18 @@ export const FileSchema = z
 
 export const AccountInfoSchema = z
 	.object({
-		email: z.string().trim().min(1),
-		password: z.string().trim().min(8),
-		confirm_password: z.string(),
+		email: z
+			.email("Email tidak valid")
+			.trim()
+			.min(5, "Email terlalu pendek")
+			.max(255, "Email terlalu panjang"),
+		password: z
+			.string("Password wajib di isi")
+			.trim()
+			.min(8, "Password terlalu pendek"),
+		confirm_password: z.string("Confirm password tidak boleh kosong"),
 		phone: z
-			.string()
+			.string("Nomor telepon wajib di isi")
 			.min(10, "Nomor telepon terlalu pendek")
 			.max(15, "Nomor telepon terlalu panjang")
 			.regex(/^\+?[\d\s-]+$/, "Format nomor telepon tidak valid")
@@ -33,6 +40,7 @@ export const AccountInfoSchema = z
 	})
 	.refine((data) => data.password === data.confirm_password, {
 		path: ["confirm_password"],
+		message: "Password tidak sama",
 	});
 
 export type AccountInfoData = z.infer<typeof AccountInfoSchema>;
