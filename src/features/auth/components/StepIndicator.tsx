@@ -9,7 +9,7 @@ interface StepIndicatorProps {
   currentStep: number;
 }
 
-export const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
+export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
   return (
     <div className="flex items-center justify-between mb-8">
       {steps.map((step, index) => (
@@ -17,8 +17,8 @@ export const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
           <div className="flex flex-col items-center flex-1">
             <div
               className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold transition-all duration-300 ${step.number === currentStep
-                  ? "bg-primary text-primary-foreground shadow-lg"
-                  : "bg-step-inactive text-step-text-inactive"
+                ? "bg-primary text-primary-foreground shadow-lg"
+                : "bg-step-inactive text-step-text-inactive"
                 }`}
             >
               {step.number}
@@ -45,4 +45,4 @@ export const StepIndicator = ({ steps, currentStep }: StepIndicatorProps) => {
       ))}
     </div>
   );
-};
+}

@@ -38,8 +38,8 @@
   --sidebar-accent-foreground: oklch(0.6231 0.1880 259.8145);
   --sidebar-border: oklch(0.9250 0.0132 251.5641);
   --sidebar-ring: oklch(0.6231 0.1880 259.8145);
-  --font-sans: ui-sans-serif, system-ui, sans-serif;
-  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Inter Variable", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius: 0.75rem;
   --shadow-x: 0;

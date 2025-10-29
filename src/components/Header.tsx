@@ -18,11 +18,11 @@ export function Header() {
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link to="/auth/login" className="text-foreground hover:text-primary transition-colors">
+            <Link to="/login" className="text-foreground hover:text-primary transition-colors">
               Masuk
             </Link>
             <Button size="lg" className="rounded-full" asChild>
-              <Link to="/auth/register">
+              <Link to="/register">
                 Daftar
               </Link>
             </Button>
