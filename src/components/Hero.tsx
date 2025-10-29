@@ -1,5 +1,6 @@
+import { Image } from "@unpic/react";
 import { Button } from "./ui/button";
-import heroIlustration from "@/assets/hero-illustration.png"
+import heroIlustration from "@/assets/ktp-bghero.png"
 
 export function Hero() {
   return (
@@ -19,11 +20,7 @@ export function Hero() {
           </div>
 
           <div className="flex justify-center">
-            <img
-              src={heroIlustration}
-              alt="Digital Identity Card"
-              className="w-full max-w-md drop-shadow-2xl animate-float"
-            />
+            <Image src={heroIlustration} layout="constrained" width={400} height={400} alt="E KTP" />
           </div>
         </div>
       </div>

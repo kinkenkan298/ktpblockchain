@@ -1,5 +1,6 @@
 
-import logoIcon from "@/assets/logo-icon.png";
+import logoIcon from "@/assets/logo.png";
+import { Image } from "@unpic/react";
 
 export function Footer() {
   return (
@@ -7,9 +8,9 @@ export function Footer() {
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-3">
-            <img src={logoIcon} alt="Digital KTP" className="w-10 h-10" />
+            <Image src={logoIcon} alt="Logo E-KTP" width={90} height={90} layout="fixed" />
             <div>
-              <h3 className="font-bold text-foreground">Digital KTP</h3>
+              <h3 className="font-bold text-foreground">Digital ID</h3>
               <p className="text-sm text-muted-foreground">Blockchain</p>
             </div>
           </div>
