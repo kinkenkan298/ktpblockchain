@@ -1,7 +1,7 @@
 import { DocumentUploadData } from "../../types/registerSchema";
 
 interface DocumentUploadProps {
-	defaultValues?: DocumentUploadData;
+	defaultValues?: DocumentUploadData | null;
 	onNext: (data: DocumentUploadData) => void;
 	onBack: () => void;
 }

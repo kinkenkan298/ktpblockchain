@@ -6,57 +6,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { FieldError, FieldLabel, Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { Popover, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { PopoverContent } from "@radix-ui/react-popover";
-import { Calendar } from "@/components/ui/calendar";
-import { InputGroup } from "@/components/ui/input-group";
 import { RadioGroup } from "@radix-ui/react-radio-group";
 import { RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { id } from "react-day-picker/locale";
-import { format, isValid, parse } from "date-fns";
+import { format, parse } from "date-fns";
 
 interface PersonalDataStepsPros {
 	defaultValues?: PersonalInfoData | null;
 	onNext: (data: PersonalInfoData) => void;
 	onBack: () => void;
-}
-
-function formatDate(
-	date: Date | undefined,
-	formatOpts: string = "yyyy-MM-dd"
-): string {
-	if (!date) return "";
-	return format(date, formatOpts);
-}
-
-function parseDate(
-	date: string | undefined,
-	formatOpts: string = "yyyy-MM-dd"
-): Date | null {
-	if (!date) return null;
-	try {
-		const parsed = parse(date, formatOpts, new Date());
-		return isNaN(parsed.getTime()) ? null : parsed;
-	} catch {
-		return null;
-	}
-}
-function isValidDateFormat(dateString: string): boolean {
-	const regex = /^\d{4}-\d{2}-\d{2}$/;
-	if (!regex.test(dateString)) return false;
-
-	const [year, month, day] = dateString.split("-").map(Number);
-	const date = new Date(year, month - 1, day);
-
-	return (
-		date.getFullYear() === year &&
-		date.getMonth() === month - 1 &&
-		date.getDate() === day
-	);
 }
 
 const defaultData: PersonalInfoData = {
@@ -88,11 +47,6 @@ export function PersonalDataSteps({
 			onNext(value);
 		},
 	});
-	const [open, setOpen] = useState<boolean>(false);
-	const [date, setDate] = useState<Date | undefined>(new Date());
-
-	const [month, setMonth] = useState<Date | undefined>(date);
-	const [value, setValue] = useState<string>(formatDate(date));
 
 	return (
 		<form
@@ -204,7 +158,7 @@ export function PersonalDataSteps({
 										<Input
 											id={field.name}
 											name={field.name}
-											value={value}
+											value={field.state.value}
 											onBlur={field.handleBlur}
 											onChange={(e) => field.handleChange(e.target.value)}
 											aria-invalid={isInvalid}
