@@ -2,6 +2,7 @@ import { useState } from "react";
 import { StepIndicator, FormSteps, FormDataType } from "./StepIndicator";
 import { AccountInfoStep } from "./steps/accountInfo";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { PersonalDataSteps } from "./steps/personalData";
 
 export function RegisterForm() {
 	const [currentStep, setCurrentStep] = useState<FormSteps>("account");
@@ -37,6 +38,16 @@ export function RegisterForm() {
 								onNext={(data) => {
 									setFormData((prev) => ({ ...prev, account: data }));
 									setCurrentStep("personal");
+								}}
+							/>
+						)}
+						{currentStep === "personal" && (
+							<PersonalDataSteps
+								defaultValues={formData.personal}
+								onBack={() => setCurrentStep("account")}
+								onNext={(data) => {
+									setFormData((prev) => ({ ...prev, personal: data }));
+									setCurrentStep("documents");
 								}}
 							/>
 						)}

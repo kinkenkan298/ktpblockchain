@@ -21,12 +21,20 @@ interface AccountInfoStepsPros {
 	defaultValues?: AccountInfoData | null;
 	onNext: (data: AccountInfoData) => void;
 }
+
+const defaultData: AccountInfoData = {
+	email: "",
+	password: "",
+	confirm_password: "",
+	phone: "",
+};
+
 export function AccountInfoStep({
 	defaultValues,
 	onNext,
 }: AccountInfoStepsPros) {
 	const form = useForm({
-		defaultValues: defaultValues || undefined,
+		defaultValues: defaultValues || defaultData,
 		validators: {
 			onSubmit: AccountInfoSchema,
 		},
@@ -150,9 +158,18 @@ export function AccountInfoStep({
 				</FieldGroup>
 			</div>
 			<div className="flex justify-end mt-5">
-				<Button variant="default" type="submit">
-					Lanjut
-				</Button>
+				<form.Subscribe
+					selector={(state) => [state.isValid, state.isDirty]}
+					children={([isValid, isDirty]) => (
+						<Button
+							variant="default"
+							type="submit"
+							disabled={!isValid || !isDirty}
+						>
+							Lanjut ke data diri
+						</Button>
+					)}
+				/>
 			</div>
 		</form>
 	);

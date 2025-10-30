@@ -8,6 +8,7 @@ import type { ReactNode } from "react";
 import { DefaultCatchBoundry } from "@/components/DefaultCatchBoundry";
 import { NotFound } from "@/components/NotFound";
 import { seo } from "@/utils/seo";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 import appCss from "@/assets/app.css?url";
 import { Toaster } from "sonner";
@@ -43,6 +44,7 @@ function RootComponent() {
 	return (
 		<RootDocument>
 			<Outlet />
+			<TanStackRouterDevtools />
 		</RootDocument>
 	);
 }

@@ -13,7 +13,7 @@ export const FileSchema = z
 export const AccountInfoSchema = z
 	.object({
 		email: z
-			.email("Email tidak valid")
+			.email({ pattern: z.regexes.email, message: "Email tidak valid" })
 			.trim()
 			.min(5, "Email terlalu pendek")
 			.max(255, "Email terlalu panjang"),
@@ -46,45 +46,56 @@ export const AccountInfoSchema = z
 export type AccountInfoData = z.infer<typeof AccountInfoSchema>;
 
 export const PersonalInfoSchema = z.object({
-	nik: z.string().length(16).regex(/^\d+$/),
+	nik: z
+		.string("NIK tidak valid")
+		.length(16, "Panjang NIK harus 16")
+		.regex(/^\d+$/, "Format NIK tidak sesuai"),
 	nama_lengkap: z
-		.string()
-		.min(1)
-		.max(255)
+		.string("Nama lengkap wajib di isi")
+		.min(5, "Nama lengkap terlalu pendek")
+		.max(255, "Nama lengkap terlalu panjang")
 		.regex(/^[a-zA-Z\s.'-]+$/),
-	tempat_lahir: z.string().min(2).max(200),
+	tempat_lahir: z
+		.string("Tempat lahir wajib di isi")
+		.min(4, "Tempat lahir terlalu pendek")
+		.max(200, "Tempat lahir terlalu panjang"),
 	tanggal_lahir: z
 		.string()
-		.regex(/^\d{4}-\d{2}-\d{2}$/, "Format tanggal: YYYY-MM-DD")
+		.date()
 		.refine((date) => {
 			const birthDate = new Date(date);
 			const today = new Date();
 			const minDate = new Date("1900-01-01");
 			return birthDate <= today && birthDate >= minDate;
 		}, "Tanggal lahir tidak valid"),
-	jenis_kelamin: z.enum(["male", "female"]),
-	alamat: z.string().min(10).max(10),
-	rt_rw: z.string().regex(/^\d{3}\/\d{3}$/),
+	jenis_kelamin: z.enum(["male", "female"], "Jenis kelamin tidak sesuai!"),
+	alamat: z
+		.string("Alamat wajib di isi!")
+		.min(10, "Alamat terlalu pendek")
+		.max(500, "Alamat terlalu panjang"),
+	rt_rw: z
+		.string("RT/RW wajib di isi")
+		.regex(/^\d{3}\/\d{3}$/, "Format RT/RW: 001/002"),
 	kelurahan: z
-		.string()
+		.string("Kelurahan wajib di isi")
 		.min(2, "Kelurahan terlalu pendek")
 		.max(100, "Kelurahan terlalu panjang"),
 	kecamatan: z
-		.string()
+		.string("Kecamatan wajib di isi")
 		.min(2, "Kecamatan terlalu pendek")
 		.max(100, "Kecamatan terlalu panjang"),
 	kota: z
-		.string()
+		.string("Kota wajib di isi")
 		.min(2, "Kota terlalu pendek")
 		.max(100, "Kota terlalu panjang"),
 	provinsi: z
-		.string()
+		.string("Provinsi wajib di isi")
 		.min(2, "Provinsi terlalu pendek")
 		.max(100, "Provinsi terlalu panjang"),
 	kode_pos: z
-		.string()
+		.string("Kode pos wajib di isi")
 		.length(5, "Kode pos harus 5 digit")
-		.regex(/^\d+$/, "Kode pos harus angka"),
+		.regex(/^\d+$/, "Format kode pos tidak sesuai"),
 });
 
 export type PersonalInfoData = z.infer<typeof PersonalInfoSchema>;
