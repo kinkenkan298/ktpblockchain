@@ -30,7 +30,9 @@ export function HowItsWorks() {
                 <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center shadow-soft">
                   <step.icon className="w-12 h-12 text-primary-foreground" />
                 </div>
-                <p className="mt-4 text-xl font-bold text-foreground">{step.title}</p>
+                <p className="mt-4 text-xl font-bold text-foreground">
+                  {step.title}
+                </p>
               </div>
 
               {index < steps.length - 1 && (
@@ -41,5 +43,5 @@ export function HowItsWorks() {
         </div>
       </div>
     </section>
-  )
+  );
 }

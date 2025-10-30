@@ -1,4 +1,4 @@
-import { Shield, Zap, Sliders } from "lucide-react"
+import { Shield, Zap, Sliders } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 
 const features = [
@@ -33,10 +33,14 @@ export function Features() {
               className="border-0 shadow-card hover:shadow-soft transition-all duration-300 hover:-translate-y-1"
             >
               <CardContent className="p-8 text-center space-y-4">
-                <div className={`w-16 h-16 mx-auto rounded-2xl ${feature.color} flex items-center justify-center`}>
+                <div
+                  className={`w-16 h-16 mx-auto rounded-2xl ${feature.color} flex items-center justify-center`}
+                >
                   <feature.icon className="w-8 h-8 text-primary" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground">{feature.title}</h3>
+                <h3 className="text-xl font-bold text-foreground">
+                  {feature.title}
+                </h3>
                 <p className="text-muted-foreground">{feature.description}</p>
               </CardContent>
             </Card>
@@ -44,5 +48,5 @@ export function Features() {
         </div>
       </div>
     </section>
-  )
+  );
 }

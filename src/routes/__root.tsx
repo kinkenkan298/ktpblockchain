@@ -44,7 +44,6 @@ function RootComponent() {
 	return (
 		<RootDocument>
 			<Outlet />
-			<TanStackRouterDevtools />
 		</RootDocument>
 	);
 }
@@ -55,7 +54,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 				<HeadContent />
 			</head>
 			<body>
-				<Toaster />
+				<Toaster position="top-center" richColors />
 				{children}
 				<Scripts />
 			</body>

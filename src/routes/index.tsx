@@ -5,10 +5,9 @@ import { Hero } from "@/components/Hero";
 import { HowItsWorks } from "@/components/HowItsWorks";
 import { createFileRoute } from "@tanstack/react-router";
 
-
-export const Route = createFileRoute('/')({
-  component: Index
-})
+export const Route = createFileRoute("/")({
+  component: Index,
+});
 
 function Index() {
   return (
@@ -19,5 +18,5 @@ function Index() {
       <HowItsWorks />
       <Footer />
     </div>
-  )
+  );
 }

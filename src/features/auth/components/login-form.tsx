@@ -1,19 +1,21 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function LoginForm() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold text-center">Login to your account</CardTitle>
+        <CardTitle className="text-2xl font-bold text-center">
+          Login to your account
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form>
@@ -51,5 +53,5 @@ export function LoginForm() {
         </Button>
       </CardFooter>
     </Card>
-  )
+  );
 }
