@@ -1,14 +1,24 @@
-import { RegisterForm } from "@/features/auth/components/register-form";
+import { RegisterForm } from "@/features/auth/components/RegisterForm";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/(auth)/register")({
-  component: RouteComponent,
+	component: RouteComponent,
 });
 
 function RouteComponent() {
-  return (
-    <div className="min-h-screen">
-      <RegisterForm />
-    </div>
-  );
+	const navigate = useNavigate({ from: "/register" });
+
+	const handleRegisterSuccess = () => {
+		toast.success("Berhasil input");
+		setTimeout(() => {
+			navigate({ to: "/login" });
+		}, 3000);
+	};
+
+	return (
+		<div className="min-h-screen">
+			<RegisterForm onSuccess={handleRegisterSuccess} />
+		</div>
+	);
 }
