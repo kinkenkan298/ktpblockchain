@@ -38,15 +38,9 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 interface DocumentUploadProps {
-  defaultValues?: DocumentUploadData | null;
+  defaultValues?: Partial<DocumentUploadData> | null;
   onNext: (data: DocumentUploadData) => void;
   onBack: () => void;
-}
-
-interface IDefaultData {
-  ktp_front: string | null;
-  ktp_back: string | null;
-  selfie_with_ktp: string | null;
 }
 
 interface UploadState {
@@ -56,18 +50,11 @@ interface UploadState {
   error?: string;
 }
 
-const defaultData: IDefaultData = {
-  ktp_front: null,
-  ktp_back: null,
-  selfie_with_ktp: null,
-};
-
 export function DocumentUploadSteps({
   defaultValues,
   onBack,
   onNext,
 }: DocumentUploadProps) {
-  const [previewUrls, setPreviewUrls] = useState<IDefaultData>(defaultData);
   const [uploadProgress, setUploadProgress] = useState<{
     ktp_front: number;
     ktp_back: number;
@@ -118,27 +105,38 @@ export function DocumentUploadSteps({
     validators: {
       onChange: DocumentUploadSchema,
     },
-    onSubmit: async ({ value }) => {
-      try {
-        if (!value.ktp_front && !value.selfie_with_ktp) {
-          toast.error("Foto KTP depan dan Foto selfie wajib di isi");
-          return;
-        }
-        if (!isStepComplete) {
-          toast.error("Dokumen belum lengkap! periksa lagi");
-          return;
-        }
-        onNext(value);
-      } catch (error: any) {
-        toast.error("Terjadi kesalahan saat memproses dokumen");
-      }
+    onSubmit: () => {
+      console.log("hai");
+      // try {
+      //   if (!isStepComplete) {
+      //     toast.error("Dokumen belum lengkap! periksa lagi");
+      //     return;
+      //   }
+      //   const documentData: DocumentUploadData = {
+      //     ktp_front: uploadStatus.ktp_front.file!,
+      //     ktp_back: uploadStatus.ktp_back.file || undefined,
+      //     selfie_with_ktp: uploadStatus.selfie_with_ktp.file!,
+      //   };
+
+      //   const validationResult = DocumentUploadSchema.safeParse(documentData);
+
+      //   if (!validationResult.success) {
+      //     console.error(validationResult.error);
+      //     toast.error("Data tidak valid! harap periksa lagi!");
+      //     return;
+      //   }
+
+      //   console.log(documentData);
+      //   // onNext(validationResult.data);
+      // } catch (error: any) {
+      //   toast.error("Terjadi kesalahan saat memproses dokumen");
+      // }
     },
   });
   const handleFileChange = async (
     field: keyof DocumentUploadData,
     file: File,
   ) => {
-    // Basic validation
     if (!file.type.startsWith("image/")) {
       setUploadStatus((prev) => ({
         ...prev,
@@ -197,7 +195,7 @@ export function DocumentUploadSteps({
 
     form.setFieldValue(field, undefined);
 
-    toast(`File ${getFieldDisplayName(field)} telah dihapus`);
+    toast.info(`File ${getFieldDisplayName(field)} telah dihapus`);
   };
   const simulateUploadProcess = async (
     field: keyof DocumentUploadData,
@@ -223,15 +221,6 @@ export function DocumentUploadSteps({
     form.setFieldValue(field, file);
 
     toast.success(`File ${getFieldDisplayName(field)} berhasil diupload`);
-  };
-
-  const getFileStatus = (field: keyof DocumentUploadData) => {
-    const file = form.getFieldValue(field);
-    const progress = uploadProgress[field];
-
-    if (!file) return "empty";
-    if (progress < 100) return "uploading";
-    return "uploaded";
   };
 
   const getStatusColor = (status: UploadState["status"]) => {
@@ -277,11 +266,13 @@ export function DocumentUploadSteps({
   }, []);
   return (
     <form
+      className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
+        e.stopPropagation();
+
         form.handleSubmit();
       }}
-      className="space-y-6"
     >
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -357,9 +348,6 @@ export function DocumentUploadSteps({
                           }
                           onRemove={() => handleRemoveFile("ktp_front")}
                           accept="image/jpeg,image/jpg,image/png"
-                          maxSizeMB={2}
-                          progress={uploadProgress.ktp_front}
-                          status={getFileStatus("ktp_front")}
                           required={true}
                         />
                       </Field>
@@ -415,9 +403,6 @@ export function DocumentUploadSteps({
                           }
                           onRemove={() => handleRemoveFile("ktp_back")}
                           accept="image/jpeg,image/jpg,image/png"
-                          maxSizeMB={2}
-                          progress={uploadProgress.ktp_back}
-                          status={getFileStatus("ktp_back")}
                           required={false}
                         />
                         {form.state.errors && (
@@ -477,9 +462,6 @@ export function DocumentUploadSteps({
                           }
                           onRemove={() => handleRemoveFile("selfie_with_ktp")}
                           accept="image/jpeg,image/jpg,image/png"
-                          maxSizeMB={2}
-                          progress={uploadProgress.selfie_with_ktp}
-                          status={getFileStatus("selfie_with_ktp")}
                           required
                         />
                       </Field>
@@ -551,9 +533,6 @@ interface FileUploadCardProps {
   onFileChange: (file: File) => void;
   onRemove: () => void;
   accept: string;
-  maxSizeMB: number;
-  progress: number;
-  status: "empty" | "uploading" | "uploaded";
   required: boolean;
 }
 
@@ -565,12 +544,10 @@ function FileUploadCard({
   onFileChange,
   onRemove,
   accept,
-  maxSizeMB,
-  progress,
-  status,
   required,
 }: FileUploadCardProps) {
-  const [isDragOver, setIsDragOver] = useState(false);
+  const [isDragOver, setIsDragOver] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -601,9 +578,7 @@ function FileUploadCard({
 
   if (uploadStatus.status === "uploaded" && uploadStatus.previewUrl) {
     return (
-      <Card
-        className={`border-2 ${status === "uploaded" ? "border-green-200" : "border-blue-200"}`}
-      >
+      <Card className="border-2 border-green-200">
         <CardContent className="p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -633,7 +608,10 @@ function FileUploadCard({
                     Lihat
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-3xl">
+                <DialogContent
+                  className="max-w-3xl"
+                  aria-describedby="Preview Image"
+                >
                   <DialogHeader>
                     <DialogTitle>Preview Dokumen</DialogTitle>
                   </DialogHeader>
@@ -685,7 +663,6 @@ function FileUploadCard({
       </Card>
     );
   }
-  const fileInputRef = useRef<HTMLInputElement>(null);
   return (
     <Card
       className={`border-2 border-dashed ${
@@ -723,7 +700,7 @@ function FileUploadCard({
                   </span>
                 </p>
                 <p className="text-xs text-muted-foreground">
-                  {accept.split(",").join(", ")} (Maks. {maxSizeMB}MB)
+                  {accept.split(",").join(", ")} (Maks. 2MB)
                 </p>
                 {required && (
                   <p className="text-xs text-red-600 font-medium">

@@ -107,7 +107,7 @@ export const DocumentUploadSchema = z
         file.name.toLowerCase().includes("ktp") ||
         file.name.toLowerCase().includes("front"),
       {
-        message: "Upload foto KTP depan",
+        error: "Upload foto KTP depan",
       },
     ),
 
@@ -117,7 +117,7 @@ export const DocumentUploadSchema = z
         file.name.toLowerCase().includes("ktp") ||
         file.name.toLowerCase().includes("back"),
       {
-        message: "Upload foto KTP belakang",
+        error: "Upload foto KTP belakang",
       },
     ),
 
@@ -126,7 +126,7 @@ export const DocumentUploadSchema = z
         file.name.toLowerCase().includes("selfie") ||
         file.name.toLowerCase().includes("foto"),
       {
-        message: "Upload selfie dengan KTP",
+        error: "Upload selfie dengan KTP",
       },
     ),
   })
