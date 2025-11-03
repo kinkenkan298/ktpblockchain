@@ -1,4 +1,4 @@
-import { BadgeAlert, FileText, User } from "lucide-react";
+import { CheckSquare, Contact, FileText, User } from "lucide-react";
 import {
 	AccountInfoSchema,
 	AgreementSchema,
@@ -8,7 +8,6 @@ import {
 	Steps,
 } from "../types/registerSchema";
 import { useState } from "react";
-import { formOptions } from "@tanstack/react-form";
 
 const stepSchemas = [
 	AccountInfoSchema,
@@ -19,11 +18,11 @@ const stepSchemas = [
 
 export const steps: Steps[] = [
 	{ id: "account", name: "Akun", icon: User },
-	{ id: "personal", name: "Data Diri", icon: User },
+	{ id: "personal", name: "Data", icon: Contact },
 	{ id: "documents", name: "Dokumen", icon: FileText },
-	{ id: "agreement", name: "Persetujuan", icon: BadgeAlert },
+	{ id: "agreement", name: "Persetujuan", icon: CheckSquare },
 ];
-export const multiForm = () => {
+export const useMultiForm = () => {
 	const [currentStep, setCurrentStep] = useState<number>(0);
 	const [formData, setFormData] = useState<Partial<StepFormData>>({});
 	const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
@@ -32,6 +31,17 @@ export const multiForm = () => {
 	const isLastStep = currentStep === steps.length - 1;
 
 	const getCurrentStepSchema = () => stepSchemas[currentStep];
+
+	const isCompleteFormData = (
+		data: Partial<StepFormData>
+	): data is StepFormData => {
+		try {
+			stepSchemas.forEach((schema) => schema.parse(data));
+			return true;
+		} catch {
+			return false;
+		}
+	};
 
 	const goToNextStep = () => {
 		if (!isLastStep) setCurrentStep((prev) => prev + 1);
@@ -52,15 +62,11 @@ export const multiForm = () => {
 		setCurrentStep(0);
 		setIsSubmitted(false);
 	};
-	const formDataOpts = formOptions({
-		defaultValues: formData,
-	});
 
 	return {
+		isCompleteFormData,
 		currentStep,
 		formData,
-		formDataOpts,
-
 		isSubmitted,
 		isFirstStep,
 		isLastStep,

@@ -14,16 +14,17 @@ export const StepsIndicator = ({
 				const Icon = step.icon;
 				const isCompleted = i < currentStep;
 				const isCurrent = i === currentStep;
+
 				return (
 					<div key={step.id} className="flex items-center flex-1">
 						<div className="flex flex-col items-center flex-1">
 							<div
-								className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold duration-300 shadow transition-colors${
+								className={`w-12 h-12 rounded-full flex items-center justify-center text-lg  font-semibold duration-300 shadow-lg transition-colors ${
 									isCompleted
-										? "bg-gray-200 text-gray-600"
+										? "bg-green-500 text-white"
 										: isCurrent
-											? "bg-primary text-primary-foreground shadow-lg"
-											: "bg-green-500 text-white"
+											? "bg-primary text-white"
+											: "bg-gray-200 text-gray-600"
 								}`}
 							>
 								{isCompleted ? (

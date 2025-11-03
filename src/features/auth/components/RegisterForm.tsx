@@ -1,36 +1,67 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { multiForm } from "./MultiForm";
+import { useMultiForm } from "./MultiForm";
 import { StepsIndicator } from "./StepsIndicator";
-import { useEffect } from "react";
+import { Activity, useEffect } from "react";
 import { useAppForm } from "@/hooks/form";
-import { AccountInfoFields } from "./steps/akuninfo";
+import { AccountInfoFields } from "./steps/AccountInfo";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { PersonalInfoFields } from "./steps/personalInfo";
 
-export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
+export function RegisterForm() {
 	const {
 		currentStep,
 		getCurrentStepSchema,
+		isCompleteFormData,
 		isFirstStep,
 		isLastStep,
-		isSubmitted,
 		updateFormData,
 		steps,
 		goToNextStep,
 		goToPreviousStep,
-		resetForm,
 		formData,
-		formDataOpts,
 		submitForm,
-	} = multiForm();
+	} = useMultiForm();
+
 	const form = useAppForm({
-		...formDataOpts,
+		defaultValues: formData,
 		validators: {
 			onChange: getCurrentStepSchema(),
 		},
+		onSubmit: async ({ value }) => {
+			const updateData = { ...formData, ...value };
+			updateFormData(updateData);
+
+			if (isLastStep) {
+				try {
+					if (isCompleteFormData(updateData)) {
+						submitForm(updateData);
+					} else {
+						console.error("Form field ada yang kosong!");
+					}
+				} catch (error) {
+					console.error(error);
+				}
+			} else {
+				goToNextStep();
+			}
+		},
 	});
 
-	// useEffect(() => {
-	// 	reset(formData);
-	// }, [currentStep, formData, reset]);
+	const onPrevious = () => goToPreviousStep();
+
+	useEffect(() => {
+		form.reset(formData);
+	}, [currentStep]);
+
+	useEffect(() => {
+		Object.entries(formData).forEach(([key, value]) => {
+			if (value !== undefined) {
+				form.setFieldValue(key as any, value);
+			}
+		});
+	}, [formData]);
+
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-background p-4">
 			<div className="w-full max-w-lg">
@@ -40,6 +71,35 @@ export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
 					</CardHeader>
 					<CardContent>
 						{currentStep === 0 && <AccountInfoFields form={form} />}
+						{currentStep === 1 && <PersonalInfoFields form={form} />}
+						<form.Subscribe
+							selector={(state) => [state.canSubmit, state.isSubmitting]}
+						>
+							{([canSubmit, isSubmitting]) => {
+								return (
+									<div
+										className={`flex pt-4 ${isFirstStep ? "justify-end" : "justify-between"}`}
+									>
+										<Activity mode={isFirstStep ? "hidden" : "visible"}>
+											<Button variant="outline" onClick={onPrevious}>
+												<ChevronLeft className="w-4 h-4 mr-1" />
+												Kembali
+											</Button>
+										</Activity>
+
+										<Button
+											type="submit"
+											disabled={!canSubmit || isSubmitting}
+											variant={canSubmit ? "default" : "destructive"}
+											onClick={form.handleSubmit}
+										>
+											{isLastStep ? "Submit" : "Next"}
+											{!isLastStep && <ChevronRight className="w-4 h-4 ml-1" />}
+										</Button>
+									</div>
+								);
+							}}
+						</form.Subscribe>
 					</CardContent>
 				</Card>
 			</div>

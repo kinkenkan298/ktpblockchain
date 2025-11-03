@@ -1,3 +1,4 @@
+import { formOptions } from "@tanstack/react-form";
 import React from "react";
 import * as z from "zod";
 
@@ -25,9 +26,11 @@ export const AccountInfoSchema = z
 		confirm_password: z.string("Confirm password tidak boleh kosong"),
 		phone: z
 			.string("Nomor telepon wajib di isi")
-			.min(10, "Nomor telepon terlalu pendek")
-			.max(15, "Nomor telepon terlalu panjang")
-			.regex(/^\+?[\d\s-]+$/, "Format nomor telepon tidak valid")
+			.max(13, "Nomor telepon terlalu panjang")
+			.regex(
+				/^(\+62|62|0)8[1-9][0-9]{6,9}$/,
+				"Format nomor telepon tidak valid"
+			)
 			.transform((val) => {
 				const cleaned = val.replace(/[\s-]/g, "");
 				return cleaned.startsWith("0")
@@ -150,18 +153,6 @@ export const AgreementSchema = z.object({
 	}),
 });
 
-// export const CompleteRegistrationSchema = z
-// 	.object({
-// 		...AccountInfoSchema.shape,
-// 		...PersonalInfoSchema.shape,
-// 		...DocumentUploadSchema.shape,
-// 		...AgreementSchema.shape,
-// 	})
-// 	.refine((data) => data.password === data.confirm_password, {
-// 		message: "Konfirmasi password tidak cocok",
-// 		path: ["confirm_password"],
-// 	});
-
 export type AccountInfoData = z.infer<typeof AccountInfoSchema>;
 export type PersonalInfoData = z.infer<typeof PersonalInfoSchema>;
 export type DocumentUploadData = z.infer<typeof DocumentUploadSchema>;
@@ -184,69 +175,9 @@ export interface Steps {
 	icon: React.ComponentType<{ className?: string }>;
 }
 
-// export type CompleteRegistrationData = z.infer<
-// 	typeof CompleteRegistrationSchema
-// >;
-
-// export const createStepsValidator = <T extends z.ZodType>(schema: T) => {
-// 	return (
-// 		data: unknown
-// 	): { success: boolean; erros?: Record<string, string> } => {
-// 		const result = schema.safeParse(data);
-
-// 		if (!result.success) {
-// 			const errors: Record<string, string> = {};
-// 			result.error.issues.forEach((issue) => {
-// 				const path = issue.path.join(".");
-// 				errors[path] = issue.message;
-// 				return { success: false, errors };
-// 			});
-// 		}
-// 		return { success: true };
-// 	};
-// };
-
-// export const validateAccountInfo = createStepsValidator(AccountInfoSchema);
-// export const validatePersonalInfo = createStepsValidator(PersonalInfoSchema);
-// export const validateDocumentUpload =
-// 	createStepsValidator(DocumentUploadSchema);
-// export const validateAgreement = createStepsValidator(AgreementSchema);
-
-// export type RegisterFromSteps = {
-// 	accountInfo: AccountInfoData;
-// 	personalInfo: PersonalInfoData;
-// 	documentUpload: DocumentUploadData;
-// 	agreementData: AgreementData;
-// };
-
-// export const defaultRegistrasionValues: RegisterFromSteps = {
-// 	accountInfo: {
-// 		email: "",
-// 		password: "",
-// 		confirm_password: "",
-// 		phone: "",
-// 	},
-// 	personalInfo: {
-// 		nik: "",
-// 		nama_lengkap: "",
-// 		tempat_lahir: "",
-// 		tanggal_lahir: "",
-// 		jenis_kelamin: "male",
-// 		alamat: "",
-// 		rt_rw: "",
-// 		kelurahan: "",
-// 		kecamatan: "",
-// 		kota: "",
-// 		provinsi: "",
-// 		kode_pos: "",
-// 	},
-// 	documentUpload: {
-// 		ktp_front: undefined as any,
-// 		ktp_back: undefined as any,
-// 		selfie_with_ktp: undefined as any,
-// 	},
-// 	agreementData: {
-// 		terms_agreement: false,
-// 		data_consent: false,
-// 	},
-// };
+export type RegisterFromSteps = {
+	accountInfo: AccountInfoData;
+	personalInfo: PersonalInfoData;
+	documentUpload: DocumentUploadData;
+	agreementData: AgreementData;
+};
