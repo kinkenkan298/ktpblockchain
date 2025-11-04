@@ -4,6 +4,9 @@ import {
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { FormDevtoolsPlugin } from "@tanstack/react-form-devtools";
 import type { ReactNode } from "react";
 import { DefaultCatchBoundry } from "@/components/DefaultCatchBoundry";
 import { NotFound } from "@/components/NotFound";
@@ -74,6 +77,10 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 			<body>
 				<Toaster position="top-center" richColors />
 				{children}
+				<TanStackDevtools
+					config={{ hideUntilHover: true }}
+					plugins={[FormDevtoolsPlugin()]}
+				/>
 				<Scripts />
 			</body>
 		</html>

@@ -1,88 +1,104 @@
-import { Activity, useState } from "react";
-import { StepIndicator, FormSteps, FormDataType } from "./StepIndicator";
-import { AccountInfoStep } from "./steps/AccountInfo";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { PersonalDataSteps } from "./steps/PersonalData";
-import { DocumentUploadSteps } from "./steps/DocumentUpload";
-import { AgreementInfo } from "./steps/AgreementInfo";
+import { useMultiForm } from "./MultiForm";
+import { StepsIndicator } from "./StepsIndicator";
+import { Activity, useEffect } from "react";
+import { useAppForm } from "@/hooks/form";
+import { AccountInfoFields } from "./steps/AccountInfo";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { PersonalInfoFields } from "./steps/PersonalInfo";
+import { DocumentInfoFields } from "./steps/DocumentInfo";
+import { AgreementInfoFields } from "./steps/AgreementInfo";
+import { toast } from "sonner";
 
-export function RegisterForm({ onSuccess }: { onSuccess: () => void }) {
-	const [currentStep, setCurrentStep] = useState<FormSteps>("account");
+export function RegisterForm() {
+	const {
+		currentStep,
+		getCurrentStepSchema,
+		isCompleteFormData,
+		isFirstStep,
+		isLastStep,
+		updateFormData,
+		steps,
+		goToNextStep,
+		goToPreviousStep,
+		formData,
+		submitForm,
+	} = useMultiForm();
 
-	const [formData, setFormData] = useState<FormDataType>({
-		account: null,
-		personal: null,
-		documents: null,
-		agreement: null,
+	const form = useAppForm({
+		defaultValues: formData,
+		validators: {
+			onChange: getCurrentStepSchema(),
+		},
+		onSubmit: async ({ value }) => {
+			const updateData = { ...formData, ...value };
+			updateFormData(updateData);
+
+			if (isLastStep) {
+				try {
+					if (isCompleteFormData(updateData)) {
+						submitForm(updateData);
+					} else {
+						toast.error("Form field ada yang kosong!");
+						return;
+					}
+				} catch (error) {
+					console.error(error);
+				}
+			} else {
+				goToNextStep();
+			}
+		},
 	});
 
-	const steps: { number: number; id: FormSteps; title: string }[] = [
-		{ number: 1, id: "account", title: "Akun" },
-		{ number: 2, id: "personal", title: "Data diri" },
-		{ number: 3, id: "documents", title: "Dokumen" },
-		{ number: 4, id: "agreement", title: "Persetujuan" },
-	];
+	const onPrevious = () => goToPreviousStep();
 
-	const handleSubmit = () => {
-		if (
-			!formData.account ||
-			!formData.personal ||
-			!formData.documents ||
-			!formData.agreement
-		) {
-			return;
-		}
-		onSuccess();
-	};
+	useEffect(() => {
+		form.reset(formData);
+	}, [currentStep, form.reset]);
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-background p-4">
 			<div className="w-full max-w-lg">
 				<Card className="rounded-3xl shadow-xl">
 					<CardHeader>
-						<StepIndicator
-							steps={steps}
-							currentStep={currentStep}
-							formData={formData}
-						/>
+						<StepsIndicator currentStep={currentStep} steps={steps} />
 					</CardHeader>
 					<CardContent>
-						<Activity mode={currentStep === "account" ? "visible" : "hidden"}>
-							<AccountInfoStep
-								defaultValues={formData.account}
-								onNext={(data) => {
-									setFormData((prev) => ({ ...prev, account: data }));
-									setCurrentStep("personal");
-								}}
-							/>
-						</Activity>
-						<Activity mode={currentStep === "personal" ? "visible" : "hidden"}>
-							<PersonalDataSteps
-								defaultValues={formData.personal}
-								onBack={() => setCurrentStep("account")}
-								onNext={(data) => {
-									setFormData((prev) => ({ ...prev, personal: data }));
-									setCurrentStep("documents");
-								}}
-							/>
-						</Activity>
-						<Activity mode={currentStep === "documents" ? "visible" : "hidden"}>
-							<DocumentUploadSteps
-								defaultValues={formData.documents}
-								onBack={() => setCurrentStep("personal")}
-								onNext={(data) => {
-									setFormData((prev) => ({ ...prev, documents: data }));
-									setCurrentStep("agreement");
-								}}
-							/>
-						</Activity>
-						<Activity mode={currentStep === "agreement" ? "visible" : "hidden"}>
-							<AgreementInfo
-								defaultValues={formData.agreement}
-								onBack={() => setCurrentStep("agreement")}
-								onSubmit={handleSubmit}
-							/>
-						</Activity>
+						{currentStep === 0 && <AccountInfoFields form={form} />}
+						{currentStep === 1 && <PersonalInfoFields form={form} />}
+						{currentStep === 2 && <DocumentInfoFields form={form} />}
+						{currentStep === 3 && <AgreementInfoFields form={form} />}
+
+						<form.Subscribe
+							selector={(state) => [state.canSubmit, state.isSubmitting]}
+						>
+							{([canSubmit, isSubmitting]) => {
+								return (
+									<div
+										className={`flex mt-5 pt-4 ${isFirstStep ? "justify-end" : "justify-between"}`}
+									>
+										<Activity mode={isFirstStep ? "hidden" : "visible"}>
+											<Button variant="outline" onClick={onPrevious}>
+												<ChevronLeft className="w-4 h-4 mr-1" />
+												Kembali
+											</Button>
+										</Activity>
+
+										<Button
+											type="submit"
+											disabled={!canSubmit || isSubmitting}
+											variant={canSubmit ? "default" : "destructive"}
+											onClick={form.handleSubmit}
+										>
+											{isLastStep ? "Submit data" : "Lanjut"}
+											{!isLastStep && <ChevronRight className="w-4 h-4 ml-1" />}
+										</Button>
+									</div>
+								);
+							}}
+						</form.Subscribe>
 					</CardContent>
 				</Card>
 			</div>
