@@ -136,13 +136,17 @@ export const DocumentUploadSchema = z
 	);
 
 export const AgreementSchema = z.object({
-	terms_agreement: z.boolean().refine((val) => val === true, {
-		message: "Anda harus menyetujui syarat dan ketentuan",
-	}),
+	terms_agreement: z
+		.boolean("Anda harus menyetujui syarat dan ketentuan")
+		.refine((val) => val === true, {
+			message: "Anda harus menyetujui syarat dan ketentuan",
+		}),
 
-	data_consent: z.boolean().refine((val) => val === true, {
-		message: "Anda harus menyetujui penggunaan data",
-	}),
+	data_consent: z
+		.boolean("Anda harus menyetujui penggunaan data")
+		.refine((val) => val === true, {
+			message: "Anda harus menyetujui penggunaan data",
+		}),
 });
 
 export type AccountInfoData = z.infer<typeof AccountInfoSchema>;

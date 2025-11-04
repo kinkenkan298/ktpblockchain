@@ -7,6 +7,7 @@ const RadioField = lazy(() => import("@/components/form/RadioField"));
 const SelectField = lazy(() => import("@/components/form/SelectField"));
 const TextareaField = lazy(() => import("@/components/form/TextareaField"));
 const FileField = lazy(() => import("@/components/form/FileField"));
+const CheckboxField = lazy(() => import("@/components/form/CheckboxField"));
 
 export const { fieldContext, useFieldContext, formContext, useFormContext } =
 	createFormHookContexts();
@@ -18,6 +19,7 @@ export const { useAppForm, withFieldGroup, withForm } = createFormHook({
 		SelectField,
 		TextareaField,
 		FileField,
+		CheckboxField,
 	},
 	formComponents: {},
 	fieldContext,
