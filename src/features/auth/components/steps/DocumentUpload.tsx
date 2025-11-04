@@ -107,30 +107,6 @@ export function DocumentUploadSteps({
 		},
 		onSubmit: () => {
 			console.log("hai");
-			// try {
-			//   if (!isStepComplete) {
-			//     toast.error("Dokumen belum lengkap! periksa lagi");
-			//     return;
-			//   }
-			//   const documentData: DocumentUploadData = {
-			//     ktp_front: uploadStatus.ktp_front.file!,
-			//     ktp_back: uploadStatus.ktp_back.file || undefined,
-			//     selfie_with_ktp: uploadStatus.selfie_with_ktp.file!,
-			//   };
-
-			//   const validationResult = DocumentUploadSchema.safeParse(documentData);
-
-			//   if (!validationResult.success) {
-			//     console.error(validationResult.error);
-			//     toast.error("Data tidak valid! harap periksa lagi!");
-			//     return;
-			//   }
-
-			//   console.log(documentData);
-			//   // onNext(validationResult.data);
-			// } catch (error: any) {
-			//   toast.error("Terjadi kesalahan saat memproses dokumen");
-			// }
 		},
 	});
 	const handleFileChange = async (

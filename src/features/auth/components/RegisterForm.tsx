@@ -7,6 +7,7 @@ import { AccountInfoFields } from "./steps/AccountInfo";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PersonalInfoFields } from "./steps/PersonalInfo";
+import { DocumentInfoFields } from "./steps/documentInfo";
 
 export function RegisterForm() {
 	const {
@@ -72,6 +73,7 @@ export function RegisterForm() {
 					<CardContent>
 						{currentStep === 0 && <AccountInfoFields form={form} />}
 						{currentStep === 1 && <PersonalInfoFields form={form} />}
+						{currentStep === 2 && <DocumentInfoFields form={form} />}
 
 						<form.Subscribe
 							selector={(state) => [state.canSubmit, state.isSubmitting]}
