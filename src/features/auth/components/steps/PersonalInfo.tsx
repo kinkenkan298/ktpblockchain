@@ -1,8 +1,5 @@
 import { withForm } from "@/hooks/form";
 import { StepFormData } from "../../types/registerSchema";
-import { Field, FieldError, FieldLabel, FieldSet } from "@/components/ui/field";
-import { RadioGroup } from "@/components/ui/radio-group";
-import { RadioGroupItem } from "@radix-ui/react-radio-group";
 
 export const PersonalInfoFields = withForm({
 	defaultValues: {} as Partial<StepFormData>,

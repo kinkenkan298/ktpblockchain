@@ -6,7 +6,7 @@ import { useAppForm } from "@/hooks/form";
 import { AccountInfoFields } from "./steps/AccountInfo";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PersonalInfoFields } from "./steps/personalInfo";
+import { PersonalInfoFields } from "./steps/PersonalInfo";
 
 export function RegisterForm() {
 	const {
@@ -72,6 +72,7 @@ export function RegisterForm() {
 					<CardContent>
 						{currentStep === 0 && <AccountInfoFields form={form} />}
 						{currentStep === 1 && <PersonalInfoFields form={form} />}
+
 						<form.Subscribe
 							selector={(state) => [state.canSubmit, state.isSubmitting]}
 						>
@@ -93,7 +94,7 @@ export function RegisterForm() {
 											variant={canSubmit ? "default" : "destructive"}
 											onClick={form.handleSubmit}
 										>
-											{isLastStep ? "Submit" : "Next"}
+											{isLastStep ? "Submit data" : "Lanjut"}
 											{!isLastStep && <ChevronRight className="w-4 h-4 ml-1" />}
 										</Button>
 									</div>
