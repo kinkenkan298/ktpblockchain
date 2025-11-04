@@ -7,7 +7,7 @@ import { AccountInfoFields } from "./steps/AccountInfo";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PersonalInfoFields } from "./steps/PersonalInfo";
-import { DocumentInfoFields } from "./steps/documentInfo";
+import { DocumentInfoFields } from "./steps/DocumentInfo";
 
 export function RegisterForm() {
 	const {
@@ -54,14 +54,6 @@ export function RegisterForm() {
 	useEffect(() => {
 		form.reset(formData);
 	}, [currentStep, form.reset]);
-
-	// useEffect(() => {
-	// 	Object.entries(formData).forEach(([key, value]) => {
-	// 		if (value !== undefined) {
-	// 			form.setFieldValue(key as any, value);
-	// 		}
-	// 	});
-	// }, [formData]);
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-background p-4">
