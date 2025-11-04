@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { PersonalInfoFields } from "./steps/PersonalInfo";
 import { DocumentInfoFields } from "./steps/DocumentInfo";
 import { AgreementInfoFields } from "./steps/AgreementInfo";
+import { toast } from "sonner";
 
 export function RegisterForm() {
 	const {
@@ -39,7 +40,8 @@ export function RegisterForm() {
 					if (isCompleteFormData(updateData)) {
 						submitForm(updateData);
 					} else {
-						console.error("Form field ada yang kosong!");
+						toast.error("Form field ada yang kosong!");
+						return;
 					}
 				} catch (error) {
 					console.error(error);
