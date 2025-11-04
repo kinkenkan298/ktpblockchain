@@ -61,15 +61,7 @@ export const PersonalInfoSchema = z.object({
 		.string("Tempat lahir wajib di isi")
 		.min(4, "Tempat lahir terlalu pendek")
 		.max(200, "Tempat lahir terlalu panjang"),
-	tanggal_lahir: z
-		.string()
-		.date()
-		.refine((date) => {
-			const birthDate = new Date(date);
-			const today = new Date();
-			const minDate = new Date("1900-01-01");
-			return birthDate <= today && birthDate >= minDate;
-		}, "Tanggal lahir tidak valid"),
+	tanggal_lahir: z.iso.date("Tanggal tidak sesuai"),
 	jenis_kelamin: z.enum(["male", "female"], "Jenis kelamin tidak sesuai!"),
 	alamat: z
 		.string("Alamat wajib di isi!")

@@ -52,15 +52,15 @@ export function RegisterForm() {
 
 	useEffect(() => {
 		form.reset(formData);
-	}, [currentStep]);
+	}, [currentStep, form.reset]);
 
-	useEffect(() => {
-		Object.entries(formData).forEach(([key, value]) => {
-			if (value !== undefined) {
-				form.setFieldValue(key as any, value);
-			}
-		});
-	}, [formData]);
+	// useEffect(() => {
+	// 	Object.entries(formData).forEach(([key, value]) => {
+	// 		if (value !== undefined) {
+	// 			form.setFieldValue(key as any, value);
+	// 		}
+	// 	});
+	// }, [formData]);
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -78,7 +78,7 @@ export function RegisterForm() {
 							{([canSubmit, isSubmitting]) => {
 								return (
 									<div
-										className={`flex pt-4 ${isFirstStep ? "justify-end" : "justify-between"}`}
+										className={`flex mt-5 pt-4 ${isFirstStep ? "justify-end" : "justify-between"}`}
 									>
 										<Activity mode={isFirstStep ? "hidden" : "visible"}>
 											<Button variant="outline" onClick={onPrevious}>

@@ -23,7 +23,7 @@ export const steps: Steps[] = [
 	{ id: "agreement", name: "Persetujuan", icon: CheckSquare },
 ];
 export const useMultiForm = () => {
-	const [currentStep, setCurrentStep] = useState<number>(0);
+	const [currentStep, setCurrentStep] = useState<number>(1);
 	const [formData, setFormData] = useState<Partial<StepFormData>>({});
 	const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
