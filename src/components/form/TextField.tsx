@@ -6,14 +6,12 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useFieldContext } from "@/hooks/form";
+import React from "react";
 
-type TextFieldProps = {
+interface TextFieldProps extends React.ComponentPropsWithRef<"input"> {
 	label: string;
-	type?: string;
-	maxLength?: number;
-	placeholder?: string;
 	description?: string;
-};
+}
 
 export default function TextField({
 	label,

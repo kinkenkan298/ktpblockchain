@@ -1,22 +1,20 @@
 import { useFieldContext } from "@/hooks/form";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { Textarea } from "../ui/textarea";
+import React from "react";
 
-interface TextareaFieldProps {
+interface TextareaFieldProps extends React.ComponentPropsWithRef<"textarea"> {
 	label: string;
-	placeholder?: string;
-	row?: number;
 	description?: string;
 }
 
 export default function TextareaField({
 	label,
 	placeholder,
-	row = 3,
 	description,
+	rows,
 }: TextareaFieldProps) {
 	const { name, state, handleChange, handleBlur } = useFieldContext<string>();
-
 	const isInvalid = state.meta.isTouched && !state.meta.isValid;
 
 	return (
@@ -31,7 +29,7 @@ export default function TextareaField({
 				aria-invalid={isInvalid}
 				placeholder={placeholder}
 				autoComplete="off"
-				rows={row}
+				rows={rows}
 			/>
 			{description && <FieldDescription>{description}</FieldDescription>}
 			{isInvalid && <FieldError errors={state.meta.errors} />}

@@ -7,16 +7,12 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "../ui/select";
+import React from "react";
 
-type SelectData = {
-	label: string;
-	value: string;
-};
-
-interface SelectFieldProps {
+interface SelectFieldProps extends React.ComponentPropsWithRef<"select"> {
 	label: string;
 	selectLabel?: string;
-	data: SelectData[];
+	data: { label: string; value: string }[];
 	description?: string;
 }
 
