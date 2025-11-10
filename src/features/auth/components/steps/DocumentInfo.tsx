@@ -7,7 +7,6 @@ import { AlertCircle } from "lucide-react";
 import { UploadState } from "@/components/form/FileField";
 import { FieldGroup, FieldSeparator } from "@/components/ui/field";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
 
 export const DocumentInfoFields = withForm({
 	defaultValues: {} as Partial<StepFormData>,

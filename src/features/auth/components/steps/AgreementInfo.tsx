@@ -1,10 +1,8 @@
 import { withForm } from "@/hooks/form";
 import { StepFormData } from "../../types/registerSchema";
-import { Field, FieldGroup } from "@/components/ui/field";
 import { useState } from "react";
 import {
 	Card,
-	CardAction,
 	CardContent,
 	CardDescription,
 	CardTitle,
