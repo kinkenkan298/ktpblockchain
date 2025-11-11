@@ -12,7 +12,7 @@ import { DefaultCatchBoundry } from "@/components/DefaultCatchBoundry";
 import { NotFound } from "@/components/NotFound";
 import { seo } from "@/utils/seo";
 
-import appCss from "@/assets/app.css?url";
+import appCss from "@/global.css?url";
 import { Toaster } from "sonner";
 
 export const Route = createRootRoute({
