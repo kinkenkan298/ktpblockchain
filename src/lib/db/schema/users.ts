@@ -12,19 +12,13 @@ import {
 } from "drizzle-orm/mysql-core";
 import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
-import {
-  user,
-  session,
-  account,
-  verification,
-  authTables,
-} from "./auth-schema";
+import { user, session, account, authTables } from "./auth-schema";
 
 export const admin = mysqlTable(
   "admin",
   {
     id: varchar("id", { length: 255 }).primaryKey().$defaultFn(createId),
-    userId: text("user_id")
+    userId: varchar("user_id", { length: 36 })
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     username: varchar("username", { length: 50 }).unique().notNull(),
@@ -64,10 +58,10 @@ export const verificationRequest = mysqlTable(
   "verification_request",
   {
     id: varchar("id", { length: 255 }).primaryKey().$defaultFn(createId),
-    userId: text("user_id")
+    userId: varchar("user_id", { length: 36 })
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    adminId: text("admin_id")
+    adminId: varchar("admin_id", { length: 255 })
       .notNull()
       .references(() => admin.id, { onDelete: "cascade" }),
     documentFrontUrl: varchar("document_front_url", { length: 500 }).notNull(),
@@ -91,8 +85,12 @@ export const dataAccessRequest = mysqlTable(
   "data_access_request",
   {
     id: varchar("id", { length: 255 }).primaryKey().$defaultFn(createId),
-    userId: varchar("user_id", { length: 255 }).notNull(),
-    verifierId: varchar("verifier_id", { length: 255 }).notNull(),
+    userId: varchar("user_id", { length: 36 })
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    verifierId: varchar("verifier_id", { length: 255 })
+      .notNull()
+      .references(() => verificationRequest.id, { onDelete: "cascade" }),
     requestedFields: json("requested_fields").notNull(),
     purpose: text("purpose").notNull(),
     accessDuration: int("access_duration").default(24),
@@ -117,11 +115,13 @@ export const dataAccessRequest = mysqlTable(
 export const accessLog = mysqlTable(
   "access_log",
   {
-    id: text("id").primaryKey(),
-    userId: text("user_id")
+    id: varchar("id", { length: 255 }).primaryKey().$defaultFn(createId),
+    userId: varchar("user_id", { length: 36 })
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    verifierId: varchar("verifier_id", { length: 255 }).notNull(),
+    verifierId: varchar("verifier_id", { length: 255 })
+      .notNull()
+      .references(() => verificationRequest.id, { onDelete: "cascade" }),
     accessRequestId: varchar("access_request_id", { length: 255 }).notNull(),
     accessedFields: json("accessed_fields").notNull(),
     accessTimestamp: timestamp("access_timestamp").defaultNow(),
@@ -139,9 +139,14 @@ export const qrSession = mysqlTable(
   "qr_session",
   {
     id: varchar("id", { length: 255 }).primaryKey().$defaultFn(createId),
-    userId: varchar("user_id", { length: 255 }).notNull(),
+    userId: varchar("user_id", { length: 36 })
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
     qrToken: varchar("qr_token", { length: 128 }).unique().notNull(),
-    verifierId: varchar("verifier_id", { length: 255 }),
+    verifierId: varchar("verifier_id", { length: 255 }).references(
+      () => verificationRequest.id,
+      { onDelete: "cascade" }
+    ),
     requestedFields: json("requested_fields").notNull(),
     status: mysqlEnum("status", ["ACTIVE", "USED", "EXPIRED", "CANCELLED"]),
     expiresAt: timestamp("expires_at").notNull(),
@@ -160,9 +165,16 @@ export const systemAuditTrail = mysqlTable(
   {
     id: varchar("id", { length: 255 }).primaryKey().$defaultFn(createId),
     actionType: varchar("action_type", { length: 100 }).notNull(),
-    userId: varchar("user_id", { length: 255 }),
-    adminId: varchar("admin_id", { length: 255 }),
-    verifierId: varchar("verifier_id", { length: 255 }),
+    userId: varchar("user_id", { length: 36 })
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    adminId: varchar("admin_id", { length: 255 })
+      .notNull()
+      .references(() => admin.id, { onDelete: "cascade" }),
+    verifierId: varchar("verifier_id", { length: 255 }).references(
+      () => verificationRequest.id,
+      { onDelete: "cascade" }
+    ),
     description: text("description").notNull(),
     ipAddress: varchar("ip_address", { length: 45 }),
     userAgent: text("user_agent"),

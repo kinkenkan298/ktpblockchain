@@ -1,6 +1,6 @@
 CREATE TABLE `access_log` (
-	`id` text NOT NULL,
-	`user_id` text NOT NULL,
+	`id` varchar(255) NOT NULL,
+	`user_id` varchar(36) NOT NULL,
 	`verifier_id` varchar(255) NOT NULL,
 	`access_request_id` varchar(255) NOT NULL,
 	`accessed_fields` json NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE `account` (
 --> statement-breakpoint
 CREATE TABLE `admin` (
 	`id` varchar(255) NOT NULL,
-	`user_id` text NOT NULL,
+	`user_id` varchar(36) NOT NULL,
 	`username` varchar(50) NOT NULL,
 	`full_name` varchar(255) NOT NULL,
 	`department` varchar(100) NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE `admin` (
 --> statement-breakpoint
 CREATE TABLE `data_access_request` (
 	`id` varchar(255) NOT NULL,
-	`user_id` varchar(255) NOT NULL,
+	`user_id` varchar(36) NOT NULL,
 	`verifier_id` varchar(255) NOT NULL,
 	`requested_fields` json NOT NULL,
 	`purpose` text NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE `data_access_request` (
 --> statement-breakpoint
 CREATE TABLE `qr_session` (
 	`id` varchar(255) NOT NULL,
-	`user_id` varchar(255) NOT NULL,
+	`user_id` varchar(36) NOT NULL,
 	`qr_token` varchar(128) NOT NULL,
 	`verifier_id` varchar(255),
 	`requested_fields` json NOT NULL,
@@ -91,8 +91,8 @@ CREATE TABLE `session` (
 CREATE TABLE `system_audit_trail` (
 	`id` varchar(255) NOT NULL,
 	`action_type` varchar(100) NOT NULL,
-	`user_id` varchar(255),
-	`admin_id` varchar(255),
+	`user_id` varchar(36) NOT NULL,
+	`admin_id` varchar(255) NOT NULL,
 	`verifier_id` varchar(255),
 	`description` text NOT NULL,
 	`ip_address` varchar(45),
@@ -167,8 +167,8 @@ CREATE TABLE `verification` (
 --> statement-breakpoint
 CREATE TABLE `verification_request` (
 	`id` varchar(255) NOT NULL,
-	`user_id` text NOT NULL,
-	`admin_id` text NOT NULL,
+	`user_id` varchar(36) NOT NULL,
+	`admin_id` varchar(255) NOT NULL,
 	`document_front_url` varchar(500) NOT NULL,
 	`document_back_url` varchar(500),
 	`selfie_url` varchar(500) NOT NULL,
@@ -181,9 +181,17 @@ CREATE TABLE `verification_request` (
 );
 --> statement-breakpoint
 ALTER TABLE `access_log` ADD CONSTRAINT `access_log_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `access_log` ADD CONSTRAINT `access_log_verifier_id_verification_request_id_fk` FOREIGN KEY (`verifier_id`) REFERENCES `verification_request`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `account` ADD CONSTRAINT `account_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `admin` ADD CONSTRAINT `admin_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `data_access_request` ADD CONSTRAINT `data_access_request_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `data_access_request` ADD CONSTRAINT `data_access_request_verifier_id_verification_request_id_fk` FOREIGN KEY (`verifier_id`) REFERENCES `verification_request`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `qr_session` ADD CONSTRAINT `qr_session_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `qr_session` ADD CONSTRAINT `qr_session_verifier_id_verification_request_id_fk` FOREIGN KEY (`verifier_id`) REFERENCES `verification_request`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `session` ADD CONSTRAINT `session_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `system_audit_trail` ADD CONSTRAINT `system_audit_trail_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `system_audit_trail` ADD CONSTRAINT `system_audit_trail_admin_id_admin_id_fk` FOREIGN KEY (`admin_id`) REFERENCES `admin`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `system_audit_trail` ADD CONSTRAINT `system_audit_trail_verifier_id_verification_request_id_fk` FOREIGN KEY (`verifier_id`) REFERENCES `verification_request`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `verification_request` ADD CONSTRAINT `verification_request_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `verification_request` ADD CONSTRAINT `verification_request_admin_id_admin_id_fk` FOREIGN KEY (`admin_id`) REFERENCES `admin`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX `al_user_idx` ON `access_log` (`user_id`);--> statement-breakpoint

@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "3f85428e-bd5c-4067-9732-72f63e355034",
+  "id": "0c448b5c-3777-484c-80a0-00fd1db352e7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "access_log": {
@@ -9,14 +9,14 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "user_id": {
           "name": "user_id",
-          "type": "text",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -102,6 +102,19 @@
           "tableTo": "user",
           "columnsFrom": [
             "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "access_log_verifier_id_verification_request_id_fk": {
+          "name": "access_log_verifier_id_verification_request_id_fk",
+          "tableFrom": "access_log",
+          "tableTo": "verification_request",
+          "columnsFrom": [
+            "verifier_id"
           ],
           "columnsTo": [
             "id"
@@ -255,7 +268,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "text",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -373,7 +386,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -468,7 +481,34 @@
           "isUnique": false
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "data_access_request_user_id_user_id_fk": {
+          "name": "data_access_request_user_id_user_id_fk",
+          "tableFrom": "data_access_request",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "data_access_request_verifier_id_verification_request_id_fk": {
+          "name": "data_access_request_verifier_id_verification_request_id_fk",
+          "tableFrom": "data_access_request",
+          "tableTo": "verification_request",
+          "columnsFrom": [
+            "verifier_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "data_access_request_id": {
           "name": "data_access_request_id",
@@ -492,7 +532,7 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -571,7 +611,34 @@
           "isUnique": false
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "qr_session_user_id_user_id_fk": {
+          "name": "qr_session_user_id_user_id_fk",
+          "tableFrom": "qr_session",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "qr_session_verifier_id_verification_request_id_fk": {
+          "name": "qr_session_verifier_id_verification_request_id_fk",
+          "tableFrom": "qr_session",
+          "tableTo": "verification_request",
+          "columnsFrom": [
+            "verifier_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "qr_session_id": {
           "name": "qr_session_id",
@@ -710,16 +777,16 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "varchar(255)",
+          "type": "varchar(36)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "admin_id": {
           "name": "admin_id",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "verifier_id": {
@@ -789,7 +856,47 @@
           "isUnique": false
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "system_audit_trail_user_id_user_id_fk": {
+          "name": "system_audit_trail_user_id_user_id_fk",
+          "tableFrom": "system_audit_trail",
+          "tableTo": "user",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "system_audit_trail_admin_id_admin_id_fk": {
+          "name": "system_audit_trail_admin_id_admin_id_fk",
+          "tableFrom": "system_audit_trail",
+          "tableTo": "admin",
+          "columnsFrom": [
+            "admin_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "system_audit_trail_verifier_id_verification_request_id_fk": {
+          "name": "system_audit_trail_verifier_id_verification_request_id_fk",
+          "tableFrom": "system_audit_trail",
+          "tableTo": "verification_request",
+          "columnsFrom": [
+            "verifier_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "system_audit_trail_id": {
           "name": "system_audit_trail_id",
@@ -1229,14 +1336,14 @@
         },
         "user_id": {
           "name": "user_id",
-          "type": "text",
+          "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
         "admin_id": {
           "name": "admin_id",
-          "type": "text",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

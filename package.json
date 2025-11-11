@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build"
+    "build": "vite build",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
