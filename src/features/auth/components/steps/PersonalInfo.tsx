@@ -14,6 +14,7 @@ export const PersonalInfoFields = withForm({
                 label="NIK (Nomor Induk Kependudukan)"
                 placeholder="16 digit angka NIK"
                 maxLength={16}
+                type="number"
               />
             )}
           />
@@ -124,7 +125,11 @@ export const PersonalInfoFields = withForm({
           <form.AppField
             name="kode_pos"
             children={(field) => (
-              <field.TextField label="Kode Pos" placeholder="Kode Pos" />
+              <field.TextField
+                label="Kode Pos"
+                placeholder="Kode Pos"
+                type="number"
+              />
             )}
           />
         </div>

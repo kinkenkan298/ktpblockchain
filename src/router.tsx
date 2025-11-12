@@ -11,7 +11,9 @@ import { toast } from "sonner";
 function parseZod(error: Error) {
   try {
     return new ZodError(JSON.parse(error.message));
-  } catch {}
+  } catch {
+    //ppass
+  }
 }
 
 export function getRouter() {
@@ -71,6 +73,7 @@ export function getRouter() {
 
   return router;
 }
+
 declare module "@tanstack/react-router" {
   interface Register {
     router: ReturnType<typeof getRouter>;

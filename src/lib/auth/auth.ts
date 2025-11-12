@@ -84,6 +84,7 @@ export const auth = betterAuth({
       },
       status: {
         type: "string",
+        require: false,
         default: "PENDING",
       },
     },

@@ -1,13 +1,12 @@
 import type { Steps } from "@/features/auth/types/auth-schema";
 import { Check } from "lucide-react";
-
-export const StepsIndicator = ({
+export function StepsIndicator({
   currentStep,
   steps,
 }: {
   currentStep: number;
   steps: Steps[];
-}) => {
+}) {
   return (
     <div className="flex items-center justify-between mb-8">
       {steps.map((step, i) => {
@@ -55,4 +54,4 @@ export const StepsIndicator = ({
       })}
     </div>
   );
-};
+}

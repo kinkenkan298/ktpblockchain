@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { withForm } from "@/hooks/form";
 import { DocumentUploadSchema, StepFormData } from "../../types/auth-schema";
 import { Badge } from "@/components/ui/badge";
@@ -147,9 +147,7 @@ export const DocumentInfoFields = withForm({
 
       toast.success(`File ${getFieldDisplayName(field)} berhasil diupload`);
     };
-    useEffect(() => {
-      console.log(uploadStatus);
-    }, [uploadStatus]);
+
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
