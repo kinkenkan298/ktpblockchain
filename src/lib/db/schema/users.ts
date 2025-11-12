@@ -40,7 +40,12 @@ export const thirdPartyVerifier = mysqlTable(
   {
     id: varchar("id", { length: 255 }).primaryKey().$defaultFn(createId),
     companyName: varchar("company_name", { length: 255 }).notNull(),
-    companyType: varchar("company_type", { length: 50 }).notNull(), // 'bank', 'hospital', 'government', 'other'
+    companyType: mysqlEnum("company_type", [
+      "BANK",
+      "HOSPITAL",
+      "GOVERMENT",
+      "OTHER",
+    ]),
     walletAddress: varchar("wallet_address", { length: 42 }).unique().notNull(),
     apiKey: varchar("api_key", { length: 64 }).unique().notNull(),
     contactEmail: varchar("contact_email", { length: 255 }).notNull(),
@@ -148,7 +153,12 @@ export const qrSession = mysqlTable(
       { onDelete: "cascade" }
     ),
     requestedFields: json("requested_fields").notNull(),
-    status: mysqlEnum("status", ["ACTIVE", "USED", "EXPIRED", "CANCELLED"]),
+    status: mysqlEnum("status", [
+      "ACTIVE",
+      "USED",
+      "EXPIRED",
+      "CANCELLED",
+    ]).default("ACTIVE"),
     expiresAt: timestamp("expires_at").notNull(),
     usedAt: timestamp("used_at"),
     createdAt: timestamp("created_at").defaultNow(),

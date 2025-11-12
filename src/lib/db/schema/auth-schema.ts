@@ -4,6 +4,7 @@ import {
   text,
   timestamp,
   boolean,
+  mysqlEnum,
 } from "drizzle-orm/mysql-core";
 
 export const user = mysqlTable("user", {
@@ -19,12 +20,14 @@ export const user = mysqlTable("user", {
     .$defaultFn(() => new Date())
     .$onUpdate(() => new Date())
     .notNull(),
+
   username: varchar("username", { length: 255 }).unique(),
   displayUsername: text("display_username"),
   role: text("role"),
   banned: boolean("banned").default(false),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires", { fsp: 3 }),
+
   walletAddress: varchar("wallet_address", { length: 255 }).unique(),
   nik: varchar("nik", { length: 255 }).unique(),
   phoneNumber: text("phone_number"),
@@ -40,7 +43,12 @@ export const user = mysqlTable("user", {
   postalCode: text("postal_code"),
   identityHash: text("identity_hash"),
   ipfsDocumentHash: text("ipfs_document_hash"),
-  status: text("status"),
+  status: mysqlEnum("status", [
+    "PENDING",
+    "VERIFIED",
+    "REJECTED",
+    "SUSPENDED",
+  ]).default("PENDING"),
 });
 
 export const session = mysqlTable("session", {
