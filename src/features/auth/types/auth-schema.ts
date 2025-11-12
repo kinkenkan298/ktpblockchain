@@ -1,0 +1,34 @@
+import * as React from "react";
+import {
+  AccountInfoSchema,
+  AgreementSchema,
+  DocumentUploadSchema,
+  PersonalInfoSchema,
+} from "./register-schema";
+
+export * from "./login-schema";
+export * from "./register-schema";
+
+export type StepFormData =
+  | AccountInfoSchema
+  | PersonalInfoSchema
+  | DocumentUploadSchema
+  | AgreementSchema;
+
+export type AllFormFields = AccountInfoSchema &
+  PersonalInfoSchema &
+  DocumentUploadSchema &
+  AgreementSchema;
+
+export interface Steps {
+  id: string;
+  name: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+export type RegisterFromSteps = {
+  accountInfo: AccountInfoSchema;
+  personalInfo: PersonalInfoSchema;
+  documentUpload: DocumentUploadSchema;
+  agreementData: AgreementSchema;
+};

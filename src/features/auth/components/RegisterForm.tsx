@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useMultiForm } from "./MultiForm";
 import { StepsIndicator } from "./StepsIndicator";
 import { Activity, useEffect } from "react";
@@ -111,11 +106,15 @@ export function RegisterForm() {
               Or
             </span>
           </div>
-          <CardFooter className="flex justify-center">
-            <Button asChild variant={"link"}>
-              <Link to="/login">Sudah punya akun? Login</Link>
-            </Button>
-          </CardFooter>
+          <div className="text-sm text-center">
+            Sudah punya akun?{" "}
+            <Link
+              to="/login"
+              className="underline underline-offset-4 text-primary"
+            >
+              Login disini
+            </Link>
+          </div>
         </Card>
       </div>
     </div>

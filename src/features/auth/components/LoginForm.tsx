@@ -17,21 +17,7 @@ export function LoginForm() {
       email: "",
       password: "",
     },
-    validators: {
-      onSubmit: z.object({
-        email: z.email({
-          error: "Email tidak valid",
-        }),
-        password: z
-          .string({
-            error: "Password wajib di isi!",
-          })
-          .trim()
-          .min(8, {
-            error: "Panjang password minimal 6",
-          }),
-      }),
-    },
+    validators: {},
     onSubmit: ({ value }) => {
       console.log(value);
     },
@@ -58,7 +44,7 @@ export function LoginForm() {
               children={(field) => (
                 <field.TextField
                   label="Email"
-                  placeholder="email@example.com"
+                  placeholder="Email@example.com"
                 />
               )}
             />
@@ -87,7 +73,10 @@ export function LoginForm() {
       </div>
       <div className="text-sm text-center">
         Belum punya akun?{" "}
-        <Link to="/register" className="underline underline-offset-4">
+        <Link
+          to="/register"
+          className="underline underline-offset-4 text-primary"
+        >
           Daftar disini
         </Link>
       </div>

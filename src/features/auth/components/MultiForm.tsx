@@ -6,10 +6,8 @@ import {
   PersonalInfoSchema,
   StepFormData,
   Steps,
-} from "../types/registerSchema";
+} from "../types/auth-schema";
 import { useState } from "react";
-import { authClient } from "@/lib/auth/client";
-import { auth } from "@/lib/auth/auth";
 
 const stepSchemas = [
   AccountInfoSchema,
