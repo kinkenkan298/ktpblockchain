@@ -8,18 +8,43 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useAppForm } from "@/hooks/form";
-import { Link } from "@tanstack/react-router";
-import { z } from "zod";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { LoginSchema } from "../types/login-schema";
+import { authClient } from "@/lib/auth/client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+
+const Login = async (data: LoginSchema) => {
+  const { error, data: response } = await authClient.signIn.email({
+    email: data.email,
+    password: data.password,
+  });
+  if (error) throw new Error(error.message);
+  return response;
+};
 
 export function LoginForm() {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const LoginMutation = useMutation({
+    mutationKey: ["auth", "sign-in"],
+    mutationFn: Login,
+    onSuccess: (resp) => {
+      toast.success(`${resp.user.name} Selamat datang!`);
+      queryClient.resetQueries();
+      navigate({ to: "/" });
+    },
+  });
+
   const form = useAppForm({
     defaultValues: {
       email: "",
       password: "",
-    },
+    } as LoginSchema,
     validators: {},
-    onSubmit: ({ value }) => {
-      console.log(value);
+    onSubmit: async ({ value }) => {
+      await LoginMutation.mutateAsync(value);
     },
   });
   return (
