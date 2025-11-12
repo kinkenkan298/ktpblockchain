@@ -1,4 +1,9 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { useMultiForm } from "./MultiForm";
 import { StepsIndicator } from "./StepsIndicator";
 import { Activity, useEffect } from "react";
@@ -10,98 +15,109 @@ import { PersonalInfoFields } from "./steps/PersonalInfo";
 import { DocumentInfoFields } from "./steps/DocumentInfo";
 import { AgreementInfoFields } from "./steps/AgreementInfo";
 import { toast } from "sonner";
+import { Link } from "@tanstack/react-router";
 
 export function RegisterForm() {
-	const {
-		currentStep,
-		getCurrentStepSchema,
-		isCompleteFormData,
-		isFirstStep,
-		isLastStep,
-		updateFormData,
-		steps,
-		goToNextStep,
-		goToPreviousStep,
-		formData,
-		submitForm,
-	} = useMultiForm();
+  const {
+    currentStep,
+    getCurrentStepSchema,
+    isCompleteFormData,
+    isFirstStep,
+    isLastStep,
+    updateFormData,
+    steps,
+    goToNextStep,
+    goToPreviousStep,
+    formData,
+    submitForm,
+  } = useMultiForm();
 
-	const form = useAppForm({
-		defaultValues: formData,
-		validators: {
-			onChange: getCurrentStepSchema(),
-		},
-		onSubmit: async ({ value }) => {
-			const updateData = { ...formData, ...value };
-			updateFormData(updateData);
+  const form = useAppForm({
+    defaultValues: formData,
+    validators: {
+      onChange: getCurrentStepSchema(),
+    },
+    onSubmit: async ({ value }) => {
+      const updateData = { ...formData, ...value };
+      updateFormData(updateData);
 
-			if (isLastStep) {
-				try {
-					if (isCompleteFormData(updateData)) {
-						submitForm(updateData);
-					} else {
-						toast.error("Form field ada yang kosong!");
-						return;
-					}
-				} catch (error) {
-					console.error(error);
-				}
-			} else {
-				goToNextStep();
-			}
-		},
-	});
+      if (isLastStep) {
+        try {
+          if (isCompleteFormData(updateData)) {
+            submitForm(updateData);
+          } else {
+            toast.error("Form field ada yang kosong!");
+            return;
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        goToNextStep();
+      }
+    },
+  });
 
-	const onPrevious = () => goToPreviousStep();
+  const onPrevious = () => goToPreviousStep();
 
-	useEffect(() => {
-		form.reset(formData);
-	}, [currentStep, form.reset]);
+  useEffect(() => {
+    form.reset(formData);
+  }, [currentStep, form.reset]);
 
-	return (
-		<div className="min-h-screen flex items-center justify-center bg-background p-4">
-			<div className="w-full max-w-lg">
-				<Card className="rounded-3xl shadow-xl">
-					<CardHeader>
-						<StepsIndicator currentStep={currentStep} steps={steps} />
-					</CardHeader>
-					<CardContent>
-						{currentStep === 0 && <AccountInfoFields form={form} />}
-						{currentStep === 1 && <PersonalInfoFields form={form} />}
-						{currentStep === 2 && <DocumentInfoFields form={form} />}
-						{currentStep === 3 && <AgreementInfoFields form={form} />}
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="w-full max-w-lg">
+        <Card className="rounded-3xl shadow-xl">
+          <CardHeader>
+            <StepsIndicator currentStep={currentStep} steps={steps} />
+          </CardHeader>
+          <CardContent>
+            {currentStep === 0 && <AccountInfoFields form={form} />}
+            {currentStep === 1 && <PersonalInfoFields form={form} />}
+            {currentStep === 2 && <DocumentInfoFields form={form} />}
+            {currentStep === 3 && <AgreementInfoFields form={form} />}
 
-						<form.Subscribe
-							selector={(state) => [state.canSubmit, state.isSubmitting]}
-						>
-							{([canSubmit, isSubmitting]) => {
-								return (
-									<div
-										className={`flex mt-5 pt-4 ${isFirstStep ? "justify-end" : "justify-between"}`}
-									>
-										<Activity mode={isFirstStep ? "hidden" : "visible"}>
-											<Button variant="outline" onClick={onPrevious}>
-												<ChevronLeft className="w-4 h-4 mr-1" />
-												Kembali
-											</Button>
-										</Activity>
+            <form.Subscribe
+              selector={(state) => [state.canSubmit, state.isSubmitting]}
+            >
+              {([canSubmit, isSubmitting]) => {
+                return (
+                  <div
+                    className={`flex mt-5 pt-4 ${isFirstStep ? "justify-end" : "justify-between"}`}
+                  >
+                    <Activity mode={isFirstStep ? "hidden" : "visible"}>
+                      <Button variant="outline" onClick={onPrevious}>
+                        <ChevronLeft className="w-4 h-4 mr-1" />
+                        Kembali
+                      </Button>
+                    </Activity>
 
-										<Button
-											type="submit"
-											disabled={!canSubmit || isSubmitting}
-											variant={canSubmit ? "default" : "destructive"}
-											onClick={form.handleSubmit}
-										>
-											{isLastStep ? "Submit data" : "Lanjut"}
-											{!isLastStep && <ChevronRight className="w-4 h-4 ml-1" />}
-										</Button>
-									</div>
-								);
-							}}
-						</form.Subscribe>
-					</CardContent>
-				</Card>
-			</div>
-		</div>
-	);
+                    <Button
+                      type="submit"
+                      disabled={!canSubmit || isSubmitting}
+                      variant={canSubmit ? "default" : "destructive"}
+                      onClick={form.handleSubmit}
+                    >
+                      {isLastStep ? "Submit data" : "Lanjut"}
+                      {!isLastStep && <ChevronRight className="w-4 h-4 ml-1" />}
+                    </Button>
+                  </div>
+                );
+              }}
+            </form.Subscribe>
+          </CardContent>
+          <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+            <span className="bg-background text-muted-foreground relative z-10 px-2">
+              Or
+            </span>
+          </div>
+          <CardFooter className="flex justify-center">
+            <Button asChild variant={"link"}>
+              <Link to="/login">Sudah punya akun? Login</Link>
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
+    </div>
+  );
 }

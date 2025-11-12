@@ -72,11 +72,6 @@ export function LoginForm() {
                 />
               )}
             />
-            <div>
-              <Button variant={"link"} asChild>
-                <Link to="/register">Belum punya akun? Daftar disini</Link>
-              </Button>
-            </div>
           </div>
         </form>
       </CardContent>
@@ -85,6 +80,17 @@ export function LoginForm() {
           Login
         </Button>
       </CardFooter>
+      <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
+        <span className="bg-background text-muted-foreground relative z-10 px-2">
+          Or
+        </span>
+      </div>
+      <div className="text-sm text-center">
+        Belum punya akun?{" "}
+        <Link to="/register" className="underline underline-offset-4">
+          Daftar disini
+        </Link>
+      </div>
     </Card>
   );
 }

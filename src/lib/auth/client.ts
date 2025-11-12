@@ -1,6 +1,7 @@
-import { createAuthClient } from "better-auth/client";
+import { createAuthClient } from "better-auth/react";
 import { usernameClient, adminClient } from "better-auth/client/plugins";
+import { reactStartCookies } from "better-auth/react-start";
 export const authClient = createAuthClient({
-  baseURL: import.meta.env.VITE_SERVER_URL,
-  plugins: [usernameClient(), adminClient()],
+  baseURL: "http://localhost:3000/api/auth",
+  plugins: [reactStartCookies(), usernameClient(), adminClient()],
 });
