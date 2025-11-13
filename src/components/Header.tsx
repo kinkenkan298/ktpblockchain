@@ -1,9 +1,8 @@
-import { Link } from "@tanstack/react-router";
-import { Button } from "./ui/button";
 import logoPng from "@/assets/logo.png";
 import { Image } from "@unpic/react";
+import React from "react";
 
-export function Header() {
+export function Header({ children }: { children: React.ReactNode }) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-6 py-4">
@@ -24,17 +23,7 @@ export function Header() {
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-8">
-            <Link
-              to="/login"
-              className="text-foreground hover:text-primary transition-colors"
-            >
-              Masuk
-            </Link>
-            <Button size="lg" className="rounded-full" asChild>
-              <Link to="/register">Daftar</Link>
-            </Button>
-          </nav>
+          {children}
         </div>
       </div>
     </header>

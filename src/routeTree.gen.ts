@@ -9,12 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as authenticatedRouteRouteImport } from './routes/(authenticated)/route'
 import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authenticatedDashboardIndexRouteImport } from './routes/(authenticated)/dashboard/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as authenticatedDashboardUserRouteRouteImport } from './routes/(authenticated)/dashboard/user/route'
+import { Route as authenticatedDashboardUserIndexRouteImport } from './routes/(authenticated)/dashboard/user/index'
+import { Route as authenticatedDashboardAdminIndexRouteImport } from './routes/(authenticated)/dashboard/admin/index'
 
+const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
+  id: '/(authenticated)',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const authRouteRoute = authRouteRouteImport.update({
   id: '/(auth)',
   getParentRoute: () => rootRouteImport,
@@ -34,54 +43,118 @@ const authLoginRoute = authLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => authRouteRoute,
 } as any)
+const authenticatedDashboardIndexRoute =
+  authenticatedDashboardIndexRouteImport.update({
+    id: '/dashboard/',
+    path: '/dashboard/',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authenticatedDashboardUserRouteRoute =
+  authenticatedDashboardUserRouteRouteImport.update({
+    id: '/dashboard/user',
+    path: '/dashboard/user',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
+const authenticatedDashboardUserIndexRoute =
+  authenticatedDashboardUserIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authenticatedDashboardUserRouteRoute,
+  } as any)
+const authenticatedDashboardAdminIndexRoute =
+  authenticatedDashboardAdminIndexRouteImport.update({
+    id: '/dashboard/admin/',
+    path: '/dashboard/admin/',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/dashboard/user': typeof authenticatedDashboardUserRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard': typeof authenticatedDashboardIndexRoute
+  '/dashboard/admin': typeof authenticatedDashboardAdminIndexRoute
+  '/dashboard/user/': typeof authenticatedDashboardUserIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/dashboard': typeof authenticatedDashboardIndexRoute
+  '/dashboard/admin': typeof authenticatedDashboardAdminIndexRoute
+  '/dashboard/user': typeof authenticatedDashboardUserIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
+  '/(authenticated)': typeof authenticatedRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
+  '/(authenticated)/dashboard/user': typeof authenticatedDashboardUserRouteRouteWithChildren
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/(authenticated)/dashboard/': typeof authenticatedDashboardIndexRoute
+  '/(authenticated)/dashboard/admin/': typeof authenticatedDashboardAdminIndexRoute
+  '/(authenticated)/dashboard/user/': typeof authenticatedDashboardUserIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/register' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/dashboard/user'
+    | '/api/auth/$'
+    | '/dashboard'
+    | '/dashboard/admin'
+    | '/dashboard/user/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/register' | '/api/auth/$'
+  to:
+    | '/'
+    | '/login'
+    | '/register'
+    | '/api/auth/$'
+    | '/dashboard'
+    | '/dashboard/admin'
+    | '/dashboard/user'
   id:
     | '__root__'
     | '/'
     | '/(auth)'
+    | '/(authenticated)'
     | '/(auth)/login'
     | '/(auth)/register'
+    | '/(authenticated)/dashboard/user'
     | '/api/auth/$'
+    | '/(authenticated)/dashboard/'
+    | '/(authenticated)/dashboard/admin/'
+    | '/(authenticated)/dashboard/user/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   authRouteRoute: typeof authRouteRouteWithChildren
+  authenticatedRouteRoute: typeof authenticatedRouteRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/(authenticated)': {
+      id: '/(authenticated)'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof authenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/(auth)': {
       id: '/(auth)'
       path: ''
@@ -110,12 +183,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof authRouteRoute
     }
+    '/(authenticated)/dashboard/': {
+      id: '/(authenticated)/dashboard/'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof authenticatedDashboardIndexRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
       fullPath: '/api/auth/$'
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/(authenticated)/dashboard/user': {
+      id: '/(authenticated)/dashboard/user'
+      path: '/dashboard/user'
+      fullPath: '/dashboard/user'
+      preLoaderRoute: typeof authenticatedDashboardUserRouteRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(authenticated)/dashboard/user/': {
+      id: '/(authenticated)/dashboard/user/'
+      path: '/'
+      fullPath: '/dashboard/user/'
+      preLoaderRoute: typeof authenticatedDashboardUserIndexRouteImport
+      parentRoute: typeof authenticatedDashboardUserRouteRoute
+    }
+    '/(authenticated)/dashboard/admin/': {
+      id: '/(authenticated)/dashboard/admin/'
+      path: '/dashboard/admin'
+      fullPath: '/dashboard/admin'
+      preLoaderRoute: typeof authenticatedDashboardAdminIndexRouteImport
+      parentRoute: typeof authenticatedRouteRoute
     }
   }
 }
@@ -134,9 +235,40 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
 )
 
+interface authenticatedDashboardUserRouteRouteChildren {
+  authenticatedDashboardUserIndexRoute: typeof authenticatedDashboardUserIndexRoute
+}
+
+const authenticatedDashboardUserRouteRouteChildren: authenticatedDashboardUserRouteRouteChildren =
+  {
+    authenticatedDashboardUserIndexRoute: authenticatedDashboardUserIndexRoute,
+  }
+
+const authenticatedDashboardUserRouteRouteWithChildren =
+  authenticatedDashboardUserRouteRoute._addFileChildren(
+    authenticatedDashboardUserRouteRouteChildren,
+  )
+
+interface authenticatedRouteRouteChildren {
+  authenticatedDashboardUserRouteRoute: typeof authenticatedDashboardUserRouteRouteWithChildren
+  authenticatedDashboardIndexRoute: typeof authenticatedDashboardIndexRoute
+  authenticatedDashboardAdminIndexRoute: typeof authenticatedDashboardAdminIndexRoute
+}
+
+const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
+  authenticatedDashboardUserRouteRoute:
+    authenticatedDashboardUserRouteRouteWithChildren,
+  authenticatedDashboardIndexRoute: authenticatedDashboardIndexRoute,
+  authenticatedDashboardAdminIndexRoute: authenticatedDashboardAdminIndexRoute,
+}
+
+const authenticatedRouteRouteWithChildren =
+  authenticatedRouteRoute._addFileChildren(authenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   authRouteRoute: authRouteRouteWithChildren,
+  authenticatedRouteRoute: authenticatedRouteRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

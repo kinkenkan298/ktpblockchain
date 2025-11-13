@@ -33,7 +33,7 @@ export function LoginForm() {
     onSuccess: (resp) => {
       toast.success(`${resp.user.name} Selamat datang!`);
       queryClient.resetQueries();
-      navigate({ to: "/" });
+      navigate({ to: "/dashboard" });
     },
   });
 
