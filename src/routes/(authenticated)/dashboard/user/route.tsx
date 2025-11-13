@@ -10,7 +10,6 @@ export const Route = createFileRoute("/(authenticated)/dashboard/user")({
 
 function RouteComponent() {
   const [activeTab, setActiveTab] = useState<string>("dashboard");
-  // const [profile, setProfile] = useState();
 
   return (
     <div className="flex min-h-screen bg-gray-50">
