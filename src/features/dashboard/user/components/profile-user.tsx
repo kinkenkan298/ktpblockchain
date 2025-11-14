@@ -1,11 +1,11 @@
 import { User, MapPin, Phone, Mail, CreditCard } from "lucide-react";
-import { UserProfile } from "../types/user-types";
+import { useAuthenticatedUser } from "@/lib/auth/client";
 
-interface ProfileCardProps {
-  profile: UserProfile;
-}
+export function ProfileCardUser() {
+  const userSession = useAuthenticatedUser();
 
-export function ProfileCardUser({ profile }: ProfileCardProps) {
+  const { user } = userSession;
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-start justify-between mb-6">
@@ -17,10 +17,10 @@ export function ProfileCardUser({ profile }: ProfileCardProps) {
 
       <div className="flex items-center space-x-4 mb-6 pb-6 border-b border-gray-200">
         <div className="w-20 h-20 bg-linear-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center overflow-hidden">
-          {profile.avatar_url ? (
+          {user.image ? (
             <img
-              src={profile.avatar_url}
-              alt={profile.full_name}
+              src={user.image}
+              alt={user.name}
               className="w-full h-full object-cover"
             />
           ) : (
@@ -28,12 +28,16 @@ export function ProfileCardUser({ profile }: ProfileCardProps) {
           )}
         </div>
         <div>
-          <h4 className="text-xl font-bold text-gray-900">
-            {profile.full_name}
-          </h4>
-          <p className="text-sm text-gray-500">Status: Terverifikasi</p>
-          <div className="mt-1 inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
-            Aktif
+          <h4 className="text-xl font-bold text-gray-900">{user.name}</h4>
+          <p className="text-sm text-gray-500">Status: Belum Terverifikasi</p>
+          <div
+            className={`mt-1 inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${user.status === "PENDING" ? "bg-yellow-100 text-yellow-700" : user.status === "VERIFIED" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+          >
+            {user.status === "PENDING"
+              ? "Pending"
+              : user.status === "VERIFIED"
+                ? "Verified"
+                : "Rejected"}
           </div>
         </div>
       </div>
@@ -45,7 +49,7 @@ export function ProfileCardUser({ profile }: ProfileCardProps) {
             <p className="text-xs text-gray-500 mb-1">
               NIK (Nomor Induk Kependudukan)
             </p>
-            <p className="text-sm font-medium text-gray-900">{profile.nik}</p>
+            <p className="text-sm font-medium text-gray-900">{user.nik}</p>
           </div>
         </div>
 
@@ -53,32 +57,28 @@ export function ProfileCardUser({ profile }: ProfileCardProps) {
           <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
           <div className="flex-1">
             <p className="text-xs text-gray-500 mb-1">Alamat</p>
-            <p className="text-sm font-medium text-gray-900">
-              {profile.address}
-            </p>
+            <p className="text-sm font-medium text-gray-900">{user.address}</p>
           </div>
         </div>
 
-        {profile.phone && (
+        {user.phoneNumber && (
           <div className="flex items-start space-x-3">
             <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
             <div className="flex-1">
               <p className="text-xs text-gray-500 mb-1">Nomor Telepon</p>
               <p className="text-sm font-medium text-gray-900">
-                {profile.phone}
+                {user.phoneNumber}
               </p>
             </div>
           </div>
         )}
 
-        {profile.email && (
+        {user.email && (
           <div className="flex items-start space-x-3">
             <Mail className="w-5 h-5 text-gray-400 mt-0.5" />
             <div className="flex-1">
               <p className="text-xs text-gray-500 mb-1">Email</p>
-              <p className="text-sm font-medium text-gray-900">
-                {profile.email}
-              </p>
+              <p className="text-sm font-medium text-gray-900">{user.email}</p>
             </div>
           </div>
         )}

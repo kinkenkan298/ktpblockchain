@@ -31,13 +31,10 @@ function Index() {
 function UserAction() {
   const { data: user } = useSuspenseQuery(authQueryOptions.user());
   return user ? (
-    <div className="flex flex-col items-center gap-2">
-      <p>Welcome back, {user.user.name}!</p>
+    <div className="flex items-center gap-2">
       <Button type="button" asChild className="mb-2">
-        <Link to="/dashboard">Go to Dashboard</Link>
+        <Link to="/dashboard">Back to Dashboard</Link>
       </Button>
-
-      {/* <SignOutButton /> */}
     </div>
   ) : (
     <nav className="hidden md:flex items-center gap-8">
