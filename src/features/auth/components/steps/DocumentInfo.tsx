@@ -4,7 +4,7 @@ import { DocumentUploadSchema, StepFormData } from "../../types/auth-schema";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
-import { UploadState } from "@/components/form/FileField";
+import { UploadState } from "@/components/form/file-field";
 import { FieldGroup, FieldSeparator } from "@/components/ui/field";
 import { toast } from "sonner";
 

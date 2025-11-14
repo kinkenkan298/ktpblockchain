@@ -3,7 +3,7 @@ import { createRouter } from "@tanstack/react-router";
 import { routerWithQueryClient } from "@tanstack/react-router-with-query";
 import { routeTree } from "./routeTree.gen";
 import { DefaultCatchBoundry } from "./components/DefaultCatchBoundry";
-import { NotFound } from "./components/NotFound";
+import { NotFound } from "./components/not-found";
 import { ZodError } from "zod";
 import { fromError } from "zod-validation-error";
 import { toast } from "sonner";

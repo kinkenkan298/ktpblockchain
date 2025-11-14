@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useMultiForm } from "./MultiForm";
-import { StepsIndicator } from "./StepsIndicator";
+import { useMultiForm } from "./multi-form";
+import { StepsIndicator } from "./steps-indicator";
 import { Activity, useEffect } from "react";
 import { useAppForm } from "@/hooks/form";
 import { AccountInfoFields } from "./steps/AccountInfo";

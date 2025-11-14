@@ -1,8 +1,8 @@
-import { Features } from "@/components/Features";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { Hero } from "@/components/Hero";
-import { HowItsWorks } from "@/components/HowItsWorks";
+import { Features } from "@/components/features";
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
+import { Hero } from "@/components/hero";
+import { HowItsWorks } from "@/components/how-its-works";
 import { Button } from "@/components/ui/button";
 import { authQueryOptions } from "@/lib/auth/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";

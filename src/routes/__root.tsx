@@ -7,7 +7,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { FormDevtoolsPlugin } from "@tanstack/react-form-devtools";
 import type { ReactNode } from "react";
 import { DefaultCatchBoundry } from "@/components/DefaultCatchBoundry";
-import { NotFound } from "@/components/NotFound";
+import { NotFound } from "@/components/not-found";
 import { seo } from "@/utils/seo";
 
 import appCss from "@/global.css?url";
