@@ -15,6 +15,28 @@ CREATE TABLE `account` (
 	CONSTRAINT `account_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
+CREATE TABLE `ktp_records` (
+	`id` varchar(36) NOT NULL,
+	`ipfs_cid` text NOT NULL,
+	`ipfs_url` text NOT NULL,
+	`blockchain_hash` text NOT NULL,
+	`tx_hash` text NOT NULL,
+	`block_number` text,
+	`contract_record_id` text,
+	`nik` text NOT NULL,
+	`full_name` text NOT NULL,
+	`province` text,
+	`city` text,
+	`is_verified` boolean DEFAULT false,
+	`verified_at` timestamp,
+	`created_at` timestamp DEFAULT (now()),
+	`updated_at` timestamp DEFAULT (now()),
+	CONSTRAINT `ktp_records_id` PRIMARY KEY(`id`),
+	CONSTRAINT `ktp_records_ipfs_cid_unique` UNIQUE(`ipfs_cid`),
+	CONSTRAINT `ktp_records_tx_hash_unique` UNIQUE(`tx_hash`),
+	CONSTRAINT `ktp_records_nik_unique` UNIQUE(`nik`)
+);
+--> statement-breakpoint
 CREATE TABLE `session` (
 	`id` varchar(36) NOT NULL,
 	`expires_at` timestamp(3) NOT NULL,
@@ -43,27 +65,9 @@ CREATE TABLE `user` (
 	`banned` boolean DEFAULT false,
 	`ban_reason` text,
 	`ban_expires` timestamp(3),
-	`wallet_address` varchar(255),
-	`nik` varchar(255),
-	`phone_number` text,
-	`place_of_birth` text,
-	`date_of_birth` text,
-	`gender` text,
-	`address` text,
-	`rt_rw` text,
-	`kelurahan` text,
-	`kecamatan` text,
-	`city` text,
-	`province` text,
-	`postal_code` text,
-	`identity_hash` text,
-	`ipfs_document_hash` text,
-	`status` enum('PENDING','VERIFIED','REJECTED','SUSPENDED') DEFAULT 'PENDING',
 	CONSTRAINT `user_id` PRIMARY KEY(`id`),
 	CONSTRAINT `user_email_unique` UNIQUE(`email`),
-	CONSTRAINT `user_username_unique` UNIQUE(`username`),
-	CONSTRAINT `user_wallet_address_unique` UNIQUE(`wallet_address`),
-	CONSTRAINT `user_nik_unique` UNIQUE(`nik`)
+	CONSTRAINT `user_username_unique` UNIQUE(`username`)
 );
 --> statement-breakpoint
 CREATE TABLE `verification` (
@@ -191,6 +195,7 @@ CREATE TABLE `verification_request` (
 );
 --> statement-breakpoint
 ALTER TABLE `account` ADD CONSTRAINT `account_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `ktp_records` ADD CONSTRAINT `ktp_records_id_user_id_fk` FOREIGN KEY (`id`) REFERENCES `user`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `session` ADD CONSTRAINT `session_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `wallet_address` ADD CONSTRAINT `wallet_address_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `access_log` ADD CONSTRAINT `access_log_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

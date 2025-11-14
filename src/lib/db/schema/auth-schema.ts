@@ -1,10 +1,10 @@
+import { createId } from "@paralleldrive/cuid2";
 import {
   mysqlTable,
   varchar,
   text,
   timestamp,
   boolean,
-  mysqlEnum,
   int,
 } from "drizzle-orm/mysql-core";
 
@@ -30,28 +30,30 @@ export const user = mysqlTable("user", {
   banExpires: timestamp("ban_expires", { fsp: 3 }),
 });
 
-export const personal_info_user = mysqlTable("personal_info_user", {
-  walletAddress: varchar("wallet_address", { length: 255 }).unique(),
-  nik: varchar("nik", { length: 255 }).unique(),
-  phoneNumber: text("phone_number"),
-  placeOfBirth: text("place_of_birth"),
-  dateOfBirth: text("date_of_birth"),
-  gender: text("gender"),
-  address: text("address"),
-  rtRw: text("rt_rw"),
-  kelurahan: text("kelurahan"),
-  kecamatan: text("kecamatan"),
-  city: text("city"),
+export const ktp_records = mysqlTable("ktp_records", {
+  id: text("id").primaryKey().$defaultFn(createId),
+  userId: varchar("id", { length: 36 })
+    .references(() => user.id)
+    .notNull(),
+
+  ipfsCid: text("ipfs_cid").notNull().unique(),
+  ipfsUrl: text("ipfs_url").notNull(),
+
+  blockchainHash: text("blockchain_hash").notNull(),
+  txHash: text("tx_hash").notNull().unique(),
+  blockNumber: text("block_number"),
+  contractRecordId: text("contract_record_id"),
+
+  nik: text("nik").notNull().unique(),
+  fullName: text("full_name").notNull(),
   province: text("province"),
-  postalCode: text("postal_code"),
-  identityHash: text("identity_hash"),
-  ipfsDocumentHash: text("ipfs_document_hash"),
-  status: mysqlEnum("status", [
-    "PENDING",
-    "VERIFIED",
-    "REJECTED",
-    "SUSPENDED",
-  ]).default("PENDING"),
+  city: text("city"),
+
+  isVerified: boolean("is_verified").default(false),
+  verifiedAt: timestamp("verified_at"),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const session = mysqlTable("session", {
