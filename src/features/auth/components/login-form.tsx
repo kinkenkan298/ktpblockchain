@@ -13,10 +13,22 @@ import { LoginSchema } from "../types/login-schema";
 import { authClient } from "@/lib/auth/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import z from "zod";
 
 const Login = async (data: LoginSchema) => {
+  const { success } = z.email().safeParse(data.UsernameOrEmail);
+
+  if (!success) {
+    const { error, data: response } = await authClient.signIn.username({
+      username: data.UsernameOrEmail,
+      password: data.password,
+    });
+    if (error) throw new Error(error.message);
+    return response;
+  }
+
   const { error, data: response } = await authClient.signIn.email({
-    email: data.email,
+    email: data.UsernameOrEmail,
     password: data.password,
   });
   if (error) throw new Error(error.message);
@@ -39,7 +51,7 @@ export function LoginForm() {
 
   const form = useAppForm({
     defaultValues: {
-      email: "",
+      UsernameOrEmail: "",
       password: "",
     } as LoginSchema,
     validators: {},
@@ -65,11 +77,11 @@ export function LoginForm() {
         >
           <div className="flex flex-col gap-6">
             <form.AppField
-              name="email"
+              name="UsernameOrEmail"
               children={(field) => (
                 <field.TextField
-                  label="Email"
-                  placeholder="Email@example.com"
+                  label="Username atau Email"
+                  placeholder="Username atau Email"
                 />
               )}
             />

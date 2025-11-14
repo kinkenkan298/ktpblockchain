@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const LoginSchema = z.object({
-  email: z.email("Email tidak valid"),
+  UsernameOrEmail: z.string("Masukan username atau email"),
   password: z.string("Masukan password"),
 });
 export type LoginSchema = z.infer<typeof LoginSchema>;
