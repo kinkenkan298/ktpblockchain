@@ -17,7 +17,6 @@ export const Route = createFileRoute("/(authenticated)/dashboard/user/")({
 });
 
 function RouteComponent() {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [accessLogs, setAccessLogs] = useState<AccessLog[]>([]);
   const [consents, setConsents] = useState<ActiveConsent[]>([]);
 
@@ -26,21 +25,6 @@ function RouteComponent() {
   }, []);
 
   const loadDemoData = async () => {
-    const demoProfile: UserProfile = {
-      id: "1",
-      user_id: "1",
-      nik: "3201234567890123",
-      full_name: "Budi Santoso",
-      address: "Jl. Merdeka No. 123, Jakarta Pusat, DKI Jakarta 10110",
-      phone: "+62 812-3456-7890",
-      email: "budi.santoso@email.com",
-      avatar_url: null,
-      qr_code_secret: "demo-secret-key",
-      qr_refresh_interval: 60,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
-
     const demoAccessLogs: AccessLog[] = [
       {
         id: "1",
@@ -129,10 +113,8 @@ function RouteComponent() {
       },
     ];
 
-    setProfile(demoProfile);
     setAccessLogs(demoAccessLogs);
     setConsents(demoConsents);
-    // setLoading(false);
   };
 
   const handleRevokeConsent = async (id: string) => {
@@ -145,7 +127,7 @@ function RouteComponent() {
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-5">
         <StatsCard
           title="Total Akses"
           value={accessLogs.length}
@@ -173,13 +155,13 @@ function RouteComponent() {
           color="green"
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-5">
         <div className="md:col-span-2">
-          {profile && <ProfileCardUser profile={profile} />}
+          <ProfileCardUser />
         </div>
 
         <div className="md:col-span-2">
-          {profile && <DynamicQRCodeUser profile={profile} />}
+          <DynamicQRCodeUser />
         </div>
 
         <div className="md:col-span-2">

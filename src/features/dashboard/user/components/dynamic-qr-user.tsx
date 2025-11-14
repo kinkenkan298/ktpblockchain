@@ -1,49 +1,46 @@
-import { useState, useEffect } from "react";
-// import { QRCodeSVG } from "qrcode.react";
+// import { useState, useEffect } from "react";
 import QRCode from "react-qr-code";
 import { RefreshCw, Shield } from "lucide-react";
-import { UserProfile } from "../types/user-types";
+import { useAuthenticatedUser } from "@/lib/auth/client";
 
-interface DynamicQRCodeProps {
-  profile: UserProfile;
-}
+export function DynamicQRCodeUser() {
+  // const [timeLeft, setTimeLeft] = useState(profile.qr_refresh_interval);
+  // const [qrData, setQrData] = useState("");
 
-export function DynamicQRCodeUser({ profile }: DynamicQRCodeProps) {
-  const [timeLeft, setTimeLeft] = useState(profile.qr_refresh_interval);
-  const [qrData, setQrData] = useState("");
+  const { user, session } = useAuthenticatedUser();
 
   const generateQRData = () => {
     const timestamp = Date.now();
     const data = JSON.stringify({
-      nik: profile.nik,
-      name: profile.full_name,
-      secret: profile.qr_code_secret,
+      nik: user.nik,
+      name: user.name,
+      secret: session.token,
       timestamp: timestamp,
-      expires: timestamp + profile.qr_refresh_interval * 1000,
+      expires: timestamp + parseInt(user.id) * 1000,
     });
     return btoa(data);
   };
 
-  useEffect(() => {
-    setQrData(generateQRData());
-    setTimeLeft(profile.qr_refresh_interval);
-  }, [profile]);
+  // useEffect(() => {
+  //   setQrData(generateQRData());
+  //   setTimeLeft(profile.qr_refresh_interval);
+  // }, [profile]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          setQrData(generateQRData());
-          return profile.qr_refresh_interval;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+  // useEffect(() => {
+  //   const timer = setInterval(() => {
+  //     setTimeLeft((prev) => {
+  //       if (prev <= 1) {
+  //         setQrData(generateQRData());
+  //         return profile.qr_refresh_interval;
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 1000);
 
-    return () => clearInterval(timer);
-  }, [profile]);
+  //   return () => clearInterval(timer);
+  // }, [profile]);
 
-  const progress = (timeLeft / profile.qr_refresh_interval) * 100;
+  // const progress = (timeLeft / profile.qr_refresh_interval) * 100;
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -59,7 +56,7 @@ export function DynamicQRCodeUser({ profile }: DynamicQRCodeProps) {
         <div className="relative">
           <div className="bg-linear-to-br from-blue-50 to-blue-100 p-6 rounded-2xl">
             <QRCode
-              value={qrData}
+              value={generateQRData()}
               size={200}
               level="H"
               className="rounded-lg"
@@ -73,17 +70,17 @@ export function DynamicQRCodeUser({ profile }: DynamicQRCodeProps) {
         <div className="mt-6 w-full max-w-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-600">Berlaku hingga</span>
-            <span className="text-lg font-bold text-blue-600">
+            {/* <span className="text-lg font-bold text-blue-600">
               {Math.floor(timeLeft / 60)}:
               {(timeLeft % 60).toString().padStart(2, "0")}
-            </span>
+            </span> */}
           </div>
 
           <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
-            <div
+            {/* <div
               className="bg-blue-600 h-full transition-all duration-1000 ease-linear"
               style={{ width: `${progress}%` }}
-            />
+            /> */}
           </div>
 
           <p className="text-xs text-gray-500 text-center mt-3">
