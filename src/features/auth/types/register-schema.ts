@@ -12,6 +12,14 @@ export const FileSchema = z
 
 export const AccountInfoSchema = z
   .object({
+    username: z
+      .string()
+      .min(3, "Username must be at least 3 characters long")
+      .max(20, "Username cannot exceed 20 characters")
+      .regex(
+        /^[a-zA-Z0-9_]+$/,
+        "Username can only contain letters, numbers, and underscores"
+      ),
     email: z
       .email({ pattern: z.regexes.email, message: "Email tidak valid" })
       .trim()
@@ -22,23 +30,6 @@ export const AccountInfoSchema = z
       .trim()
       .min(8, "Password terlalu pendek"),
     confirm_password: z.string("Confirm password tidak boleh kosong"),
-    phone: z
-      .string("Nomor telepon wajib di isi")
-      .max(13, "Nomor telepon terlalu panjang")
-      .regex(
-        /^(\+62|62|0)8[1-9][0-9]{6,9}$/,
-        "Format nomor telepon tidak valid"
-      )
-      .transform((val) => {
-        const cleaned = val.replace(/[\s-]/g, "");
-        return cleaned.startsWith("0")
-          ? "+62" + cleaned.slice(1)
-          : cleaned.startsWith("62")
-            ? "+" + cleaned
-            : cleaned.startsWith("+")
-              ? cleaned
-              : "+62" + cleaned;
-      }),
   })
   .refine((data) => data.password === data.confirm_password, {
     path: ["confirm_password"],
@@ -88,6 +79,20 @@ export const PersonalInfoSchema = z.object({
     .string("Kode pos wajib di isi")
     .length(5, "Kode pos harus 5 digit")
     .regex(/^\d+$/, "Format kode pos tidak sesuai"),
+  phone: z
+    .string("Nomor telepon wajib di isi")
+    .max(13, "Nomor telepon terlalu panjang")
+    .regex(/^(\+62|62|0)8[1-9][0-9]{6,9}$/, "Format nomor telepon tidak valid")
+    .transform((val) => {
+      const cleaned = val.replace(/[\s-]/g, "");
+      return cleaned.startsWith("0")
+        ? "+62" + cleaned.slice(1)
+        : cleaned.startsWith("62")
+          ? "+" + cleaned
+          : cleaned.startsWith("+")
+            ? cleaned
+            : "+62" + cleaned;
+    }),
 });
 
 export const DocumentUploadSchema = z

@@ -56,6 +56,7 @@ const Register = async (data: AllFormFields) => {
     kecamatan,
     provinsi,
     kode_pos,
+    phone,
   };
 
   const { error } = PersonalInfoSchema.safeParse(data_json);
@@ -66,7 +67,6 @@ const Register = async (data: AllFormFields) => {
     name: nama_lengkap,
     email,
     password,
-    phoneNumber: phone,
   });
 
   if (error_u) throw new Error(error_u.message);

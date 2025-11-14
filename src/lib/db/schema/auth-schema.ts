@@ -28,7 +28,9 @@ export const user = mysqlTable("user", {
   banned: boolean("banned").default(false),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires", { fsp: 3 }),
+});
 
+export const personal_info_user = mysqlTable("personal_info_user", {
   walletAddress: varchar("wallet_address", { length: 255 }).unique(),
   nik: varchar("nik", { length: 255 }).unique(),
   phoneNumber: text("phone_number"),
