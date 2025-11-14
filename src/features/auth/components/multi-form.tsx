@@ -13,6 +13,7 @@ import { authClient } from "@/lib/auth/client";
 import { QueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
+import z from "zod";
 
 const stepSchemas = [
   AccountInfoSchema,
@@ -20,6 +21,8 @@ const stepSchemas = [
   DocumentUploadSchema,
   AgreementSchema,
 ];
+
+type personalInfo = z.infer<typeof PersonalInfoSchema>;
 
 const Register = async (data: AllFormFields) => {
   const {
@@ -40,33 +43,33 @@ const Register = async (data: AllFormFields) => {
     kode_pos,
   } = data;
 
-  const { error } = await authClient.signUp.email({
-    name: nama_lengkap,
-    email,
-    password,
-  });
+  const data_json: personalInfo = {
+    nama_lengkap,
+    nik,
+    tempat_lahir,
+    tanggal_lahir,
+    alamat,
+    rt_rw,
+    kota,
+    kelurahan,
+    jenis_kelamin,
+    kecamatan,
+    provinsi,
+    kode_pos,
+  };
+
+  const { error } = PersonalInfoSchema.safeParse(data_json);
 
   if (error) throw new Error(error.message);
 
-  const data_json = {
-    nik,
-    kelurahan,
-    kecamatan,
+  const { error: error_u } = await authClient.signUp.email({
+    name: nama_lengkap,
+    email,
+    password,
     phoneNumber: phone,
-    placeOfBirth: tempat_lahir,
-    dateOfBirth: tanggal_lahir,
-    gender: jenis_kelamin,
-    address: alamat,
-    rtRw: rt_rw,
-    city: kota,
-    province: provinsi,
-    postalCode: kode_pos,
-    status: "PENDING",
-  };
+  });
 
-  const personal_data = PersonalInfoSchema.parse(data_json);
-
-  console.log(personal_data);
+  if (error_u) throw new Error(error_u.message);
 
   return data;
 };

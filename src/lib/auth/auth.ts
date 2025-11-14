@@ -19,6 +19,14 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24,
   },
   plugins: [username(), admin()],
+  user: {
+    additionalFields: {
+      phoneNumber: {
+        type: "string",
+        required: false,
+      },
+    },
+  },
 
   secret: process.env.BETTER_AUTH_SECRET!,
 });
