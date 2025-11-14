@@ -12,6 +12,12 @@ export const AccountInfoFields = withForm({
         <CardTitle className="text-xl">Informasi Akun</CardTitle>
         <FieldGroup>
           <form.AppField
+            name="username"
+            children={(field) => (
+              <field.TextField label="Username" placeholder="Username" />
+            )}
+          />
+          <form.AppField
             name="email"
             children={(field) => (
               <field.TextField label="Email" placeholder="Email" />
@@ -34,17 +40,6 @@ export const AccountInfoFields = withForm({
                 label="Confirm Password"
                 placeholder="Confirm Password"
                 type="password"
-              />
-            )}
-          />
-          <form.AppField
-            name="phone"
-            children={(field) => (
-              <field.TextField
-                label="No Telp"
-                placeholder="+6285112331234"
-                maxLength={12}
-                type="tel"
               />
             )}
           />

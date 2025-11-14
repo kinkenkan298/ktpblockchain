@@ -133,6 +133,19 @@ export const PersonalInfoFields = withForm({
             )}
           />
         </div>
+        <div className="md:col-span-2">
+          <form.AppField
+            name="phone"
+            children={(field) => (
+              <field.TextField
+                label="No Telp"
+                placeholder="+6285112331234"
+                maxLength={12}
+                type="tel"
+              />
+            )}
+          />
+        </div>
       </div>
     );
   },
