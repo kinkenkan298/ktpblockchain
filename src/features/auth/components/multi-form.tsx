@@ -3,6 +3,7 @@ import {
   AccountInfoSchema,
   AgreementSchema,
   AllFormFields,
+  AllFormSchema,
   DocumentUploadSchema,
   PersonalInfoSchema,
   StepFormData,
@@ -85,7 +86,7 @@ export const steps: Steps[] = [
 
 export const useMultiForm = () => {
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [formData, setFormData] = useState<Partial<AllFormFields>>({});
+  const [formData, setFormData] = useState<Partial<AllFormSchema>>({});
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
 
   const queryClient = new QueryClient();
@@ -97,8 +98,8 @@ export const useMultiForm = () => {
   const getCurrentStepSchema = () => stepSchemas[currentStep];
 
   const isCompleteFormData = (
-    data: Partial<AllFormFields>
-  ): data is AllFormFields => {
+    data: Partial<AllFormSchema>
+  ): data is AllFormSchema => {
     try {
       stepSchemas.forEach((schema) => schema.parse(data));
       return true;
@@ -127,7 +128,7 @@ export const useMultiForm = () => {
     },
   });
 
-  const submitForm = async (data: AllFormFields) => {
+  const submitForm = async (data: AllFormSchema) => {
     await registerMutation.mutateAsync(data);
 
     setIsSubmitted(true);

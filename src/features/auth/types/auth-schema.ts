@@ -5,9 +5,16 @@ import {
   DocumentUploadSchema,
   PersonalInfoSchema,
 } from "./register-schema";
+import z from "zod";
 
-export * from "./login-schema";
-export * from "./register-schema";
+export { LoginSchema } from "./login-schema";
+export {
+  AccountInfoSchema,
+  AgreementSchema,
+  DocumentUploadSchema,
+  FileSchema,
+  PersonalInfoSchema,
+} from "./register-schema";
 
 export type StepFormData =
   | AccountInfoSchema
@@ -32,3 +39,12 @@ export type RegisterFromSteps = {
   documentUpload: DocumentUploadSchema;
   agreementData: AgreementSchema;
 };
+
+export const allFormSchema = z.object({
+  ...AccountInfoSchema.shape,
+  ...PersonalInfoSchema.shape,
+  ...DocumentUploadSchema.shape,
+  ...AgreementSchema.shape,
+});
+
+export type AllFormSchema = z.infer<typeof allFormSchema>;
