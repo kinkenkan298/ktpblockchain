@@ -1,5 +1,6 @@
 import type { Steps } from "@/features/auth/types/auth-schema";
 import { Check } from "lucide-react";
+
 export function StepsIndicator({
   currentStep,
   steps,

@@ -6,8 +6,8 @@ import StatsCard from "@/features/dashboard/user/components/stats-card";
 import {
   AccessLog,
   ActiveConsent,
-  UserProfile,
 } from "@/features/dashboard/user/types/user-types";
+
 import { createFileRoute } from "@tanstack/react-router";
 import { Activity, FileCheck, Shield, Users } from "lucide-react";
 import { useEffect, useState } from "react";

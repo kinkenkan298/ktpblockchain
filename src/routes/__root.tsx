@@ -14,6 +14,8 @@ import appCss from "@/global.css?url";
 import { Toaster } from "sonner";
 import { QueryClient } from "@tanstack/react-query";
 import { authQueryOptions } from "@/lib/auth/queries";
+import { WagmiProvider } from "wagmi";
+import { configWagmi } from "@/wagmi";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -77,13 +79,15 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <HeadContent />
       </head>
       <body>
-        <Toaster position="top-center" richColors />
-        {children}
-        <TanStackDevtools
-          config={{ hideUntilHover: true }}
-          plugins={[FormDevtoolsPlugin()]}
-        />
-        <Scripts />
+        <WagmiProvider config={configWagmi}>
+          <Toaster position="top-center" richColors />
+          {children}
+          <TanStackDevtools
+            config={{ hideUntilHover: false }}
+            plugins={[FormDevtoolsPlugin()]}
+          />
+          <Scripts />
+        </WagmiProvider>
       </body>
     </html>
   );

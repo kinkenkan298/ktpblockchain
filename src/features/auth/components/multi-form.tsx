@@ -14,7 +14,6 @@ import { QueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 import z from "zod";
-import { $uploadFile } from "@/lib/auth/functions";
 
 const stepSchemas = [
   AccountInfoSchema,
@@ -65,14 +64,14 @@ const Register = async (data: AllFormFields) => {
 
   if (error_data) throw new Error(error_data.message);
 
-  const { error: error_akun } = await authClient.signUp.email({
-    name: nama_lengkap,
-    username,
-    email,
-    password,
-  });
+  // const { error: error_akun } = await authClient.signUp.email({
+  //   name: nama_lengkap,
+  //   username,
+  //   email,
+  //   password,
+  // });
 
-  if (error_akun) throw new Error(error_akun.message);
+  // if (error_akun) throw new Error(error_akun.message);
 
   return data_json;
 };
@@ -121,11 +120,7 @@ export const useMultiForm = () => {
   const registerMutation = useMutation({
     mutationKey: ["auth", "sign-up"],
     mutationFn: Register,
-    onSuccess: async (data) => {
-      const { cid, url } = await $uploadFile({ data });
-      console.log(cid);
-      console.log(url);
-
+    onSuccess: () => {
       toast.success(`Berhasil membuat akun! Silakan login`);
       queryClient.resetQueries();
       navigate({ to: "/dashboard" });

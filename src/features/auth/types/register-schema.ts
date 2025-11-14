@@ -1,4 +1,3 @@
-import { authClient } from "@/lib/auth/client";
 import * as z from "zod";
 
 z.config(z.locales.id());
@@ -20,21 +19,6 @@ export const AccountInfoSchema = z
       .regex(
         /^[a-zA-Z0-9_]+$/,
         "Username can only contain letters, numbers, and underscores"
-      )
-      .refine(
-        async (data) => {
-          const { data: resp } = await authClient.isUsernameAvailable({
-            username: data,
-          });
-          if (resp?.available) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-        {
-          error: "Username sudah tersedia!",
-        }
       ),
     email: z
       .email({ pattern: z.regexes.email, message: "Email tidak valid" })
