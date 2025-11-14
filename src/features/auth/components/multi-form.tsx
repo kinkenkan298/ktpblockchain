@@ -41,12 +41,17 @@ const Register = async (data: AllFormFields) => {
   } = data;
 
   const { error } = await authClient.signUp.email({
+    name: nama_lengkap,
     email,
     password,
+  });
+
+  if (error) throw new Error(error.message);
+
+  const data_json = {
     nik,
     kelurahan,
     kecamatan,
-    name: nama_lengkap,
     phoneNumber: phone,
     placeOfBirth: tempat_lahir,
     dateOfBirth: tanggal_lahir,
@@ -57,9 +62,11 @@ const Register = async (data: AllFormFields) => {
     province: provinsi,
     postalCode: kode_pos,
     status: "PENDING",
-  });
+  };
 
-  if (error) throw new Error(error.message);
+  const personal_data = PersonalInfoSchema.parse(data_json);
+
+  console.log(personal_data);
 
   return data;
 };
