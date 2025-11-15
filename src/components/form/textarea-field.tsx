@@ -1,38 +1,109 @@
 import { useFieldContext } from "@/hooks/form";
 import { Field, FieldDescription, FieldError, FieldLabel } from "../ui/field";
 import { Textarea } from "../ui/textarea";
-import React from "react";
+import { forwardRef, useMemo } from "react";
+import { cn } from "@/lib/utils";
 
-interface TextareaFieldProps extends React.ComponentPropsWithRef<"textarea"> {
-	label: string;
-	description?: string;
+export interface TextareaFieldProps
+  extends Omit<
+    React.ComponentPropsWithoutRef<"textarea">,
+    "value" | "onChange" | "onBlur" | "name" | "id"
+  > {
+  label: string;
+  description?: string;
+  required?: boolean;
+  error?: string;
+  onBlur?: React.FocusEventHandler<HTMLTextAreaElement>;
 }
 
-export default function TextareaField({
-	label,
-	placeholder,
-	description,
-	rows,
-}: TextareaFieldProps) {
-	const { name, state, handleChange, handleBlur } = useFieldContext<string>();
-	const isInvalid = state.meta.isTouched && !state.meta.isValid;
+const TextareaField = forwardRef<HTMLTextAreaElement, TextareaFieldProps>(
+  (
+    {
+      label,
+      placeholder,
+      description,
+      required = false,
+      error,
+      disabled,
+      readOnly,
+      className,
+      onBlur,
+      rows,
+      ...props
+    },
+    ref
+  ) => {
+    const field = useFieldContext<string>();
 
-	return (
-		<Field data-invalid={isInvalid}>
-			<FieldLabel htmlFor={name}>{label}</FieldLabel>
-			<Textarea
-				id={name}
-				name={name}
-				value={state.value}
-				onBlur={handleBlur}
-				onChange={(e) => handleChange(e.target.value)}
-				aria-invalid={isInvalid}
-				placeholder={placeholder}
-				autoComplete="off"
-				rows={rows}
-			/>
-			{description && <FieldDescription>{description}</FieldDescription>}
-			{isInvalid && <FieldError errors={state.meta.errors} />}
-		</Field>
-	);
-}
+    const isInvalid = useMemo(
+      () => field.state.meta.isTouched && !field.state.meta.isValid,
+      [field.state.meta.isTouched, field.state.meta.isValid]
+    );
+
+    const errorMessage = error || field.state.meta.errors?.[0]?.message;
+
+    const value = field.state.value ?? "";
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      field.handleChange(e.target.value);
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement>) => {
+      field.handleBlur();
+      onBlur?.(e);
+    };
+
+    const isDisabled = disabled;
+
+    return (
+      <Field
+        data-invalid={isInvalid}
+        data-disabled={isDisabled}
+        data-readonly={readOnly}
+      >
+        <FieldLabel htmlFor={field.name}>
+          {label}
+          {required && <span className="text-destructive ml-1">*</span>}
+        </FieldLabel>
+        <Textarea
+          {...props}
+          ref={ref}
+          id={field.name}
+          name={field.name}
+          value={value}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder={placeholder}
+          disabled={isDisabled}
+          readOnly={readOnly}
+          aria-invalid={isInvalid}
+          aria-required={required}
+          aria-describedby={cn(
+            description && `${field.name}-description`,
+            (isInvalid || errorMessage) && `${field.name}-error`
+          )}
+          autoComplete={props.autoComplete ?? "off"}
+          rows={rows}
+          className={cn(isInvalid && "border-destructive", className)}
+        />
+        {description && (
+          <FieldDescription id={`${field.name}-description`}>
+            {description}
+          </FieldDescription>
+        )}
+        {(isInvalid || errorMessage) && (
+          <FieldError
+            id={`${field.name}-error`}
+            errors={field.state.meta.errors}
+          >
+            {errorMessage}
+          </FieldError>
+        )}
+      </Field>
+    );
+  }
+);
+
+TextareaField.displayName = "TextareaField";
+
+export default TextareaField;

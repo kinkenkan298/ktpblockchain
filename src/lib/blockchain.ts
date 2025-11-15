@@ -1,6 +1,5 @@
 import { createPublicClient, createWalletClient, http, parseAbi } from "viem";
 import { sepolia } from "viem/chains";
-import { PRIVATE_KEY } from "./env";
 import { privateKeyToAccount } from "viem/accounts";
 
 export const publicClient = createPublicClient({
@@ -13,10 +12,10 @@ export const walletClient = createWalletClient({
 });
 
 export const getAccount = () => {
-  if (!PRIVATE_KEY) {
+  if (!process.env.PRIVATE_KEY) {
     throw new Error("Private key tidak ada!");
   }
-  return privateKeyToAccount(PRIVATE_KEY as `0x${string}`);
+  return privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`);
 };
 
 export const storageContractAbi = parseAbi([

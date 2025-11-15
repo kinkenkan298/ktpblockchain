@@ -40,11 +40,11 @@ export type RegisterFromSteps = {
   agreementData: AgreementSchema;
 };
 
-export const allFormSchema = z.object({
+export const AllFormSchema = z.object({
   ...AccountInfoSchema.shape,
   ...PersonalInfoSchema.shape,
   ...DocumentUploadSchema.shape,
   ...AgreementSchema.shape,
 });
 
-export type AllFormSchema = z.infer<typeof allFormSchema>;
+export type AllFormSchema = z.infer<typeof AllFormSchema>;

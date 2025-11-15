@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { PinataSDK } from "pinata";
 
 export const pinata = new PinataSDK({

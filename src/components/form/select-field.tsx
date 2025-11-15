@@ -7,44 +7,108 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import React from "react";
+import { forwardRef, useMemo } from "react";
+import { cn } from "@/lib/utils";
 
-interface SelectFieldProps extends React.ComponentPropsWithRef<"select"> {
+export interface SelectFieldProps {
   label: string;
   selectLabel?: string;
   data: { label: string; value: string }[];
   description?: string;
+  required?: boolean;
+  error?: string;
+  disabled?: boolean;
+  placeholder?: string;
 }
 
-export default function SelectField({
-  label,
-  selectLabel,
-  data,
-  description,
-}: SelectFieldProps) {
-  const { name, state, handleChange, handleBlur } = useFieldContext<string>();
+const SelectField = forwardRef<HTMLButtonElement, SelectFieldProps>(
+  (
+    {
+      label,
+      selectLabel,
+      data,
+      description,
+      required = false,
+      error,
+      disabled,
+      placeholder,
+    },
+    ref
+  ) => {
+    const field = useFieldContext<string>();
 
-  const isInvalid = state.meta.isTouched && !state.meta.isValid;
+    const isInvalid = useMemo(
+      () => field.state.meta.isTouched && !field.state.meta.isValid,
+      [field.state.meta.isTouched, field.state.meta.isValid]
+    );
 
-  return (
-    <Field data-invalid={isInvalid}>
-      <FieldLabel htmlFor={name}>{label}</FieldLabel>
-      <Select
-        value={state.value}
-        onValueChange={(value) => handleChange(value as string)}
-      >
-        <SelectTrigger id={name} onBlur={handleBlur}>
-          <SelectValue placeholder={selectLabel ? selectLabel : label} />
-        </SelectTrigger>
-        <SelectContent>
-          {data.map((d) => (
-            <SelectItem value={d.value}>{d.label}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+    const errorMessage = error || field.state.meta.errors?.[0]?.message;
 
-      {description && <FieldDescription>{description}</FieldDescription>}
-      {isInvalid && <FieldError errors={state.meta.errors} />}
-    </Field>
-  );
-}
+    const value = field.state.value ?? "";
+
+    const handleValueChange = (newValue: string) => {
+      field.handleChange(newValue);
+    };
+
+    const handleBlur = () => {
+      field.handleBlur();
+    };
+
+    const isDisabled = disabled;
+
+    const placeholderText = placeholder || selectLabel || label;
+
+    return (
+      <Field data-invalid={isInvalid} data-disabled={isDisabled}>
+        <FieldLabel htmlFor={field.name}>
+          {label}
+          {required && <span className="text-destructive ml-1">*</span>}
+        </FieldLabel>
+        <Select
+          value={value}
+          onValueChange={handleValueChange}
+          disabled={isDisabled}
+        >
+          <SelectTrigger
+            ref={ref}
+            id={field.name}
+            onBlur={handleBlur}
+            aria-invalid={isInvalid}
+            aria-required={required}
+            aria-describedby={cn(
+              description && `${field.name}-description`,
+              (isInvalid || errorMessage) && `${field.name}-error`
+            )}
+            className={cn(isInvalid && "border-destructive")}
+          >
+            <SelectValue placeholder={placeholderText} />
+          </SelectTrigger>
+          <SelectContent>
+            {data.map((item) => (
+              <SelectItem key={item.value} value={item.value}>
+                {item.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {description && (
+          <FieldDescription id={`${field.name}-description`}>
+            {description}
+          </FieldDescription>
+        )}
+        {(isInvalid || errorMessage) && (
+          <FieldError
+            id={`${field.name}-error`}
+            errors={field.state.meta.errors}
+          >
+            {errorMessage}
+          </FieldError>
+        )}
+      </Field>
+    );
+  }
+);
+
+SelectField.displayName = "SelectField";
+
+export default SelectField;
