@@ -1,5 +1,5 @@
 import { withForm } from "@/hooks/form";
-import { StepFormData } from "../../types/auth-schema";
+import { AllFormSchema } from "../../types/auth-schema";
 import { useState } from "react";
 import {
   Card,
@@ -12,7 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircleIcon } from "lucide-react";
 
 export const AgreementInfoFields = withForm({
-  defaultValues: {} as Partial<StepFormData>,
+  defaultValues: {} as Partial<AllFormSchema>,
   render: ({ form }) => {
     const [showTerms, setShowTerms] = useState(false);
     const [showPrivacy, setShowPrivacy] = useState(false);

@@ -13,6 +13,7 @@ import { LoginSchema } from "../types/login-schema";
 import { authClient } from "@/lib/auth/client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { getDashboardPathByRole } from "@/lib/auth/utils";
 import z from "zod";
 
 const Login = async (data: LoginSchema) => {
@@ -42,10 +43,15 @@ export function LoginForm() {
   const LoginMutation = useMutation({
     mutationKey: ["auth", "sign-in"],
     mutationFn: Login,
-    onSuccess: (resp) => {
+    onSuccess: async (resp) => {
       toast.success(`${resp.user.name} Selamat datang!`);
-      queryClient.resetQueries();
-      navigate({ to: "/dashboard" });
+
+      // Invalidate queries untuk refresh user data
+      await queryClient.invalidateQueries();
+
+      // Redirect berdasarkan role user
+      const dashboardPath = getDashboardPathByRole(resp.user.role);
+      navigate({ to: dashboardPath });
     },
   });
 

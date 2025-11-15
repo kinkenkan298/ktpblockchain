@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useMultiForm } from "./multi-form";
 import { StepsIndicator } from "./steps-indicator";
-import { Activity, useEffect } from "react";
+import { useMemo, useEffect, useCallback } from "react";
 import { useAppForm } from "@/hooks/form";
 import { AccountInfoFields } from "./steps/AccountInfo";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -11,6 +11,14 @@ import { DocumentInfoFields } from "./steps/DocumentInfo";
 import { AgreementInfoFields } from "./steps/AgreementInfo";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";
+import { AllFormSchema } from "../types/auth-schema";
+
+const STEP_COMPONENTS = [
+  AccountInfoFields,
+  PersonalInfoFields,
+  DocumentInfoFields,
+  AgreementInfoFields,
+] as const;
 
 export function RegisterForm() {
   const {
@@ -25,39 +33,62 @@ export function RegisterForm() {
     goToPreviousStep,
     formData,
     submitForm,
+    isSubmitting,
   } = useMultiForm();
 
-  const form = useAppForm({
-    defaultValues: formData,
-    validators: {
-      onChange: getCurrentStepSchema(),
-    },
-    onSubmit: async ({ value }) => {
-      const updateData = { ...formData, ...value };
-      updateFormData(updateData);
+  const currentStepValidator = useMemo(() => {
+    return getCurrentStepSchema();
+  }, [currentStep, getCurrentStepSchema]);
+
+  const handleSubmit = useCallback(
+    async ({ value }: { value: Partial<AllFormSchema> }) => {
+      const updatedData = { ...formData, ...value };
+      updateFormData(updatedData);
 
       if (isLastStep) {
+        if (!isCompleteFormData(updatedData)) {
+          toast.error("Mohon lengkapi semua field yang diperlukan");
+          return;
+        }
+
         try {
-          if (isCompleteFormData(updateData)) {
-            submitForm(updateData);
-          } else {
-            toast.error("Form field ada yang kosong!");
-            return;
-          }
+          await submitForm(updatedData as AllFormSchema);
         } catch (error) {
-          console.error(error);
+          console.error("Registration submission error:", error);
         }
       } else {
         goToNextStep();
       }
     },
+    [
+      formData,
+      isLastStep,
+      isCompleteFormData,
+      updateFormData,
+      submitForm,
+      goToNextStep,
+    ]
+  );
+
+  const form = useAppForm({
+    defaultValues: formData as Partial<AllFormSchema>,
+    validators: {
+      onChange: currentStepValidator,
+    },
+    onSubmit: handleSubmit,
   });
 
-  const onPrevious = () => goToPreviousStep();
-
   useEffect(() => {
-    form.reset(formData);
-  }, [currentStep, form.reset]);
+    form.reset(formData as Partial<AllFormSchema>);
+  }, [currentStep, form, formData]);
+
+  const handlePrevious = useCallback(() => {
+    const currentValues = form.state.values;
+    updateFormData({ ...formData, ...currentValues });
+    goToPreviousStep();
+  }, [form, formData, updateFormData, goToPreviousStep]);
+
+  const CurrentStepComponent = STEP_COMPONENTS[currentStep];
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -67,34 +98,55 @@ export function RegisterForm() {
             <StepsIndicator currentStep={currentStep} steps={steps} />
           </CardHeader>
           <CardContent>
-            {currentStep === 0 && <AccountInfoFields form={form} />}
-            {currentStep === 1 && <PersonalInfoFields form={form} />}
-            {currentStep === 2 && <DocumentInfoFields form={form} />}
-            {currentStep === 3 && <AgreementInfoFields form={form} />}
+            {CurrentStepComponent && <CurrentStepComponent form={form} />}
 
             <form.Subscribe
-              selector={(state) => [state.canSubmit, state.isSubmitting]}
+              selector={(state) => ({
+                canSubmit: state.canSubmit,
+                isSubmitting: state.isSubmitting,
+              })}
             >
-              {([canSubmit, isSubmitting]) => {
+              {({ canSubmit, isSubmitting: formIsSubmitting }) => {
+                const isLoading = formIsSubmitting || isSubmitting;
+                const isDisabled = !canSubmit || isLoading;
+
                 return (
                   <div
-                    className={`flex mt-5 pt-4 ${isFirstStep ? "justify-end" : "justify-between"}`}
+                    className={`flex mt-5 pt-4 gap-2 ${
+                      isFirstStep ? "justify-end" : "justify-between"
+                    }`}
                   >
-                    <Activity mode={isFirstStep ? "hidden" : "visible"}>
-                      <Button variant="outline" onClick={onPrevious}>
+                    {!isFirstStep && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handlePrevious}
+                        disabled={isLoading}
+                      >
                         <ChevronLeft className="w-4 h-4 mr-1" />
                         Kembali
                       </Button>
-                    </Activity>
+                    )}
 
                     <Button
                       type="submit"
-                      disabled={!canSubmit || isSubmitting}
+                      disabled={isDisabled}
                       variant={canSubmit ? "default" : "destructive"}
-                      onClick={form.handleSubmit}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        form.handleSubmit();
+                      }}
                     >
-                      {isLastStep ? "Submit data" : "Lanjut"}
-                      {!isLastStep && <ChevronRight className="w-4 h-4 ml-1" />}
+                      {isLoading ? (
+                        "Memproses..."
+                      ) : isLastStep ? (
+                        "Submit data"
+                      ) : (
+                        <>
+                          Lanjut
+                          <ChevronRight className="w-4 h-4 ml-1" />
+                        </>
+                      )}
                     </Button>
                   </div>
                 );
@@ -103,14 +155,14 @@ export function RegisterForm() {
           </CardContent>
           <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
             <span className="bg-background text-muted-foreground relative z-10 px-2">
-              Or
+              Atau
             </span>
           </div>
-          <div className="text-sm text-center">
+          <div className="text-sm text-center pb-4">
             Sudah punya akun?{" "}
             <Link
               to="/login"
-              className="underline underline-offset-4 text-primary"
+              className="underline underline-offset-4 text-primary hover:text-primary/80 transition-colors"
             >
               Login disini
             </Link>

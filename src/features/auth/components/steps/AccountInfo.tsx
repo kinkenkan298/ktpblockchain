@@ -1,10 +1,10 @@
 import { CardTitle } from "@/components/ui/card";
 import { withForm } from "@/hooks/form";
-import { StepFormData } from "../../types/auth-schema";
+import { AllFormSchema } from "../../types/auth-schema";
 import { FieldGroup } from "@/components/ui/field";
 
 export const AccountInfoFields = withForm({
-  defaultValues: {} as Partial<StepFormData>,
+  defaultValues: {} as Partial<AllFormSchema>,
 
   render: function Render({ form }) {
     return (

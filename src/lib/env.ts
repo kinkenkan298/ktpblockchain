@@ -1,11 +1,7 @@
 import "dotenv/config";
 
 export const {
-  DB_HOST,
-  DB_USER,
-  DB_PORT,
-  DB_PASS,
-  DB_NAME,
+  DATABASE_URL,
   BETTER_AUTH_SECRET,
   BETTER_AUTH_URL,
   ETHEREUM_RPC_URL,

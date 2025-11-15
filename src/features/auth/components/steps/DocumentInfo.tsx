@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { withForm } from "@/hooks/form";
-import { DocumentUploadSchema, StepFormData } from "../../types/auth-schema";
+import { DocumentUploadSchema, AllFormSchema } from "../../types/auth-schema";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
@@ -9,7 +9,7 @@ import { FieldGroup, FieldSeparator } from "@/components/ui/field";
 import { toast } from "sonner";
 
 export const DocumentInfoFields = withForm({
-  defaultValues: {} as Partial<StepFormData>,
+  defaultValues: {} as Partial<AllFormSchema>,
   render: ({ form }) => {
     const [uploadProgress, setUploadProgress] = useState<{
       ktp_front: number;

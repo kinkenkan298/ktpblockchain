@@ -1,10 +1,11 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { getDashboardPathByRole } from "@/lib/auth/utils";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
   beforeLoad: ({ context }) => {
-    const session = context.user;
-    if (session.user.role === "admin")
-      throw redirect({ to: "/dashboard/admin" });
-    else throw redirect({ to: "/dashboard/user" });
+    const user = context.user;
+
+    const dashboardPath = getDashboardPathByRole(user?.user?.role);
+    throw redirect({ to: dashboardPath });
   },
 });

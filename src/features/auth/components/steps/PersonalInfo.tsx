@@ -1,8 +1,8 @@
 import { withForm } from "@/hooks/form";
-import { StepFormData } from "../../types/auth-schema";
+import { AllFormSchema } from "../../types/auth-schema";
 
 export const PersonalInfoFields = withForm({
-  defaultValues: {} as Partial<StepFormData>,
+  defaultValues: {} as Partial<AllFormSchema>,
   render: ({ form }) => {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
