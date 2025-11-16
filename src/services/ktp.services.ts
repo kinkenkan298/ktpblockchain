@@ -2,8 +2,6 @@ import { $uploadData } from "./ipfs.api";
 import { generateHashBlockchain } from "@/lib/encryption";
 import { db } from "@/lib/db";
 import {
-  getAccount,
-  publicClient,
   STORAGE_CONTRACT_ADDRESS,
   storageContractAbi,
   walletClient,
@@ -62,22 +60,17 @@ export const createKtpRecords = createServerFn()
     const generateHash = generateHashBlockchain(cid);
     console.log("Storing to blockchain...");
 
-    const account = getAccount();
-
-    const { request } = await publicClient.simulateContract({
+    const txHash = await walletClient.writeContract({
       address: STORAGE_CONTRACT_ADDRESS,
       abi: storageContractAbi,
       functionName: "storeHash",
-      args: [generateHash],
-      account,
+      args: [cid],
     });
 
-    const txHash = await walletClient.writeContract(request);
     console.log(`Transaction sent: ${txHash}`);
 
-    const receipt = await publicClient.waitForTransactionReceipt({
+    const receipt = await walletClient.waitForTransactionReceipt({
       hash: txHash,
-      confirmations: 2,
     });
     console.log(`Transaction confirmed at block ${receipt.blockNumber}`);
 
@@ -90,7 +83,7 @@ export const createKtpRecords = createServerFn()
           topics: log.topics,
         });
         if (decoded.eventName === "HashStored") {
-          contractRecordId = (decoded.args as { id: bigint }).id?.toString();
+          contractRecordId = (decoded.args as any).id?.toString();
         }
       } catch {
         continue;
