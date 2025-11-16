@@ -48,3 +48,8 @@ export const AllFormSchema = z.object({
 });
 
 export type AllFormSchema = z.infer<typeof AllFormSchema>;
+
+export type AllFormInput = AccountInfoSchema &
+  PersonalInfoSchema &
+  DocumentUploadSchema &
+  AgreementSchema;

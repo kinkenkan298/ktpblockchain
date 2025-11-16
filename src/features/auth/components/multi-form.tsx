@@ -11,7 +11,8 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
-import { $registerUser } from "@/lib/auth/functions";
+import { authClient } from "@/lib/auth/client";
+import { createKtpRecords } from "@/services/ktp.services";
 
 const stepSchemas = [
   AccountInfoSchema,
@@ -26,6 +27,73 @@ export const steps: Steps[] = [
   { id: "documents", name: "Dokumen", icon: FileText },
   { id: "agreement", name: "Persetujuan", icon: CheckSquare },
 ];
+
+export const $registerUser = async (data: AllFormSchema) => {
+  const {
+    username,
+    email,
+    password,
+    phone,
+    nama_lengkap,
+    nik,
+    tempat_lahir,
+    tanggal_lahir,
+    jenis_kelamin,
+    alamat,
+    rt_rw,
+    kelurahan,
+    kecamatan,
+    kota,
+    provinsi,
+    kode_pos,
+  } = data;
+
+  const personalInfoData = {
+    nama_lengkap,
+    nik,
+    tempat_lahir,
+    tanggal_lahir,
+    alamat,
+    rt_rw,
+    kota,
+    kelurahan,
+    jenis_kelamin,
+    kecamatan,
+    provinsi,
+    kode_pos,
+    phone,
+  };
+
+  const { error: error_data } = PersonalInfoSchema.safeParse(personalInfoData);
+
+  if (error_data) throw new Error(error_data.message);
+
+  const { error, data: signUpData } = await authClient.signUp.email({
+    email,
+    password,
+    name: nama_lengkap,
+    username,
+  });
+
+  if (error) throw new Error(error.message);
+
+  if (!signUpData.user?.id) {
+    throw new Error("User account created but user ID is missing");
+  }
+
+  const ktpRecord = await createKtpRecords({
+    data: {
+      ...personalInfoData,
+      userId: signUpData.user.id,
+    },
+  });
+
+  return {
+    user: signUpData.user,
+    ktpRecord,
+    personalInfo: personalInfoData,
+  };
+};
 
 export const useMultiForm = () => {
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -65,9 +133,7 @@ export const useMultiForm = () => {
 
   const registerMutation = useMutation({
     mutationKey: ["auth", "sign-up"],
-    mutationFn: async (data: AllFormSchema) => {
-      return await $registerUser({ data });
-    },
+    mutationFn: $registerUser,
     onSuccess: () => {
       toast.success("Berhasil membuat akun! Silakan login");
       queryClient.invalidateQueries();
@@ -83,7 +149,6 @@ export const useMultiForm = () => {
     try {
       await registerMutation.mutateAsync(data);
     } catch (error) {
-      // Error handling is done in onError callback
       console.error("Registration error:", error);
     }
   };
