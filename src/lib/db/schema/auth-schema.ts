@@ -5,7 +5,6 @@ import {
   text,
   timestamp,
   boolean,
-  int,
 } from "drizzle-orm/mysql-core";
 
 export const user = mysqlTable("user", {
@@ -31,10 +30,11 @@ export const user = mysqlTable("user", {
 });
 
 export const ktp_records = mysqlTable("ktp_records", {
-  id: text("id").primaryKey().$defaultFn(createId),
-  userId: varchar("id", { length: 36 })
-    .references(() => user.id)
-    .notNull(),
+  id: varchar("id", { length: 36 }).primaryKey().$defaultFn(createId),
+
+  userId: varchar("user_id", { length: 36 })
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
 
   ipfsCid: text("ipfs_cid").notNull().unique(),
   ipfsUrl: text("ipfs_url").notNull(),
@@ -108,17 +108,6 @@ export const verification = mysqlTable("verification", {
     .$defaultFn(() => new Date())
     .$onUpdate(() => new Date())
     .notNull(),
-});
-
-export const walletAddress = mysqlTable("wallet_address", {
-  id: varchar("id", { length: 36 }).primaryKey(),
-  userId: varchar("user_id", { length: 36 })
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-  address: text("address").notNull(),
-  chainId: int("chain_id").notNull(),
-  isPrimary: boolean("is_primary").default(false),
-  createdAt: timestamp("created_at", { fsp: 3 }).notNull(),
 });
 
 export const authTables = {

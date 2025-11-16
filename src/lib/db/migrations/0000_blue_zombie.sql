@@ -17,6 +17,7 @@ CREATE TABLE `account` (
 --> statement-breakpoint
 CREATE TABLE `ktp_records` (
 	`id` varchar(36) NOT NULL,
+	`user_id` varchar(36) NOT NULL,
 	`ipfs_cid` text NOT NULL,
 	`ipfs_url` text NOT NULL,
 	`blockchain_hash` text NOT NULL,
@@ -78,16 +79,6 @@ CREATE TABLE `verification` (
 	`created_at` timestamp(3) NOT NULL,
 	`updated_at` timestamp(3) NOT NULL,
 	CONSTRAINT `verification_id` PRIMARY KEY(`id`)
-);
---> statement-breakpoint
-CREATE TABLE `wallet_address` (
-	`id` varchar(36) NOT NULL,
-	`user_id` varchar(36) NOT NULL,
-	`address` text NOT NULL,
-	`chain_id` int NOT NULL,
-	`is_primary` boolean DEFAULT false,
-	`created_at` timestamp(3) NOT NULL,
-	CONSTRAINT `wallet_address_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `access_log` (
@@ -195,9 +186,8 @@ CREATE TABLE `verification_request` (
 );
 --> statement-breakpoint
 ALTER TABLE `account` ADD CONSTRAINT `account_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `ktp_records` ADD CONSTRAINT `ktp_records_id_user_id_fk` FOREIGN KEY (`id`) REFERENCES `user`(`id`) ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `ktp_records` ADD CONSTRAINT `ktp_records_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `session` ADD CONSTRAINT `session_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `wallet_address` ADD CONSTRAINT `wallet_address_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `access_log` ADD CONSTRAINT `access_log_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `access_log` ADD CONSTRAINT `access_log_verifier_id_verification_request_id_fk` FOREIGN KEY (`verifier_id`) REFERENCES `verification_request`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `admin` ADD CONSTRAINT `admin_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
