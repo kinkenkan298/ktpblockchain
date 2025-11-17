@@ -16,11 +16,11 @@ export const useAuthentication = () => {
 };
 
 export const useAuthenticatedUser = () => {
-  const { userSession } = useAuthentication();
+  const { userSession, isAuthenticated } = useAuthentication();
 
-  if (!userSession) {
-    throw new Error("User is not authenticated!");
-  }
-
-  return userSession;
+  return {
+    user: userSession?.user ?? null,
+    isAuthenticated,
+    session: userSession ?? null,
+  };
 };

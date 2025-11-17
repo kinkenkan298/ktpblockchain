@@ -14,14 +14,13 @@ import { useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import { ktpQueries } from "@/services/queries";
-import { useAuthenticatedUser } from "@/lib/auth/client";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { user } = useAuthenticatedUser();
+  const { user } = Route.useRouteContext();
   const [accessLogs, setAccessLogs] = useState<AccessLog[]>([]);
   const [consents, setConsents] = useState<ActiveConsent[]>([]);
 
@@ -30,8 +29,8 @@ function RouteComponent() {
     isLoading,
     isError,
   } = useQuery({
-    ...ktpQueries.getDataKtp(user?.id ?? ""),
-    enabled: Boolean(user?.id),
+    ...ktpQueries.getDataKtp(user?.user?.id ?? ""),
+    enabled: Boolean(user?.user?.id),
   });
 
   if (isLoading) {
@@ -81,7 +80,7 @@ function RouteComponent() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-5">
         <div className="md:col-span-2">
-          <ProfileCardUser data_ktp={ktp_data} user={user} />
+          <ProfileCardUser data_ktp={ktp_data} user={user?.user} />
         </div>
 
         <div className="md:col-span-2">
