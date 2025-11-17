@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { $uploadData } from "./ipfs.api";
 import { generateHashBlockchain } from "@/lib/encryption";
 import { db } from "@/lib/db";
@@ -66,10 +67,16 @@ export const getKtpRecord = createServerFn()
   .inputValidator(z.object({ userId: z.string() }))
   .handler(async ({ data }) => {
     const { userId } = data;
+
     const getRecord = await db
       .select()
       .from(ktp_records)
-      .where(eq(ktp_records.userId, userId));
-    if (!getRecord) throw new Error("Data ktp tidak ditemukan!");
-    return { getRecord };
+      .where(eq(ktp_records.userId, userId))
+      .limit(1);
+
+    const record = getRecord[0];
+
+    if (!record) throw new Error("Data ktp tidak ada ditemukan!");
+
+    return record;
   });

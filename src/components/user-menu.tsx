@@ -13,7 +13,7 @@ import { LogOut, User } from "lucide-react";
 import { DropdownMenuContent } from "./ui/dropdown-menu";
 import { authClient, useAuthenticatedUser } from "@/lib/auth/client";
 import { useState } from "react";
-import { authQueryOptions } from "@/lib/auth/queries";
+import { authQueryOptions } from "@/services/queries";
 
 const ItemLink = createLink(DropdownMenuItem);
 

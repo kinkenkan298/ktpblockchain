@@ -4,7 +4,7 @@ import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
 import { HowItsWorks } from "@/components/how-its-works";
 import { Button } from "@/components/ui/button";
-import { authQueryOptions } from "@/lib/auth/queries";
+import { authQueryOptions } from "@/services/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Suspense } from "react";

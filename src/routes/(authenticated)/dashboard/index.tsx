@@ -10,112 +10,37 @@ import {
 
 import { createFileRoute } from "@tanstack/react-router";
 import { Activity, FileCheck, Shield, Users } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+import { useQuery } from "@tanstack/react-query";
+import { ktpQueries } from "@/services/queries";
+import { useAuthenticatedUser } from "@/lib/auth/client";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { user } = useAuthenticatedUser();
   const [accessLogs, setAccessLogs] = useState<AccessLog[]>([]);
   const [consents, setConsents] = useState<ActiveConsent[]>([]);
 
-  useEffect(() => {
-    loadDemoData();
-  }, []);
+  const {
+    data: ktp_data,
+    isLoading,
+    isError,
+  } = useQuery({
+    ...ktpQueries.getDataKtp(user?.id ?? ""),
+    enabled: Boolean(user?.id),
+  });
 
-  const loadDemoData = async () => {
-    const demoAccessLogs: AccessLog[] = [
-      {
-        id: "1",
-        user_id: "1",
-        accessor_name: "Bank Mandiri",
-        accessor_type: "Institusi Keuangan",
-        data_accessed: "NIK, Nama, Alamat",
-        purpose: "Verifikasi pembukaan rekening",
-        access_time: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
-        status: "approved",
-        created_at: new Date().toISOString(),
-      },
-      {
-        id: "2",
-        user_id: "1",
-        accessor_name: "Kementerian Kesehatan",
-        accessor_type: "Instansi Pemerintah",
-        data_accessed: "NIK, Nama",
-        purpose: "Registrasi vaksinasi COVID-19",
-        access_time: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
-        status: "approved",
-        created_at: new Date().toISOString(),
-      },
-      {
-        id: "3",
-        user_id: "1",
-        accessor_name: "PT Tokopedia",
-        accessor_type: "Platform E-Commerce",
-        data_accessed: "NIK, Nama, Nomor Telepon",
-        purpose: "Verifikasi akun merchant",
-        access_time: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
-        status: "approved",
-        created_at: new Date().toISOString(),
-      },
-    ];
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-    const demoConsents: ActiveConsent[] = [
-      {
-        id: "1",
-        user_id: "1",
-        organization: "Bank Mandiri",
-        organization_type: "Institusi Keuangan",
-        data_shared: ["NIK", "Nama Lengkap", "Alamat", "Nomor Telepon"],
-        purpose: "Layanan perbankan dan kredit",
-        granted_at: new Date(
-          Date.now() - 1000 * 60 * 60 * 24 * 30
-        ).toISOString(),
-        expires_at: new Date(
-          Date.now() + 1000 * 60 * 60 * 24 * 335
-        ).toISOString(),
-        status: "active",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: "2",
-        user_id: "1",
-        organization: "Kementerian Kesehatan",
-        organization_type: "Instansi Pemerintah",
-        data_shared: ["NIK", "Nama Lengkap", "Tanggal Lahir"],
-        purpose: "Pelayanan kesehatan dan vaksinasi",
-        granted_at: new Date(
-          Date.now() - 1000 * 60 * 60 * 24 * 90
-        ).toISOString(),
-        expires_at: null,
-        status: "active",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: "3",
-        user_id: "1",
-        organization: "PT Tokopedia",
-        organization_type: "Platform E-Commerce",
-        data_shared: ["NIK", "Nama Lengkap", "Nomor Telepon", "Alamat"],
-        purpose: "Layanan jual beli online dan pengiriman",
-        granted_at: new Date(
-          Date.now() - 1000 * 60 * 60 * 24 * 7
-        ).toISOString(),
-        expires_at: new Date(
-          Date.now() + 1000 * 60 * 60 * 24 * 358
-        ).toISOString(),
-        status: "active",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    ];
-
-    setAccessLogs(demoAccessLogs);
-    setConsents(demoConsents);
-  };
+  if (isError || !ktp_data) {
+    return <div>Gagal memuat data KTP.</div>;
+  }
 
   const handleRevokeConsent = async (id: string) => {
     if (confirm("Apakah Anda yakin ingin mencabut persetujuan ini?")) {
@@ -124,7 +49,6 @@ function RouteComponent() {
       );
     }
   };
-
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-5">
@@ -157,7 +81,7 @@ function RouteComponent() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-5">
         <div className="md:col-span-2">
-          <ProfileCardUser />
+          <ProfileCardUser data_ktp={ktp_data} user={user} />
         </div>
 
         <div className="md:col-span-2">

@@ -12,7 +12,7 @@ import { seo } from "@/utils/seo";
 import appCss from "@/global.css?url";
 import { Toaster } from "sonner";
 import { QueryClient } from "@tanstack/react-query";
-import { authQueryOptions } from "@/lib/auth/queries";
+import { authQueryOptions } from "@/services/queries";
 
 const TanStackDevtools = lazy(() =>
   import("@tanstack/react-devtools").then((mod) => ({

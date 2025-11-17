@@ -1,25 +1,26 @@
-import { User, MapPin, Phone, Mail, CreditCard } from "lucide-react";
-import { useAuthenticatedUser } from "@/lib/auth/client";
-import { getKtpRecord } from "@/services/ktp.services";
-import { useQuery } from "@tanstack/react-query";
+import { User } from "better-auth";
+import {
+  User as UserIcon,
+  MapPin,
+  Phone,
+  Mail,
+  CreditCard,
+} from "lucide-react";
 
-export function ProfileCardUser() {
-  const userSession = useAuthenticatedUser();
+interface DataKtp {
+  fullName: string;
+  nik: string;
+  province: string | null;
+  city: string | null;
+  isVerified: boolean | null;
+}
 
-  const { user } = userSession;
+interface ProfileCardProps {
+  user: User;
+  data_ktp: DataKtp;
+}
 
-  const { data, isPending } = useQuery({
-    queryKey: ["data-ktp"],
-    queryFn: async () => {
-      const data = await getKtpRecord({ data: { userId: user.id } });
-
-      return data["getRecord"][0];
-    },
-  });
-
-  if (isPending || !data) {
-    return <div>Data sedang tidak ada!</div>;
-  }
+export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-start justify-between mb-6">
@@ -38,14 +39,14 @@ export function ProfileCardUser() {
               className="w-full h-full object-cover"
             />
           ) : (
-            <User className="w-10 h-10 text-white" />
+            <UserIcon className="w-10 h-10 text-white" />
           )}
         </div>
         <div>
           <h4 className="text-xl font-bold text-gray-900">{user.name}</h4>
           <p className="text-sm text-gray-500">
             Status:{" "}
-            {data["isVerified"] ? "Terverifikasi" : "Belum Terverifikasi"}
+            {data_ktp.isVerified ? "Terverifikasi" : "Belum Terverifikasi"}
           </p>
           <div
             className={`mt-1 inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-yellow-500 text-white`}
@@ -62,7 +63,7 @@ export function ProfileCardUser() {
             <p className="text-xs text-gray-500 mb-1">
               NIK (Nomor Induk Kependudukan)
             </p>
-            <p className="text-sm font-medium text-gray-900">{data["nik"]}</p>
+            <p className="text-sm font-medium text-gray-900">{data_ktp.nik}</p>
           </div>
         </div>
 
@@ -71,7 +72,7 @@ export function ProfileCardUser() {
           <div className="flex-1">
             <p className="text-xs text-gray-500 mb-1">Nama lengkap</p>
             <p className="text-sm font-medium text-gray-900">
-              {data["fullName"]}
+              {data_ktp.fullName}
             </p>
           </div>
         </div>
@@ -81,7 +82,7 @@ export function ProfileCardUser() {
           <div className="flex-1">
             <p className="text-xs text-gray-500 mb-1">Provinsi</p>
             <p className="text-sm font-medium text-gray-900">
-              {data["province"]}
+              {data_ktp.province ?? "-"}
             </p>
           </div>
         </div>
@@ -90,7 +91,9 @@ export function ProfileCardUser() {
           <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
           <div className="flex-1">
             <p className="text-xs text-gray-500 mb-1">Kota</p>
-            <p className="text-sm font-medium text-gray-900">{data["city"]}</p>
+            <p className="text-sm font-medium text-gray-900">
+              {data_ktp.city ?? "-"}
+            </p>
           </div>
         </div>
 

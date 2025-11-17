@@ -1,4 +1,4 @@
-import { authQueryOptions } from "@/lib/auth/queries";
+import { authQueryOptions } from "@/services/queries";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { isAuthenticated } from "@/lib/auth/utils";
 
