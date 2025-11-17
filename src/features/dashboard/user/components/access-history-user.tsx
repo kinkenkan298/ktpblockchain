@@ -1,9 +1,12 @@
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Clock,
   Building2,
   CheckCircle,
   XCircle,
   AlertCircle,
+  Badge,
 } from "lucide-react";
 import { AccessLog } from "../types/user-types";
 import { cn } from "@/lib/utils";
@@ -37,6 +40,18 @@ const getStatusColor = (status: string) => {
       return "bg-gray-100 text-gray-700";
   }
 };
+const getStatusLabel = (status: string) => {
+  switch (status) {
+    case "approved":
+      return "Disetujui";
+    case "denied":
+      return "Ditolak";
+    case "pending":
+      return "Pending";
+    default:
+      return status;
+  }
+};
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
@@ -60,84 +75,94 @@ const formatDate = (dateString: string) => {
 
 export function AccessHistoryUser({ logs }: AccessHistoryProps) {
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">Riwayat Akses</h3>
-          <p className="text-sm text-gray-500 mt-1">
-            Aktivitas akses data terbaru oleh pihak ketiga
-          </p>
-        </div>
-        <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-          Lihat Semua
-        </button>
-      </div>
-
-      <div className="space-y-4">
-        {logs.length === 0 ? (
-          <div className="text-center py-8">
-            <Clock className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-            <p className="text-sm text-gray-500">Belum ada riwayat akses</p>
+    <Card className="shadow-md border-slate-200">
+      <CardHeader className="pb-4">
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="text-lg">Riwayat Akses</CardTitle>
+            <p className="text-sm text-slate-500 mt-1">
+              Aktivitas akses data terbaru oleh pihak ketiga
+            </p>
           </div>
-        ) : (
-          logs.map((log) => (
-            <div
-              key={log.id}
-              className="border border-gray-200 rounded-lg p-4 hover:border-blue-200 hover:bg-blue-50/30 transition-all"
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-start space-x-3">
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <Building2 className="w-5 h-5 text-gray-600" />
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-semibold text-gray-900">
-                      {log.accessor_name}
-                    </h4>
-                    <p className="text-xs text-gray-500">{log.accessor_type}</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  {getStatusIcon(log.status)}
-                  <span
-                    className={cn(
-                      "text-xs font-medium px-2 py-1 rounded-full",
-                      getStatusColor(log.status)
-                    )}
-                  >
-                    {log.status === "approved"
-                      ? "Disetujui"
-                      : log.status === "denied"
-                        ? "Ditolak"
-                        : "Pending"}
-                  </span>
-                </div>
-              </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+          >
+            Lihat Semua
+          </Button>
+        </div>
+      </CardHeader>
 
-              <div className="space-y-2 ml-13">
-                <div className="flex items-start">
-                  <span className="text-xs text-gray-500 w-24">
-                    Data diakses:
-                  </span>
-                  <span className="text-xs font-medium text-gray-900">
-                    {log.data_accessed}
-                  </span>
+      <CardContent>
+        <div className="space-y-3">
+          {logs.length === 0 ? (
+            <div className="text-center py-8">
+              <Clock className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+              <p className="text-sm text-slate-500">Belum ada riwayat akses</p>
+            </div>
+          ) : (
+            logs.map((log) => (
+              <div
+                key={log.id}
+                className="border border-slate-200 rounded-lg p-4 hover:border-blue-200 hover:bg-blue-50/30 transition-all"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-start space-x-3 flex-1 min-w-0">
+                    <div className="shrink-0 w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
+                      <Building2 className="w-5 h-5 text-slate-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-sm font-semibold text-slate-900 truncate">
+                        {log.accessor_name}
+                      </h4>
+                      <p className="text-xs text-slate-500">
+                        {log.accessor_type}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2 shrink-0">
+                    {getStatusIcon(log.status)}
+                    <Badge
+                      className={cn(
+                        "text-xs font-medium px-2 py-1 rounded-full",
+                        getStatusColor(log.status)
+                      )}
+                    >
+                      {getStatusLabel(log.status)}
+                    </Badge>
+                  </div>
                 </div>
-                <div className="flex items-start">
-                  <span className="text-xs text-gray-500 w-24">Tujuan:</span>
-                  <span className="text-xs text-gray-700">{log.purpose}</span>
-                </div>
-                <div className="flex items-start">
-                  <span className="text-xs text-gray-500 w-24">Waktu:</span>
-                  <span className="text-xs text-gray-700">
-                    {formatDate(log.access_time)}
-                  </span>
+
+                <div className="space-y-2 ml-13 text-xs">
+                  <div className="flex items-start gap-2">
+                    <span className="text-slate-500 font-medium min-w-fit">
+                      Data diakses:
+                    </span>
+                    <span className="font-medium text-slate-900">
+                      {log.data_accessed}
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-slate-500 font-medium min-w-fit">
+                      Tujuan:
+                    </span>
+                    <span className="text-slate-700">{log.purpose}</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-slate-500 font-medium min-w-fit">
+                      Waktu:
+                    </span>
+                    <span className="text-slate-700">
+                      {formatDate(log.access_time)}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
+            ))
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
