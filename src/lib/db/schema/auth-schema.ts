@@ -5,6 +5,7 @@ import {
   text,
   timestamp,
   boolean,
+  mysqlEnum,
 } from "drizzle-orm/mysql-core";
 
 export const user = mysqlTable("user", {
@@ -48,6 +49,13 @@ export const ktp_records = mysqlTable("ktp_records", {
   fullName: text("full_name").notNull(),
   province: text("province"),
   city: text("city"),
+
+  status: mysqlEnum("status", [
+    "PENDING",
+    "VERIFIED",
+    "REJECTED",
+    "SUSPENDED",
+  ]).default("PENDING"),
 
   isVerified: boolean("is_verified").default(false),
   verifiedAt: timestamp("verified_at"),

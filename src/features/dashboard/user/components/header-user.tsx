@@ -1,17 +1,14 @@
 import { UserMenu } from "@/components/user-menu";
-import { useAuthenticatedUser } from "@/lib/auth/client";
 import { Bell } from "lucide-react";
 
-export function HeaderUser() {
-  const userSession = useAuthenticatedUser();
-
+export function HeaderUser({ name }: { name: string | undefined }) {
   return (
     <header className="bg-white border-b border-gray-200 px-8 py-4">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">Dashboard User</h2>
           <p className="text-sm text-gray-500">
-            Selamat datang kembali {userSession.user.name}!
+            Selamat datang kembali {name ?? "User"}!
           </p>
         </div>
 

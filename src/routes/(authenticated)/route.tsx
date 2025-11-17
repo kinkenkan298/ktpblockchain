@@ -4,16 +4,11 @@ import { isAuthenticated } from "@/lib/auth/utils";
 
 export const Route = createFileRoute("/(authenticated)")({
   beforeLoad: async ({ context }) => {
-    // Fetch user session dengan error handling
-    let user;
-    try {
-      user = await context.queryClient.ensureQueryData(authQueryOptions.user());
-    } catch {
-      // Jika fetch gagal, redirect ke login
-      throw redirect({ to: "/login" });
-    }
+    const user = await context.queryClient.ensureQueryData({
+      ...authQueryOptions.user(),
+      revalidateIfStale: true,
+    });
 
-    // Check apakah user sudah authenticated
     if (!isAuthenticated(user)) {
       throw redirect({ to: "/login" });
     }

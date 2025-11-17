@@ -12,7 +12,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth/client";
-import { createKtpRecords } from "@/services/ktp.services";
+import { createKtpRecord } from "@/services/ktp.services";
+
+import { registerUserKtp } from "@/services/auth.api";
 
 const stepSchemas = [
   AccountInfoSchema,
@@ -21,14 +23,14 @@ const stepSchemas = [
   AgreementSchema,
 ] as const;
 
-export const steps: Steps[] = [
+const steps: Steps[] = [
   { id: "account", name: "Akun", icon: User },
   { id: "personal", name: "Data", icon: Contact },
   { id: "documents", name: "Dokumen", icon: FileText },
   { id: "agreement", name: "Persetujuan", icon: CheckSquare },
 ];
 
-export const $registerUser = async (data: AllFormSchema) => {
+const $registerUser = async (data: AllFormSchema) => {
   const {
     username,
     email,
@@ -68,6 +70,17 @@ export const $registerUser = async (data: AllFormSchema) => {
 
   if (error_data) throw new Error(error_data.message);
 
+  const {
+    ipfsCid,
+    ipfsUrl,
+    generateHash,
+    txHash,
+    contractRecordId,
+    blockNumber,
+  } = await createKtpRecord({
+    data: personalInfoData,
+  });
+
   const { error, data: signUpData } = await authClient.signUp.email({
     email,
     password,
@@ -81,17 +94,23 @@ export const $registerUser = async (data: AllFormSchema) => {
     throw new Error("User account created but user ID is missing");
   }
 
-  const ktpRecord = await createKtpRecords({
+  const recordId = await registerUserKtp({
     data: {
-      ...personalInfoData,
       userId: signUpData.user.id,
+      blockchainHash: generateHash,
+      txHash,
+      ipfsCid,
+      ipfsUrl,
+      contractRecordId,
+      blockNumber,
+      ...personalInfoData,
     },
   });
 
   return {
     user: signUpData.user,
-    ktpRecord,
     personalInfo: personalInfoData,
+    recordId,
   };
 };
 

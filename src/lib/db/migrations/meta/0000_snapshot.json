@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "ef2b2325-3607-4b50-b3a3-d4411fbdefc2",
+  "id": "4ffb8b4e-83c1-49c1-b823-74af712a5631",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -212,6 +212,14 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "enum('PENDING','VERIFIED','REJECTED','SUSPENDED')",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'PENDING'"
         },
         "is_verified": {
           "name": "is_verified",

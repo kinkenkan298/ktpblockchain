@@ -14,12 +14,11 @@ import { Route as authRouteRouteImport } from './routes/(auth)/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authenticatedDashboardRouteRouteImport } from './routes/(authenticated)/dashboard/route'
+import { Route as authenticatedAdminRouteRouteImport } from './routes/(authenticated)/admin/route'
 import { Route as authenticatedDashboardIndexRouteImport } from './routes/(authenticated)/dashboard/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
-import { Route as authenticatedDashboardUserRouteRouteImport } from './routes/(authenticated)/dashboard/user/route'
-import { Route as authenticatedDashboardAdminRouteRouteImport } from './routes/(authenticated)/dashboard/admin/route'
-import { Route as authenticatedDashboardUserIndexRouteImport } from './routes/(authenticated)/dashboard/user/index'
-import { Route as authenticatedDashboardAdminIndexRouteImport } from './routes/(authenticated)/dashboard/admin/index'
+import { Route as authenticatedAdminDashboardRouteImport } from './routes/(authenticated)/admin/dashboard'
 
 const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
   id: '/(authenticated)',
@@ -44,110 +43,99 @@ const authLoginRoute = authLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => authRouteRoute,
 } as any)
+const authenticatedDashboardRouteRoute =
+  authenticatedDashboardRouteRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => authenticatedRouteRoute,
+  } as any)
+const authenticatedAdminRouteRoute = authenticatedAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => authenticatedRouteRoute,
+} as any)
 const authenticatedDashboardIndexRoute =
   authenticatedDashboardIndexRouteImport.update({
-    id: '/dashboard/',
-    path: '/dashboard/',
-    getParentRoute: () => authenticatedRouteRoute,
+    id: '/',
+    path: '/',
+    getParentRoute: () => authenticatedDashboardRouteRoute,
   } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const authenticatedDashboardUserRouteRoute =
-  authenticatedDashboardUserRouteRouteImport.update({
-    id: '/dashboard/user',
-    path: '/dashboard/user',
-    getParentRoute: () => authenticatedRouteRoute,
-  } as any)
-const authenticatedDashboardAdminRouteRoute =
-  authenticatedDashboardAdminRouteRouteImport.update({
-    id: '/dashboard/admin',
-    path: '/dashboard/admin',
-    getParentRoute: () => authenticatedRouteRoute,
-  } as any)
-const authenticatedDashboardUserIndexRoute =
-  authenticatedDashboardUserIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => authenticatedDashboardUserRouteRoute,
-  } as any)
-const authenticatedDashboardAdminIndexRoute =
-  authenticatedDashboardAdminIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => authenticatedDashboardAdminRouteRoute,
+const authenticatedAdminDashboardRoute =
+  authenticatedAdminDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => authenticatedAdminRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof authenticatedAdminRouteRouteWithChildren
+  '/dashboard': typeof authenticatedDashboardRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/dashboard/admin': typeof authenticatedDashboardAdminRouteRouteWithChildren
-  '/dashboard/user': typeof authenticatedDashboardUserRouteRouteWithChildren
+  '/admin/dashboard': typeof authenticatedAdminDashboardRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/dashboard': typeof authenticatedDashboardIndexRoute
-  '/dashboard/admin/': typeof authenticatedDashboardAdminIndexRoute
-  '/dashboard/user/': typeof authenticatedDashboardUserIndexRoute
+  '/dashboard/': typeof authenticatedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof authenticatedAdminRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
+  '/admin/dashboard': typeof authenticatedAdminDashboardRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/dashboard': typeof authenticatedDashboardIndexRoute
-  '/dashboard/admin': typeof authenticatedDashboardAdminIndexRoute
-  '/dashboard/user': typeof authenticatedDashboardUserIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/(auth)': typeof authRouteRouteWithChildren
   '/(authenticated)': typeof authenticatedRouteRouteWithChildren
+  '/(authenticated)/admin': typeof authenticatedAdminRouteRouteWithChildren
+  '/(authenticated)/dashboard': typeof authenticatedDashboardRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
-  '/(authenticated)/dashboard/admin': typeof authenticatedDashboardAdminRouteRouteWithChildren
-  '/(authenticated)/dashboard/user': typeof authenticatedDashboardUserRouteRouteWithChildren
+  '/(authenticated)/admin/dashboard': typeof authenticatedAdminDashboardRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/(authenticated)/dashboard/': typeof authenticatedDashboardIndexRoute
-  '/(authenticated)/dashboard/admin/': typeof authenticatedDashboardAdminIndexRoute
-  '/(authenticated)/dashboard/user/': typeof authenticatedDashboardUserIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
+    | '/dashboard'
     | '/login'
     | '/register'
-    | '/dashboard/admin'
-    | '/dashboard/user'
+    | '/admin/dashboard'
     | '/api/auth/$'
-    | '/dashboard'
-    | '/dashboard/admin/'
-    | '/dashboard/user/'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/login'
     | '/register'
+    | '/admin/dashboard'
     | '/api/auth/$'
     | '/dashboard'
-    | '/dashboard/admin'
-    | '/dashboard/user'
   id:
     | '__root__'
     | '/'
     | '/(auth)'
     | '/(authenticated)'
+    | '/(authenticated)/admin'
+    | '/(authenticated)/dashboard'
     | '/(auth)/login'
     | '/(auth)/register'
-    | '/(authenticated)/dashboard/admin'
-    | '/(authenticated)/dashboard/user'
+    | '/(authenticated)/admin/dashboard'
     | '/api/auth/$'
     | '/(authenticated)/dashboard/'
-    | '/(authenticated)/dashboard/admin/'
-    | '/(authenticated)/dashboard/user/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -194,12 +182,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authLoginRouteImport
       parentRoute: typeof authRouteRoute
     }
-    '/(authenticated)/dashboard/': {
-      id: '/(authenticated)/dashboard/'
+    '/(authenticated)/dashboard': {
+      id: '/(authenticated)/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
-      preLoaderRoute: typeof authenticatedDashboardIndexRouteImport
+      preLoaderRoute: typeof authenticatedDashboardRouteRouteImport
       parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(authenticated)/admin': {
+      id: '/(authenticated)/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof authenticatedAdminRouteRouteImport
+      parentRoute: typeof authenticatedRouteRoute
+    }
+    '/(authenticated)/dashboard/': {
+      id: '/(authenticated)/dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof authenticatedDashboardIndexRouteImport
+      parentRoute: typeof authenticatedDashboardRouteRoute
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -208,33 +210,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/(authenticated)/dashboard/user': {
-      id: '/(authenticated)/dashboard/user'
-      path: '/dashboard/user'
-      fullPath: '/dashboard/user'
-      preLoaderRoute: typeof authenticatedDashboardUserRouteRouteImport
-      parentRoute: typeof authenticatedRouteRoute
-    }
-    '/(authenticated)/dashboard/admin': {
-      id: '/(authenticated)/dashboard/admin'
-      path: '/dashboard/admin'
-      fullPath: '/dashboard/admin'
-      preLoaderRoute: typeof authenticatedDashboardAdminRouteRouteImport
-      parentRoute: typeof authenticatedRouteRoute
-    }
-    '/(authenticated)/dashboard/user/': {
-      id: '/(authenticated)/dashboard/user/'
-      path: '/'
-      fullPath: '/dashboard/user/'
-      preLoaderRoute: typeof authenticatedDashboardUserIndexRouteImport
-      parentRoute: typeof authenticatedDashboardUserRouteRoute
-    }
-    '/(authenticated)/dashboard/admin/': {
-      id: '/(authenticated)/dashboard/admin/'
-      path: '/'
-      fullPath: '/dashboard/admin/'
-      preLoaderRoute: typeof authenticatedDashboardAdminIndexRouteImport
-      parentRoute: typeof authenticatedDashboardAdminRouteRoute
+    '/(authenticated)/admin/dashboard': {
+      id: '/(authenticated)/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof authenticatedAdminDashboardRouteImport
+      parentRoute: typeof authenticatedAdminRouteRoute
     }
   }
 }
@@ -253,47 +234,43 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
 )
 
-interface authenticatedDashboardAdminRouteRouteChildren {
-  authenticatedDashboardAdminIndexRoute: typeof authenticatedDashboardAdminIndexRoute
+interface authenticatedAdminRouteRouteChildren {
+  authenticatedAdminDashboardRoute: typeof authenticatedAdminDashboardRoute
 }
 
-const authenticatedDashboardAdminRouteRouteChildren: authenticatedDashboardAdminRouteRouteChildren =
+const authenticatedAdminRouteRouteChildren: authenticatedAdminRouteRouteChildren =
   {
-    authenticatedDashboardAdminIndexRoute:
-      authenticatedDashboardAdminIndexRoute,
+    authenticatedAdminDashboardRoute: authenticatedAdminDashboardRoute,
   }
 
-const authenticatedDashboardAdminRouteRouteWithChildren =
-  authenticatedDashboardAdminRouteRoute._addFileChildren(
-    authenticatedDashboardAdminRouteRouteChildren,
+const authenticatedAdminRouteRouteWithChildren =
+  authenticatedAdminRouteRoute._addFileChildren(
+    authenticatedAdminRouteRouteChildren,
   )
 
-interface authenticatedDashboardUserRouteRouteChildren {
-  authenticatedDashboardUserIndexRoute: typeof authenticatedDashboardUserIndexRoute
-}
-
-const authenticatedDashboardUserRouteRouteChildren: authenticatedDashboardUserRouteRouteChildren =
-  {
-    authenticatedDashboardUserIndexRoute: authenticatedDashboardUserIndexRoute,
-  }
-
-const authenticatedDashboardUserRouteRouteWithChildren =
-  authenticatedDashboardUserRouteRoute._addFileChildren(
-    authenticatedDashboardUserRouteRouteChildren,
-  )
-
-interface authenticatedRouteRouteChildren {
-  authenticatedDashboardAdminRouteRoute: typeof authenticatedDashboardAdminRouteRouteWithChildren
-  authenticatedDashboardUserRouteRoute: typeof authenticatedDashboardUserRouteRouteWithChildren
+interface authenticatedDashboardRouteRouteChildren {
   authenticatedDashboardIndexRoute: typeof authenticatedDashboardIndexRoute
 }
 
+const authenticatedDashboardRouteRouteChildren: authenticatedDashboardRouteRouteChildren =
+  {
+    authenticatedDashboardIndexRoute: authenticatedDashboardIndexRoute,
+  }
+
+const authenticatedDashboardRouteRouteWithChildren =
+  authenticatedDashboardRouteRoute._addFileChildren(
+    authenticatedDashboardRouteRouteChildren,
+  )
+
+interface authenticatedRouteRouteChildren {
+  authenticatedAdminRouteRoute: typeof authenticatedAdminRouteRouteWithChildren
+  authenticatedDashboardRouteRoute: typeof authenticatedDashboardRouteRouteWithChildren
+}
+
 const authenticatedRouteRouteChildren: authenticatedRouteRouteChildren = {
-  authenticatedDashboardAdminRouteRoute:
-    authenticatedDashboardAdminRouteRouteWithChildren,
-  authenticatedDashboardUserRouteRoute:
-    authenticatedDashboardUserRouteRouteWithChildren,
-  authenticatedDashboardIndexRoute: authenticatedDashboardIndexRoute,
+  authenticatedAdminRouteRoute: authenticatedAdminRouteRouteWithChildren,
+  authenticatedDashboardRouteRoute:
+    authenticatedDashboardRouteRouteWithChildren,
 }
 
 const authenticatedRouteRouteWithChildren =

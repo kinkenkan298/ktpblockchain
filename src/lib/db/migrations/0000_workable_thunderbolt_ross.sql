@@ -28,6 +28,7 @@ CREATE TABLE `ktp_records` (
 	`full_name` text NOT NULL,
 	`province` text,
 	`city` text,
+	`status` enum('PENDING','VERIFIED','REJECTED','SUSPENDED') DEFAULT 'PENDING',
 	`is_verified` boolean DEFAULT false,
 	`verified_at` timestamp,
 	`created_at` timestamp DEFAULT (now()),

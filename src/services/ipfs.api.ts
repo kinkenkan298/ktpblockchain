@@ -14,9 +14,3 @@ export const $uploadData = createServerFn({ method: "POST" })
       url: `https://${process.env.PINATA_GATEWAY}/ipfs/${result.cid}`,
     };
   });
-
-export const $getDataUser = createServerFn({ method: "GET" }).handler(
-  async () => {
-    return true;
-  }
-);

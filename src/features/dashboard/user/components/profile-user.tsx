@@ -1,11 +1,25 @@
 import { User, MapPin, Phone, Mail, CreditCard } from "lucide-react";
 import { useAuthenticatedUser } from "@/lib/auth/client";
+import { getKtpRecord } from "@/services/ktp.services";
+import { useQuery } from "@tanstack/react-query";
 
 export function ProfileCardUser() {
   const userSession = useAuthenticatedUser();
 
   const { user } = userSession;
 
+  const { data, isPending } = useQuery({
+    queryKey: ["data-ktp"],
+    queryFn: async () => {
+      const data = await getKtpRecord({ data: { userId: user.id } });
+
+      return data["getRecord"][0];
+    },
+  });
+
+  if (isPending || !data) {
+    return <div>Data sedang tidak ada!</div>;
+  }
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-start justify-between mb-6">
@@ -29,15 +43,14 @@ export function ProfileCardUser() {
         </div>
         <div>
           <h4 className="text-xl font-bold text-gray-900">{user.name}</h4>
-          <p className="text-sm text-gray-500">Status: Belum Terverifikasi</p>
+          <p className="text-sm text-gray-500">
+            Status:{" "}
+            {data["isVerified"] ? "Terverifikasi" : "Belum Terverifikasi"}
+          </p>
           <div
-            className={`mt-1 inline-flex items-center px-2 py-1 text-xs font-medium rounded-full ${user.status === "PENDING" ? "bg-yellow-100 text-yellow-700" : user.status === "VERIFIED" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+            className={`mt-1 inline-flex items-center px-2 py-1 text-xs font-medium rounded-full bg-yellow-500 text-white`}
           >
-            {user.status === "PENDING"
-              ? "Pending"
-              : user.status === "VERIFIED"
-                ? "Verified"
-                : "Rejected"}
+            Pending
           </div>
         </div>
       </div>
@@ -49,29 +62,37 @@ export function ProfileCardUser() {
             <p className="text-xs text-gray-500 mb-1">
               NIK (Nomor Induk Kependudukan)
             </p>
-            <p className="text-sm font-medium text-gray-900">{user.nik}</p>
+            <p className="text-sm font-medium text-gray-900">{data["nik"]}</p>
+          </div>
+        </div>
+
+        <div className="flex items-start space-x-3">
+          <CreditCard className="w-5 h-5 text-gray-400 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-xs text-gray-500 mb-1">Nama lengkap</p>
+            <p className="text-sm font-medium text-gray-900">
+              {data["fullName"]}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-start space-x-3">
+          <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-xs text-gray-500 mb-1">Provinsi</p>
+            <p className="text-sm font-medium text-gray-900">
+              {data["province"]}
+            </p>
           </div>
         </div>
 
         <div className="flex items-start space-x-3">
           <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
           <div className="flex-1">
-            <p className="text-xs text-gray-500 mb-1">Alamat</p>
-            <p className="text-sm font-medium text-gray-900">{user.address}</p>
+            <p className="text-xs text-gray-500 mb-1">Kota</p>
+            <p className="text-sm font-medium text-gray-900">{data["city"]}</p>
           </div>
         </div>
-
-        {user.phoneNumber && (
-          <div className="flex items-start space-x-3">
-            <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
-            <div className="flex-1">
-              <p className="text-xs text-gray-500 mb-1">Nomor Telepon</p>
-              <p className="text-sm font-medium text-gray-900">
-                {user.phoneNumber}
-              </p>
-            </div>
-          </div>
-        )}
 
         {user.email && (
           <div className="flex items-start space-x-3">
