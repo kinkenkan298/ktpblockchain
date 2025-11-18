@@ -10,7 +10,7 @@ export const Route = createFileRoute("/(authenticated)")({
     });
 
     if (!isAuthenticated(user)) {
-      throw redirect({ to: "/login" });
+      throw redirect({ to: "/" });
     }
 
     return { user };

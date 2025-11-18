@@ -67,7 +67,7 @@ export function DynamicQRCodeUser() {
                 className="rounded-lg"
               />
             </div>
-            <div className="absolute -top-3 -right-3 bg-blue-600 text-white p-2 rounded-full shadow-lg">
+            <div className="absolute -top-3 -right-3 bg-primary text-white p-2 rounded-full shadow-lg">
               <Shield className="w-5 h-5" />
             </div>
           </div>
@@ -77,14 +77,14 @@ export function DynamicQRCodeUser() {
               <span className="text-sm font-medium text-slate-600">
                 Berlaku hingga
               </span>
-              <span className="text-lg font-bold text-blue-600 font-mono">
+              <span className="text-lg font-bold text-primary font-mono">
                 {/* {Math.floor(timeLeft / 60)}:
                 {(timeLeft % 60).toString().padStart(2, "0")} */}
               </span>
             </div>
 
             <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
-              <div className="bg-linear-to-r from-blue-500 to-blue-600 h-full transition-all duration-1000 ease-linear" />
+              <div className="bg-primary h-full transition-all duration-1000 ease-linear" />
             </div>
 
             <p className="text-xs text-slate-500 text-center">

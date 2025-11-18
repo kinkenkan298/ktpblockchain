@@ -15,6 +15,7 @@ export const Route = createFileRoute("/(auth)/login")({
 });
 
 function RouteComponent() {
+  const { redirectUrl } = Route.useRouteContext();
   return (
     <div className="min-h-screen min-w-screen flex justify-center align-middle items-center">
       <Card className="w-full max-w-md">
@@ -27,7 +28,7 @@ function RouteComponent() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <LoginForm />
+          <LoginForm redirectUrl={redirectUrl} />
         </CardContent>
         <CardFooter className="flex-col gap-2">
           <Button type="submit" className="w-full" form="loginForm">

@@ -14,6 +14,8 @@ import { useState } from "react";
 
 import { useQuery } from "@tanstack/react-query";
 import { ktpQueries } from "@/services/queries";
+import { BlockchainTraceTool } from "@/features/dashboard/user/components/blockchain-trace";
+import Loader from "@/components/kokonutui/loader";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
   component: RouteComponent,
@@ -37,7 +39,7 @@ function RouteComponent() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Memuat dashboard...</p>
         </div>
       </div>
@@ -85,7 +87,7 @@ function RouteComponent() {
           color="green"
         />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-5">
+      <div className="grid grid-cols-1 gap-5 mb-5">
         <div className="md:col-span-2">
           <ProfileCardUser data_ktp={ktp_data} user={user?.user} />
         </div>
@@ -99,11 +101,15 @@ function RouteComponent() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 gap-2 sm:gap-6 mb-5">
         <ActiveConsentsUser
           consents={consents}
           onRevoke={handleRevokeConsent}
         />
+      </div>
+
+      <div className="grid grid-cols-1 gap-2">
+        <BlockchainTraceTool />
       </div>
     </>
   );

@@ -1,3 +1,7 @@
+import {
+  RippleButton,
+  RippleButtonRipples,
+} from "@/components/animate-ui/components/buttons/ripple";
 import { Features } from "@/components/features";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
@@ -38,15 +42,18 @@ function UserAction() {
     </div>
   ) : (
     <nav className="hidden md:flex items-center gap-8">
-      <Link
-        to="/login"
-        className="text-foreground hover:text-primary transition-colors"
-      >
-        Masuk
-      </Link>
-      <Button size="lg" className="rounded-full" asChild>
-        <Link to="/register">Daftar</Link>
-      </Button>
+      <RippleButton variant={"link"} className="rounded-full" asChild>
+        <Link to="/login">
+          Masuk
+          <RippleButtonRipples />
+        </Link>
+      </RippleButton>
+      <RippleButton variant={"default"} className="rounded-full" asChild>
+        <Link to="/register">
+          Daftar
+          <RippleButtonRipples />
+        </Link>
+      </RippleButton>
     </nav>
   );
 }

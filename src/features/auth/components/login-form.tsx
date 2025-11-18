@@ -26,7 +26,7 @@ const Login = async (data: LoginSchema) => {
   return response;
 };
 
-export function LoginForm() {
+export function LoginForm({ redirectUrl }: { redirectUrl?: string }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -38,7 +38,7 @@ export function LoginForm() {
 
       await queryClient.resetQueries();
 
-      navigate({ to: "/dashboard" });
+      navigate({ to: redirectUrl || "/dashboard" });
     },
   });
 

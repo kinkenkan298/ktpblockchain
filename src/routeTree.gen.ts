@@ -18,6 +18,8 @@ import { Route as authenticatedDashboardRouteRouteImport } from './routes/(authe
 import { Route as authenticatedAdminRouteRouteImport } from './routes/(authenticated)/admin/route'
 import { Route as authenticatedDashboardIndexRouteImport } from './routes/(authenticated)/dashboard/index'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as authenticatedDashboardProfileRouteImport } from './routes/(authenticated)/dashboard/profile'
+import { Route as authenticatedDashboardEditProfileRouteImport } from './routes/(authenticated)/dashboard/edit-profile'
 import { Route as authenticatedAdminDashboardRouteImport } from './routes/(authenticated)/admin/dashboard'
 
 const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
@@ -65,6 +67,18 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const authenticatedDashboardProfileRoute =
+  authenticatedDashboardProfileRouteImport.update({
+    id: '/profile',
+    path: '/profile',
+    getParentRoute: () => authenticatedDashboardRouteRoute,
+  } as any)
+const authenticatedDashboardEditProfileRoute =
+  authenticatedDashboardEditProfileRouteImport.update({
+    id: '/edit-profile',
+    path: '/edit-profile',
+    getParentRoute: () => authenticatedDashboardRouteRoute,
+  } as any)
 const authenticatedAdminDashboardRoute =
   authenticatedAdminDashboardRouteImport.update({
     id: '/dashboard',
@@ -79,6 +93,8 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/admin/dashboard': typeof authenticatedAdminDashboardRoute
+  '/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
+  '/dashboard/profile': typeof authenticatedDashboardProfileRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/dashboard/': typeof authenticatedDashboardIndexRoute
 }
@@ -88,6 +104,8 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/admin/dashboard': typeof authenticatedAdminDashboardRoute
+  '/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
+  '/dashboard/profile': typeof authenticatedDashboardProfileRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/dashboard': typeof authenticatedDashboardIndexRoute
 }
@@ -101,6 +119,8 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
   '/(authenticated)/admin/dashboard': typeof authenticatedAdminDashboardRoute
+  '/(authenticated)/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
+  '/(authenticated)/dashboard/profile': typeof authenticatedDashboardProfileRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/(authenticated)/dashboard/': typeof authenticatedDashboardIndexRoute
 }
@@ -113,6 +133,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/admin/dashboard'
+    | '/dashboard/edit-profile'
+    | '/dashboard/profile'
     | '/api/auth/$'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
@@ -122,6 +144,8 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/admin/dashboard'
+    | '/dashboard/edit-profile'
+    | '/dashboard/profile'
     | '/api/auth/$'
     | '/dashboard'
   id:
@@ -134,6 +158,8 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(auth)/register'
     | '/(authenticated)/admin/dashboard'
+    | '/(authenticated)/dashboard/edit-profile'
+    | '/(authenticated)/dashboard/profile'
     | '/api/auth/$'
     | '/(authenticated)/dashboard/'
   fileRoutesById: FileRoutesById
@@ -210,6 +236,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/(authenticated)/dashboard/profile': {
+      id: '/(authenticated)/dashboard/profile'
+      path: '/profile'
+      fullPath: '/dashboard/profile'
+      preLoaderRoute: typeof authenticatedDashboardProfileRouteImport
+      parentRoute: typeof authenticatedDashboardRouteRoute
+    }
+    '/(authenticated)/dashboard/edit-profile': {
+      id: '/(authenticated)/dashboard/edit-profile'
+      path: '/edit-profile'
+      fullPath: '/dashboard/edit-profile'
+      preLoaderRoute: typeof authenticatedDashboardEditProfileRouteImport
+      parentRoute: typeof authenticatedDashboardRouteRoute
+    }
     '/(authenticated)/admin/dashboard': {
       id: '/(authenticated)/admin/dashboard'
       path: '/dashboard'
@@ -249,11 +289,16 @@ const authenticatedAdminRouteRouteWithChildren =
   )
 
 interface authenticatedDashboardRouteRouteChildren {
+  authenticatedDashboardEditProfileRoute: typeof authenticatedDashboardEditProfileRoute
+  authenticatedDashboardProfileRoute: typeof authenticatedDashboardProfileRoute
   authenticatedDashboardIndexRoute: typeof authenticatedDashboardIndexRoute
 }
 
 const authenticatedDashboardRouteRouteChildren: authenticatedDashboardRouteRouteChildren =
   {
+    authenticatedDashboardEditProfileRoute:
+      authenticatedDashboardEditProfileRoute,
+    authenticatedDashboardProfileRoute: authenticatedDashboardProfileRoute,
     authenticatedDashboardIndexRoute: authenticatedDashboardIndexRoute,
   }
 

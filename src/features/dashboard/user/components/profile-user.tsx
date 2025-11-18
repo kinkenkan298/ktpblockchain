@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Link } from "@tanstack/react-router";
 import { User } from "better-auth";
 import {
   User as UserIcon,
@@ -35,8 +36,9 @@ export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
             variant="ghost"
             size="sm"
             className="text-primary hover:text-primary hover:bg-blue-50"
+            asChild
           >
-            Edit Profil
+            <Link to="/dashboard/edit-profile">Edit Profile</Link>
           </Button>
         </div>
       </CardHeader>
