@@ -12,7 +12,7 @@ export const registerUserKtp = createServerFn()
       blockNumber: z.string(),
       ipfsCid: z.string(),
       ipfsUrl: z.string(),
-      contractRecordId: z.string().optional(),
+      contractRecordId: z.string(),
       blockchainHash: z.string(),
       userId: z.string(),
     })

@@ -2,6 +2,10 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth/client";
 import { SettingsCard } from "@/components/settings-card";
+import { toast } from "sonner";
+import { Button } from "@/components/animate-ui/components/buttons/button";
+import { Field, FieldLabel, FieldSet } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 
 export function SecuritySection() {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,7 +17,7 @@ export function SecuritySection() {
 
   const handleChangePassword = async () => {
     if (passwords.new !== passwords.confirm)
-      return alert("Passwords do not match");
+      return toast.error("Password tidak cocok");
 
     setIsLoading(true);
     try {
@@ -22,10 +26,10 @@ export function SecuritySection() {
         newPassword: passwords.new,
         revokeOtherSessions: true,
       });
-      alert("Password changed successfully");
+      toast.success("Password berhasil diubah");
       setPasswords({ current: "", new: "", confirm: "" });
     } catch (error) {
-      alert("Failed to update password");
+      toast.error("Gagal mengubah password");
     } finally {
       setIsLoading(false);
     }
@@ -33,60 +37,61 @@ export function SecuritySection() {
 
   return (
     <SettingsCard
-      title="Security"
-      description="Manage your password and security preferences."
+      title="Keamanan"
+      description="Kelola kata sandi dan preferensi keamanan Anda."
       footer={
-        <button
+        <Button
           onClick={handleChangePassword}
           disabled={isLoading}
-          className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
+          className="text-white px-4 py-2 rounded-md text-sm font-medium disabled:opacity-50 flex items-center gap-2"
         >
           {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-          Update Password
-        </button>
+          Ubah Password
+        </Button>
       }
     >
       <div className="space-y-4 max-w-md">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Current Password
-          </label>
-          <input
-            type="password"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black outline-none sm:text-sm"
-            value={passwords.current}
-            onChange={(e) =>
-              setPasswords({ ...passwords, current: e.target.value })
-            }
-          />
-        </div>
+        <FieldSet>
+          <Field>
+            <FieldLabel>Password Sekarang</FieldLabel>
+            <Input
+              type="password"
+              value={passwords.current}
+              onChange={(e) =>
+                setPasswords({ ...passwords, current: e.target.value })
+              }
+              className="border border-gray-300 rounded-md"
+            />
+          </Field>
+        </FieldSet>
+
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              New Password
-            </label>
-            <input
-              type="password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black outline-none sm:text-sm"
-              value={passwords.new}
-              onChange={(e) =>
-                setPasswords({ ...passwords, new: e.target.value })
-              }
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black outline-none sm:text-sm"
-              value={passwords.confirm}
-              onChange={(e) =>
-                setPasswords({ ...passwords, confirm: e.target.value })
-              }
-            />
-          </div>
+          <FieldSet>
+            <Field>
+              <FieldLabel>New Password</FieldLabel>
+              <Input
+                type="password"
+                value={passwords.new}
+                onChange={(e) =>
+                  setPasswords({ ...passwords, new: e.target.value })
+                }
+                className="border border-gray-300 rounded-md"
+              />
+            </Field>
+          </FieldSet>
+          <FieldSet>
+            <Field>
+              <FieldLabel>Confirm Password</FieldLabel>
+              <Input
+                type="password"
+                value={passwords.confirm}
+                onChange={(e) =>
+                  setPasswords({ ...passwords, confirm: e.target.value })
+                }
+                className="border border-gray-300 rounded-md"
+              />
+            </Field>
+          </FieldSet>
         </div>
       </div>
     </SettingsCard>

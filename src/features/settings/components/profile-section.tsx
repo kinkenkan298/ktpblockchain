@@ -2,6 +2,15 @@ import { useState } from "react";
 import { Loader2, User } from "lucide-react";
 import { SettingsCard } from "@/components/settings-card";
 import { authClient } from "@/lib/auth/client";
+import { toast } from "sonner";
+import { Button } from "@/components/animate-ui/components/buttons/button";
+import {
+  Field,
+  FieldDescription,
+  FieldLabel,
+  FieldSet,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
 
 export function ProfileSection() {
   const { data: session } = authClient.useSession();
@@ -12,9 +21,9 @@ export function ProfileSection() {
     setIsLoading(true);
     try {
       await authClient.updateUser({ name });
-      alert("Profile updated!"); // Ganti dengan Toast di production
+      toast.success("Profile updated!");
     } catch (error) {
-      console.error(error);
+      toast.error("Failed to update profile");
     } finally {
       setIsLoading(false);
     }
@@ -22,20 +31,19 @@ export function ProfileSection() {
 
   return (
     <SettingsCard
-      title="General Information"
-      description="Update your profile information and email address."
+      title="Informasi umum akun anda"
+      description="Ubah informasi profile anda."
       footer={
-        <button
+        <Button
           onClick={handleUpdateProfile}
           disabled={isLoading}
-          className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 disabled:opacity-50 flex items-center gap-2"
+          className="text-white px-4 py-2 rounded-md text-sm font-medium disabled:opacity-50"
         >
           {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-          Save Changes
-        </button>
+          Simpan Perubahan
+        </Button>
       }
     >
-      {/* Avatar & Email Row */}
       <div className="flex items-center gap-4 mb-4">
         <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center border">
           {session?.user?.image ? (
@@ -49,32 +57,34 @@ export function ProfileSection() {
           )}
         </div>
         <div className="flex-1">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Email Address
-          </label>
-          <input
-            type="email"
-            disabled
-            value={session?.user?.email || ""}
-            className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed sm:text-sm"
-          />
-          <p className="text-xs text-gray-500 mt-1">Email cannot be changed.</p>
+          <FieldSet>
+            <Field>
+              <FieldLabel>Alamat Email</FieldLabel>
+              <Input
+                type="email"
+                disabled
+                value={session?.user?.email || ""}
+                className="w-full max-w-md px-2 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500 cursor-not-allowed sm:text-sm"
+              />
+              <FieldDescription className="text-xs text-gray-500 mt-1">
+                Email tidak dapat diubah.
+              </FieldDescription>
+            </Field>
+          </FieldSet>
         </div>
       </div>
-
-      {/* Name Input */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
-          Display Name
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter your full name"
-          className="w-full max-w-md px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-black focus:border-transparent outline-none sm:text-sm transition-all"
-        />
-      </div>
+      <FieldSet>
+        <Field>
+          <FieldLabel>Nama Lengkap</FieldLabel>
+          <Input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter your full name"
+            className="w-full max-w-md px-2 py-2 border border-gray-300"
+          />
+        </Field>
+      </FieldSet>
     </SettingsCard>
   );
 }

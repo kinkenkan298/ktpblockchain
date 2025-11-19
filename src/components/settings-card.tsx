@@ -1,4 +1,13 @@
 import React from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Separator } from "./ui/separator";
 
 interface SettingsCardProps {
   title: string;
@@ -14,19 +23,18 @@ export const SettingsCard = ({
   footer,
 }: SettingsCardProps) => {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
-      <div className="p-6 border-b border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-        <p className="text-sm text-gray-500 mt-1">{description}</p>
-      </div>
-
-      <div className="p-6 space-y-4">{children}</div>
-
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
       {footer && (
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-2">
-          {footer}
-        </div>
+        <>
+          <Separator />
+          <CardFooter className="flex justify-end gap-2">{footer}</CardFooter>
+        </>
       )}
-    </div>
+    </Card>
   );
 };
