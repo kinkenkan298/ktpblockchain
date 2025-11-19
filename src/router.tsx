@@ -20,9 +20,10 @@ export function getRouter() {
   const queryClient: QueryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        staleTime: 1000 * 60 * 5,
-        retry: 0,
+        staleTime: 1000 * 60,
+        gcTime: 1000 * 60 * 10,
         refetchOnWindowFocus: false,
+        retry: 0,
       },
     },
     mutationCache: new MutationCache({

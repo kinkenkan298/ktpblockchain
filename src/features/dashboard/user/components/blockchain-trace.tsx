@@ -21,6 +21,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/animate-ui/components/radix/tabs";
+import { toast } from "sonner";
 
 export function BlockchainTraceTool() {
   // const [transactions, setTransactions] = useState<BlockchainTransaction[]>([]);
@@ -72,6 +73,11 @@ export function BlockchainTraceTool() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedTransaction(null);
+  };
+
+  const handleCopyHash = () => {
+    navigator.clipboard.writeText("asd");
+    toast.success("Hash berhasil disalin ke clipboard");
   };
 
   return (
@@ -287,6 +293,7 @@ export function BlockchainTraceTool() {
         open={isModalOpen}
         onOpenChange={handleCloseModal}
         privacyMode={privacyMode}
+        handleCopyHash={handleCopyHash}
       />
     </>
   );

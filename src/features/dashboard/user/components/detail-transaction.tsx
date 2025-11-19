@@ -14,12 +14,14 @@ interface TransactionDetailModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   privacyMode: boolean;
+  handleCopyHash: () => void;
 }
 
 export function TransactionDetailModal({
   transaction,
   open,
   onOpenChange,
+  handleCopyHash,
   privacyMode,
 }: TransactionDetailModalProps) {
   if (!transaction) return null;
@@ -128,7 +130,9 @@ export function TransactionDetailModal({
           </div>
 
           <div className="flex gap-2 justify-end">
-            <Button variant="outline">Salin Hash</Button>
+            <Button variant="outline" onClick={handleCopyHash}>
+              Salin Hash
+            </Button>
             <Button>Lihat di Block Explorer</Button>
           </div>
         </div>

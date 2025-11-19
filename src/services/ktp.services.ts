@@ -14,6 +14,7 @@ import { createServerFn } from "@tanstack/react-start";
 import z from "zod";
 import { PersonalInfoSchema } from "@/features/auth/types/register-schema";
 import { eq } from "drizzle-orm";
+import { pinata } from "@/lib/pinata";
 
 export const createKtpRecord = createServerFn()
   .inputValidator(PersonalInfoSchema)
@@ -103,4 +104,53 @@ export const getHashChain = createServerFn()
     if (!result) throw new Error("id hash tidak ditemukan!");
 
     return result;
+  });
+export const getKtpRecordById = createServerFn()
+  .inputValidator(z.object({ id: z.string() }))
+  .handler(async ({ data }) => {
+    const { id } = data;
+
+    const getRecord = await db
+      .select()
+      .from(ktp_records)
+      .where(eq(ktp_records.id, id))
+      .limit(1);
+
+    const record = getRecord[0];
+
+    if (!record) throw new Error("Data ktp tidak ada ditemukan!");
+
+    return record;
+  });
+export const getCidData = createServerFn()
+  .inputValidator(z.object({ ipfsCid: z.string() }))
+  .handler(async ({ data }) => {
+    const { ipfsCid } = data;
+    console.log(ipfsCid);
+
+    const { data: cid_data, contentType } =
+      await pinata.gateways.private.get(ipfsCid);
+
+    if (!cid_data) throw new Error("Data tidak ditemukan!");
+
+    try {
+      if (
+        contentType?.includes("application/json") ||
+        typeof cid_data === "object"
+      ) {
+        if (cid_data instanceof Blob) {
+          return JSON.parse(await cid_data.text());
+        }
+        return JSON.parse(JSON.stringify(cid_data));
+      }
+
+      if (typeof cid_data === "string") {
+        return { cid_data };
+      }
+
+      return { cid_data: null };
+    } catch (error) {
+      console.error("Error parsing CID data:", error);
+      throw error;
+    }
   });

@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { $getUser } from "../lib/auth/functions";
-import { getKtpRecord } from "@/services/ktp.services";
+import { getKtpRecord, getCidData } from "@/services/ktp.services";
 
 export const authQueryOptions = {
   all: ["auth"],
@@ -12,10 +12,15 @@ export const authQueryOptions = {
     }),
 };
 export const ktpQueries = {
-  all: ["data-ktp"],
+  all: ["data-ktp"] as const,
   getDataKtp: (userId: string) =>
     queryOptions({
       queryKey: [...ktpQueries.all, "ktp-data", userId],
       queryFn: async () => await getKtpRecord({ data: { userId } }),
+    }),
+  getCidData: (ipfsCid: string) =>
+    queryOptions({
+      queryKey: [...ktpQueries.all, "cid-data", ipfsCid],
+      queryFn: async () => await getCidData({ data: { ipfsCid } }),
     }),
 };

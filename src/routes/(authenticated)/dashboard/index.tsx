@@ -11,9 +11,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Activity, FileCheck, Shield, Users } from "lucide-react";
 import { useState } from "react";
 
-import { useQuery } from "@tanstack/react-query";
 import { ktpQueries } from "@/services/queries";
 import { BlockchainTraceTool } from "@/features/dashboard/user/components/blockchain-trace";
+import { useGetKtpData } from "@/features/dashboard/user/lib/useKtp";
+import { Alert } from "@/components/ui/alert";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
   component: RouteComponent,
@@ -29,10 +30,23 @@ export const Route = createFileRoute("/(authenticated)/dashboard/")({
 
 function RouteComponent() {
   const { user } = Route.useRouteContext();
-  const data = Route.useLoaderData();
-
+  const {
+    data: data_ktp,
+    error,
+    isError,
+    isPending,
+  } = useGetKtpData(user?.user?.id ?? "");
   const [accessLogs, setAccessLogs] = useState<AccessLog[]>([]);
   const [consents, setConsents] = useState<ActiveConsent[]>([]);
+
+  if (isError) {
+    return (
+      <Alert variant="destructive">
+        Gagal mendapatkan data: {error.message}
+      </Alert>
+    );
+  }
+  if (isPending) return <div>Loading...</div>;
 
   const handleRevokeConsent = async (id: string) => {
     if (confirm("Apakah Anda yakin ingin mencabut persetujuan ini?")) {
@@ -73,19 +87,12 @@ function RouteComponent() {
       </div>
       <div className="grid grid-cols-1 gap-5 mb-5">
         <div className="md:col-span-2">
-          <ProfileCardUser data_ktp={data} user={user?.user} />
+          <ProfileCardUser data_ktp={data_ktp} user={user?.user} />
         </div>
 
         <div className="md:col-span-2">
           <AccessHistoryUser logs={accessLogs.slice(0, 3)} />
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-2 sm:gap-6 mb-5">
-        {/* <ActiveConsentsUser
-          consents={consents}
-          onRevoke={handleRevokeConsent}
-        /> */}
       </div>
 
       <div className="grid grid-cols-1 gap-2">

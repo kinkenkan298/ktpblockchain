@@ -44,7 +44,7 @@ export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="text-xl font-bold text-slate-900">
-              {user?.name || data_ktp.fullName}
+              {user?.name || data_ktp?.fullName || "User"}
             </h4>
             <p className="text-sm text-slate-500">Status: Terverifikasi</p>
             <Badge
@@ -59,18 +59,6 @@ export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
         <Separator className="mb-6" />
 
         <div className="space-y-4">
-          <div className="flex items-start space-x-3">
-            <CreditCard className="shrink-0 w-5 h-5 text-slate-400 mt-0.5" />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs text-slate-500 mb-1">
-                NIK (Nomor Induk Kependudukan)
-              </p>
-              <p className="text-sm font-medium text-slate-900 break-all">
-                {data_ktp.nik}
-              </p>
-            </div>
-          </div>
-
           <div className="flex items-start space-x-3">
             <MapPin className="shrink-0 w-5 h-5 text-slate-400 mt-0.5" />
             <div className="flex-1 min-w-0">
