@@ -14,6 +14,7 @@ import { authClient } from "@/lib/auth/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { ToOptions, useRouter } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
+
 import { Separator } from "@/components/ui/separator";
 
 interface SidebarProps {
@@ -39,6 +40,7 @@ const menuItems: MenuItemsProps[] = [
 export function SidebarUser({ activeTab, onTabChange }: SidebarProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
+
   const handleLogout = async () => {
     await authClient.signOut();
     await queryClient.invalidateQueries();

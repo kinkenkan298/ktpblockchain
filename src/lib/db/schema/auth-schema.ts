@@ -43,7 +43,7 @@ export const ktp_records = mysqlTable("ktp_records", {
   blockchainHash: text("blockchain_hash").notNull(),
   txHash: text("tx_hash").notNull().unique(),
   blockNumber: text("block_number"),
-  contractRecordId: text("contract_record_id"),
+  contractRecordId: text("contract_record_id").notNull(),
 
   nik: text("nik").notNull().unique(),
   fullName: text("full_name").notNull(),

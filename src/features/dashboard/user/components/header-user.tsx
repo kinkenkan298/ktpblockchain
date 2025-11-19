@@ -1,5 +1,5 @@
+import ProfileDropdown from "@/components/kokonutui/profile-dropdown";
 import { Button } from "@/components/ui/button";
-import { UserMenu } from "@/components/user-menu";
 import { Separator } from "@radix-ui/react-separator";
 import { Bell } from "lucide-react";
 
@@ -28,7 +28,7 @@ export function HeaderUser({ name }: { name: string | undefined }) {
 
           <Separator orientation="vertical" className="h-6 hidden sm:block" />
 
-          <UserMenu />
+          <ProfileDropdown />
         </div>
       </div>
     </header>
