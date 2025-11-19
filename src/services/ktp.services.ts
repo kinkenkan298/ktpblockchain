@@ -24,11 +24,18 @@ export const createKtpRecord = createServerFn()
     const generateHash = generateHashBlockchain(cid);
     console.log("Storing to blockchain...");
 
+    const metadata = {
+      id: `KTP-${data.nik}`,
+      nik: data.nik,
+      name: data.nama_lengkap,
+      city: data.kota,
+    };
+
     const txHash = await walletClient.writeContract({
       address: STORAGE_CONTRACT_ADDRESS,
       abi: storageContractAbi,
       functionName: "storeHash",
-      args: [cid],
+      args: [cid, metadata],
     });
 
     console.log(`Transaction sent: ${txHash}`);

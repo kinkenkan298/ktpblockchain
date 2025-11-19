@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "4ffb8b4e-83c1-49c1-b823-74af712a5631",
+  "id": "5f46597f-9746-48cf-8f1e-67f61e3c4fba",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -182,7 +182,7 @@
           "name": "contract_record_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "nik": {

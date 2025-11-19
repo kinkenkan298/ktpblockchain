@@ -23,7 +23,7 @@ CREATE TABLE `ktp_records` (
 	`blockchain_hash` text NOT NULL,
 	`tx_hash` text NOT NULL,
 	`block_number` text,
-	`contract_record_id` text,
+	`contract_record_id` text NOT NULL,
 	`nik` text NOT NULL,
 	`full_name` text NOT NULL,
 	`province` text,
