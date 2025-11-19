@@ -1,23 +1,25 @@
+import { useQueryClient } from "@tanstack/react-query";
+import { createLink, useRouter } from "@tanstack/react-router";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { ChevronsUpDown, LogOut, User } from "lucide-react";
+import { authClient, useAuthenticatedUser } from "@/lib/auth/client";
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { useQueryClient } from "@tanstack/react-query";
-import { createLink, useRouter } from "@tanstack/react-router";
-import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { LogOut, User } from "lucide-react";
-import { DropdownMenuContent } from "./ui/dropdown-menu";
-import { authClient, useAuthenticatedUser } from "@/lib/auth/client";
-import { useState } from "react";
+  DropdownMenuContent,
+} from "./animate-ui/components/radix/dropdown-menu";
+import { SidebarMenuButton } from "./animate-ui/components/radix/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ItemLink = createLink(DropdownMenuItem);
 
 export function UserMenu() {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const queryClient = useQueryClient();
   const { user } = useAuthenticatedUser();
   const [open, setOpen] = useState<boolean>(false);
@@ -31,16 +33,31 @@ export function UserMenu() {
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative w-10 h-10 rounded-full">
+        <SidebarMenuButton
+          size="lg"
+          className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+        >
           <Avatar className="h-8 w-8">
             <AvatarImage alt="User avatar" src={user?.image ?? ""} />
             <AvatarFallback>
               <User className="h-4 w-4" />
             </AvatarFallback>
           </Avatar>
-        </Button>
+          <div className="grid flex-1 text-left text-sm leading-tight">
+            <span className="truncate font-semibold">
+              {user?.name ?? "User"}
+            </span>
+            <span className="truncate text-xs"> {user?.email ?? ""}</span>
+          </div>
+          <ChevronsUpDown className="ml-auto size-4" />
+        </SidebarMenuButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+      <DropdownMenuContent
+        className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
+        side={isMobile ? "bottom" : "right"}
+        align="end"
+        sideOffset={4}
+      >
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
@@ -51,7 +68,6 @@ export function UserMenu() {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
         <ItemLink
           className="cursor-pointer"
           to="/"
@@ -67,10 +83,7 @@ export function UserMenu() {
           Settings
         </ItemLink>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="text-red-600 cursor-pointer"
-          onSelect={handleLogout}
-        >
+        <DropdownMenuItem onSelect={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>

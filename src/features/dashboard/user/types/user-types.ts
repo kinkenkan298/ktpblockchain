@@ -1,3 +1,5 @@
+import { User } from "better-auth";
+
 export type UserProfile = {
   id: string;
   user_id: string;
@@ -38,3 +40,16 @@ export type ActiveConsent = {
   created_at: string;
   updated_at: string;
 };
+export interface DataKtp {
+  fullName: string;
+  nik: string;
+  province: string | null;
+  city: string | null;
+  isVerified: boolean | null;
+  status: "PENDING" | "VERIFIED" | "REJECTED" | "SUSPENDED" | null;
+}
+
+export interface ProfileCardProps {
+  user?: User;
+  data_ktp: DataKtp;
+}

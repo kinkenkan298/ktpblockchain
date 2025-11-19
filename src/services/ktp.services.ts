@@ -3,6 +3,7 @@ import { $uploadData } from "./ipfs.api";
 import { generateHashBlockchain } from "@/lib/encryption";
 import { db } from "@/lib/db";
 import {
+  publicClient,
   STORAGE_CONTRACT_ADDRESS,
   storageContractAbi,
   walletClient,
@@ -79,4 +80,20 @@ export const getKtpRecord = createServerFn()
     if (!record) throw new Error("Data ktp tidak ada ditemukan!");
 
     return record;
+  });
+export const getHashChain = createServerFn()
+  .inputValidator(z.object({ chainId: z.bigint() }))
+  .handler(async ({ data }) => {
+    const { chainId } = data;
+
+    const result = await publicClient.readContract({
+      address: STORAGE_CONTRACT_ADDRESS,
+      abi: storageContractAbi,
+      functionName: "getHash",
+      args: [BigInt(chainId)],
+    });
+
+    if (!result) throw new Error("id hash tidak ditemukan!");
+
+    return result;
   });

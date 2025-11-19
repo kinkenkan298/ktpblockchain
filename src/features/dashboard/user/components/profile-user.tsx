@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@tanstack/react-router";
-import { User } from "better-auth";
 import {
   User as UserIcon,
   MapPin,
@@ -11,20 +10,7 @@ import {
   Mail,
   CreditCard,
 } from "lucide-react";
-
-interface DataKtp {
-  fullName: string;
-  nik: string;
-  province: string | null;
-  city: string | null;
-  isVerified: boolean | null;
-  status: "PENDING" | "VERIFIED" | "REJECTED" | "SUSPENDED" | null;
-}
-
-interface ProfileCardProps {
-  user?: User;
-  data_ktp: DataKtp;
-}
+import { ProfileCardProps } from "../types/user-types";
 
 export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
   return (

@@ -1,4 +1,10 @@
-import { createWalletClient, Hex, http, publicActions } from "viem";
+import {
+  createPublicClient,
+  createWalletClient,
+  Hex,
+  http,
+  publicActions,
+} from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { foundry } from "viem/chains";
 import abi from "../../artifacts/HashStorage.json";
@@ -10,9 +16,14 @@ export const getAccount = () => {
   return privateKeyToAccount(process.env.PRIVATE_KEY as Hex);
 };
 
+export const publicClient = createPublicClient({
+  chain: foundry,
+  transport: http(process.env.RPC_URL),
+});
+
 export const walletClient = createWalletClient({
   chain: foundry,
-  transport: http("http://127.0.0.1:8545"),
+  transport: http(process.env.RPC_URL),
   account: getAccount(),
 }).extend(publicActions);
 

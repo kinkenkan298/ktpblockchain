@@ -1,19 +1,14 @@
-import ProfileDropdown from "@/components/kokonutui/profile-dropdown";
+import { SidebarTrigger } from "@/components/animate-ui/components/radix/sidebar";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@radix-ui/react-separator";
 import { Bell } from "lucide-react";
 
-export function HeaderUser({ name }: { name: string | undefined }) {
+export function HeaderUser() {
   return (
-    <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-4 shadow-sm">
+    <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-4 sm:px-6 lg:px-8 py-4 shadow-sm transition-[width,height] ease-linear">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         <div className="min-w-0">
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-            Dashboard
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-500">
-            Selamat datang kembali {name ?? "User"}!
-          </p>
+          <SidebarTrigger className="-ml-1" />
         </div>
 
         <div className="flex items-center space-x-3 sm:space-x-6 shrink-0">
@@ -27,8 +22,6 @@ export function HeaderUser({ name }: { name: string | undefined }) {
           </Button>
 
           <Separator orientation="vertical" className="h-6 hidden sm:block" />
-
-          <ProfileDropdown />
         </div>
       </div>
     </header>

@@ -1,6 +1,5 @@
 import { AccessHistoryUser } from "@/features/dashboard/user/components/access-history-user";
 import { ActiveConsentsUser } from "@/features/dashboard/user/components/active-consents-user";
-import { DynamicQRCodeUser } from "@/features/dashboard/user/components/dynamic-qr-user";
 import { ProfileCardUser } from "@/features/dashboard/user/components/profile-user";
 import StatsCard from "@/features/dashboard/user/components/stats-card";
 import {
@@ -15,40 +14,25 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ktpQueries } from "@/services/queries";
 import { BlockchainTraceTool } from "@/features/dashboard/user/components/blockchain-trace";
-import Loader from "@/components/kokonutui/loader";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
   component: RouteComponent,
+  loader: async ({ context }) => {
+    const { user } = context;
+
+    const data_ktp = context.queryClient.ensureQueryData(
+      ktpQueries.getDataKtp(user?.user?.id ?? "")
+    );
+    return data_ktp;
+  },
 });
 
 function RouteComponent() {
   const { user } = Route.useRouteContext();
+  const data = Route.useLoaderData();
+
   const [accessLogs, setAccessLogs] = useState<AccessLog[]>([]);
   const [consents, setConsents] = useState<ActiveConsent[]>([]);
-
-  const {
-    data: ktp_data,
-    isLoading,
-    isError,
-  } = useQuery({
-    ...ktpQueries.getDataKtp(user?.user?.id ?? ""),
-    enabled: Boolean(user?.user?.id),
-  });
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Memuat dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (isError || !ktp_data) {
-    return <div>Gagal memuat data KTP.</div>;
-  }
 
   const handleRevokeConsent = async (id: string) => {
     if (confirm("Apakah Anda yakin ingin mencabut persetujuan ini?")) {
@@ -89,11 +73,7 @@ function RouteComponent() {
       </div>
       <div className="grid grid-cols-1 gap-5 mb-5">
         <div className="md:col-span-2">
-          <ProfileCardUser data_ktp={ktp_data} user={user?.user} />
-        </div>
-
-        <div className="md:col-span-2">
-          <DynamicQRCodeUser />
+          <ProfileCardUser data_ktp={data} user={user?.user} />
         </div>
 
         <div className="md:col-span-2">
@@ -102,10 +82,10 @@ function RouteComponent() {
       </div>
 
       <div className="grid grid-cols-1 gap-2 sm:gap-6 mb-5">
-        <ActiveConsentsUser
+        {/* <ActiveConsentsUser
           consents={consents}
           onRevoke={handleRevokeConsent}
-        />
+        /> */}
       </div>
 
       <div className="grid grid-cols-1 gap-2">
