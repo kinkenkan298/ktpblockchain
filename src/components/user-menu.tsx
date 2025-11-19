@@ -70,14 +70,14 @@ export function UserMenu() {
         </DropdownMenuLabel>
         <ItemLink
           className="cursor-pointer"
-          to="/"
+          to="/dashboard/profile"
           onClick={() => setOpen(false)}
         >
           Profile
         </ItemLink>
         <ItemLink
           className="cursor-pointer"
-          to="/"
+          to="/dashboard/settings"
           onClick={() => setOpen(false)}
         >
           Settings

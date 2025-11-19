@@ -1,5 +1,4 @@
 import { AccessHistoryUser } from "@/features/dashboard/user/components/access-history-user";
-import { ActiveConsentsUser } from "@/features/dashboard/user/components/active-consents-user";
 import { ProfileCardUser } from "@/features/dashboard/user/components/profile-user";
 import StatsCard from "@/features/dashboard/user/components/stats-card";
 import {
@@ -13,8 +12,8 @@ import { useState } from "react";
 
 import { ktpQueries } from "@/services/queries";
 import { BlockchainTraceTool } from "@/features/dashboard/user/components/blockchain-trace";
-import { useGetKtpData } from "@/features/dashboard/user/lib/useKtp";
-import { Alert } from "@/components/ui/alert";
+
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
   component: RouteComponent,
@@ -30,31 +29,13 @@ export const Route = createFileRoute("/(authenticated)/dashboard/")({
 
 function RouteComponent() {
   const { user } = Route.useRouteContext();
-  const {
-    data: data_ktp,
-    error,
-    isError,
-    isPending,
-  } = useGetKtpData(user?.user?.id ?? "");
+
+  const { data: data_ktp } = useSuspenseQuery(
+    ktpQueries.getDataKtp(user?.user?.id ?? "")
+  );
   const [accessLogs, setAccessLogs] = useState<AccessLog[]>([]);
   const [consents, setConsents] = useState<ActiveConsent[]>([]);
 
-  if (isError) {
-    return (
-      <Alert variant="destructive">
-        Gagal mendapatkan data: {error.message}
-      </Alert>
-    );
-  }
-  if (isPending) return <div>Loading...</div>;
-
-  const handleRevokeConsent = async (id: string) => {
-    if (confirm("Apakah Anda yakin ingin mencabut persetujuan ini?")) {
-      setConsents(
-        consents.map((c) => (c.id === id ? { ...c, status: "revoked" } : c))
-      );
-    }
-  };
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-5">

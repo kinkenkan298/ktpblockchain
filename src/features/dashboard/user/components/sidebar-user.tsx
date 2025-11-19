@@ -28,7 +28,12 @@ const menuItems: MenuItemsProps[] = [
   { id: "consent", label: "Persetujuan", icon: Shield },
   { id: "history", label: "Riwayat Akses", icon: History },
   { id: "documents", label: "Dokumen", icon: FileText },
-  { id: "settings", label: "Pengaturan", icon: Settings },
+  {
+    id: "settings",
+    label: "Pengaturan",
+    icon: Settings,
+    to: "/dashboard/settings",
+  },
 ];
 
 export function SidebarUser({ children }: { children: React.ReactNode }) {
