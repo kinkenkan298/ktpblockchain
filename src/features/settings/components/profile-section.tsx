@@ -141,7 +141,11 @@ export function ProfileSection() {
             type="file"
             accept="image/*"
             className="hidden"
-            // onChange={handleImageChange}
+            onChange={(e) => {
+              if (e.target.files) {
+                handleImageChange(e.target.files[0]);
+              }
+            }}
           />
         </div>
       </div>

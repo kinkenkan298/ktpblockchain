@@ -6,10 +6,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ToOptions } from "@tanstack/react-router";
 import { Edit, FileText, Lock, Settings, Download } from "lucide-react";
+import React from "react";
+
+interface ActionsMenu extends ToOptions {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  color: string;
+}
 
 export function QuickActionsCard() {
-  const actions = [
+  const actions: ActionsMenu[] = [
     { icon: Edit, label: "Edit Personal Information", color: "blue" },
     { icon: FileText, label: "Update Documents", color: "blue" },
     { icon: Lock, label: "Change Password", color: "blue" },

@@ -81,6 +81,8 @@ const $registerUser = async (data: AllFormSchema) => {
     data: personalInfoData,
   });
 
+  if (!contractRecordId) throw new Error("Contract Record ID tidak ada");
+
   const { error, data: signUpData } = await authClient.signUp.email({
     email,
     password,
@@ -91,7 +93,7 @@ const $registerUser = async (data: AllFormSchema) => {
   if (error) throw new Error(error.message);
 
   if (!signUpData.user?.id) {
-    throw new Error("User account created but user ID is missing");
+    throw new Error("Berhasil membuat akun user namun user id tidak ada");
   }
 
   const recordId = await registerUserKtp({

@@ -10,16 +10,14 @@ import { foundry } from "viem/chains";
 import abi from "../../artifacts/HashStorage.json";
 
 export const getAccount = () => {
-  if (!process.env.PRIVATE_KEY) {
-    throw new Error("Private key tidak ada!");
-  }
-  return privateKeyToAccount(process.env.PRIVATE_KEY as Hex);
+  return privateKeyToAccount(
+    "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"
+  );
 };
-
 export const publicClient = createPublicClient({
   chain: foundry,
   transport: http(process.env.RPC_URL),
-});
+}).extend(publicActions);
 
 export const walletClient = createWalletClient({
   chain: foundry,

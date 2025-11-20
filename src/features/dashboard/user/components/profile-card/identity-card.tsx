@@ -1,11 +1,14 @@
 import { Check } from "lucide-react";
 import { DataKtp } from "../../types/user-types";
+import { User } from "better-auth";
+import { Image } from "@unpic/react";
 
 interface IdentityCardProps {
   profile: DataKtp;
+  user?: User;
 }
 
-export function IdentityCard({ profile }: IdentityCardProps) {
+export function IdentityCard({ profile, user }: IdentityCardProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-center space-x-2 mb-6">
@@ -18,10 +21,20 @@ export function IdentityCard({ profile }: IdentityCardProps) {
       <div className="flex items-start justify-between">
         <div className="flex items-center space-x-6">
           <div className="relative">
-            <div className="w-32 h-32 rounded-full border-4 border-blue-500 overflow-hidden bg-gray-100">
+            <div className="w-32 h-32 rounded-full overflow-hidden bg-gray-100">
               <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-blue-500 to-blue-600">
                 <span className="text-4xl font-bold text-white">
-                  {profile.fullName.charAt(0).toLocaleUpperCase()}
+                  {user?.image ? (
+                    <Image
+                      src={user?.image}
+                      alt={user?.name || "User Avatar"}
+                      className="w-full h-full object-cover"
+                      width={128}
+                      height={128}
+                    />
+                  ) : (
+                    profile.fullName.charAt(0).toLocaleUpperCase()
+                  )}
                 </span>
               </div>
             </div>

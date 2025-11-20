@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/animate-ui/components/radix/sidebar";
-import { FileText, History, Home, Settings, Shield, User } from "lucide-react";
+import { Activity, FileText, Home, Settings, Shield, User } from "lucide-react";
 import { ToOptions } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import React from "react";
@@ -27,10 +27,10 @@ const menuItems: MenuItemsProps[] = [
   { id: "profile", label: "Profil Saya", icon: User, to: "/dashboard/profile" },
   { id: "consent", label: "Persetujuan", icon: Shield },
   {
-    id: "history",
-    label: "Riwayat Akses",
-    icon: History,
-    to: "/dashboard/access-history",
+    id: "pantau-aktivitas",
+    label: "Pantauan Aktivitas",
+    icon: Activity,
+    to: "/dashboard/activity-monitoring",
   },
   { id: "documents", label: "Dokumen", icon: FileText },
   {

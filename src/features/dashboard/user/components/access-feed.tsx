@@ -1,33 +1,35 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   ShieldCheck,
   Clock,
   CheckCircle2,
   XCircle,
-  AlertCircle,
   ChevronRight,
   Ban,
   Link2,
-  Info,
-  MoreHorizontal,
-  FileText,
 } from "lucide-react";
 
-// --- Types & Mock Data ---
-
 type AccessStatus = "approved" | "rejected" | "pending";
+type ActivityLog = {
+  id: string;
+  title: string;
+  actor: string;
+  details: string;
+  timestamp: Date;
+  status: AccessStatus;
+};
 
 interface ActivityItem {
   id: string;
   orgName: string;
-  orgLogo: string; // In real app, this is an image URL
+  orgLogo: string;
   isVerified: boolean;
   timestamp: string;
   purpose: string;
   dataAccessed: string[];
   duration: string;
   status: AccessStatus;
-  txHash: string; // Blockchain transaction hash
+  txHash: string;
 }
 
 const ACTIVITIES: ActivityItem[] = [
@@ -42,42 +44,6 @@ const ACTIVITIES: ActivityItem[] = [
     duration: "24 hours",
     status: "approved",
     txHash: "0x7f8a...3b21",
-  },
-  {
-    id: "2",
-    orgName: "Pinjaman Kilat (Unauthorized)",
-    orgLogo: "PK",
-    isVerified: false,
-    timestamp: "5 hours ago",
-    purpose: "Credit scoring assessment",
-    dataAccessed: ["Financial History", "Contact List"],
-    duration: "Permanent",
-    status: "rejected",
-    txHash: "0x9c1d...8e44",
-  },
-  {
-    id: "3",
-    orgName: "BPJS Kesehatan",
-    orgLogo: "BPJS",
-    isVerified: true,
-    timestamp: "1 day ago",
-    purpose: "Insurance claim validation",
-    dataAccessed: ["NIK", "Family Card (KK)", "Medical Records"],
-    duration: "One-time access",
-    status: "pending",
-    txHash: "Pending generation...",
-  },
-  {
-    id: "4",
-    orgName: "Telkomsel",
-    orgLogo: "TSEL",
-    isVerified: true,
-    timestamp: "3 days ago",
-    purpose: "SIM Card Registration",
-    dataAccessed: ["NIK", "Mother Maiden Name"],
-    duration: "One-time access",
-    status: "approved",
-    txHash: "0x3a4b...99cc",
   },
 ];
 
@@ -141,7 +107,6 @@ export default function ActivityFeed() {
         "Are you sure you want to revoke access? This may affect your services with this provider."
       )
     ) {
-      // Logic to revoke
       alert("Access revoked successfully via Smart Contract.");
     }
   };
