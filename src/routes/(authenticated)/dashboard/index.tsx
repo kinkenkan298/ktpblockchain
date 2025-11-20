@@ -17,14 +17,6 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
   component: RouteComponent,
-  loader: async ({ context }) => {
-    const { user } = context;
-
-    const data_ktp = context.queryClient.ensureQueryData(
-      ktpQueries.getDataKtp(user?.user?.id ?? "")
-    );
-    return data_ktp;
-  },
 });
 
 function RouteComponent() {

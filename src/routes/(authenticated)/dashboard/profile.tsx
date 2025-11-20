@@ -1,8 +1,9 @@
+import { DashboardSkeleton } from "@/components/dashboard-skeleton";
 import { AddressCard } from "@/features/dashboard/user/components/profile-card/address-info-card";
 import { ConnectedServicesCard } from "@/features/dashboard/user/components/profile-card/connected-services-card";
 import { ContactInfoCard } from "@/features/dashboard/user/components/profile-card/contact-info-card";
 import { DocumentPreviewCard } from "@/features/dashboard/user/components/profile-card/document-preview-card";
-import IdentityCard from "@/features/dashboard/user/components/profile-card/identity-card";
+import { IdentityCard } from "@/features/dashboard/user/components/profile-card/identity-card";
 import { PersonalDataCard } from "@/features/dashboard/user/components/profile-card/personal-data-card";
 import { QuickActionsCard } from "@/features/dashboard/user/components/profile-card/quick-actions-card";
 import { SecurityStatusCard } from "@/features/dashboard/user/components/profile-card/security-status-card";
@@ -18,15 +19,8 @@ import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/profile")({
   component: RouteComponent,
-  loader: async ({ context }) => {
-    const { user } = context;
-
-    const data_ktp = context.queryClient.ensureQueryData(
-      ktpQueries.getDataKtp(user?.user?.id ?? "")
-    );
-
-    return { data_ktp };
-  },
+  pendingComponent: () => <DashboardSkeleton />,
+  pendingMs: 0,
 });
 
 function RouteComponent() {

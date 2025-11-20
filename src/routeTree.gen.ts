@@ -21,6 +21,7 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as authenticatedDashboardSettingsRouteImport } from './routes/(authenticated)/dashboard/settings'
 import { Route as authenticatedDashboardProfileRouteImport } from './routes/(authenticated)/dashboard/profile'
 import { Route as authenticatedDashboardEditProfileRouteImport } from './routes/(authenticated)/dashboard/edit-profile'
+import { Route as authenticatedDashboardAccessHistoryRouteImport } from './routes/(authenticated)/dashboard/access-history'
 import { Route as authenticatedAdminDashboardRouteImport } from './routes/(authenticated)/admin/dashboard'
 
 const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
@@ -86,6 +87,12 @@ const authenticatedDashboardEditProfileRoute =
     path: '/edit-profile',
     getParentRoute: () => authenticatedDashboardRouteRoute,
   } as any)
+const authenticatedDashboardAccessHistoryRoute =
+  authenticatedDashboardAccessHistoryRouteImport.update({
+    id: '/access-history',
+    path: '/access-history',
+    getParentRoute: () => authenticatedDashboardRouteRoute,
+  } as any)
 const authenticatedAdminDashboardRoute =
   authenticatedAdminDashboardRouteImport.update({
     id: '/dashboard',
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/admin/dashboard': typeof authenticatedAdminDashboardRoute
+  '/dashboard/access-history': typeof authenticatedDashboardAccessHistoryRoute
   '/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
   '/dashboard/profile': typeof authenticatedDashboardProfileRoute
   '/dashboard/settings': typeof authenticatedDashboardSettingsRoute
@@ -112,6 +120,7 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/admin/dashboard': typeof authenticatedAdminDashboardRoute
+  '/dashboard/access-history': typeof authenticatedDashboardAccessHistoryRoute
   '/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
   '/dashboard/profile': typeof authenticatedDashboardProfileRoute
   '/dashboard/settings': typeof authenticatedDashboardSettingsRoute
@@ -128,6 +137,7 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
   '/(authenticated)/admin/dashboard': typeof authenticatedAdminDashboardRoute
+  '/(authenticated)/dashboard/access-history': typeof authenticatedDashboardAccessHistoryRoute
   '/(authenticated)/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
   '/(authenticated)/dashboard/profile': typeof authenticatedDashboardProfileRoute
   '/(authenticated)/dashboard/settings': typeof authenticatedDashboardSettingsRoute
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/admin/dashboard'
+    | '/dashboard/access-history'
     | '/dashboard/edit-profile'
     | '/dashboard/profile'
     | '/dashboard/settings'
@@ -155,6 +166,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/admin/dashboard'
+    | '/dashboard/access-history'
     | '/dashboard/edit-profile'
     | '/dashboard/profile'
     | '/dashboard/settings'
@@ -170,6 +182,7 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(auth)/register'
     | '/(authenticated)/admin/dashboard'
+    | '/(authenticated)/dashboard/access-history'
     | '/(authenticated)/dashboard/edit-profile'
     | '/(authenticated)/dashboard/profile'
     | '/(authenticated)/dashboard/settings'
@@ -270,6 +283,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedDashboardEditProfileRouteImport
       parentRoute: typeof authenticatedDashboardRouteRoute
     }
+    '/(authenticated)/dashboard/access-history': {
+      id: '/(authenticated)/dashboard/access-history'
+      path: '/access-history'
+      fullPath: '/dashboard/access-history'
+      preLoaderRoute: typeof authenticatedDashboardAccessHistoryRouteImport
+      parentRoute: typeof authenticatedDashboardRouteRoute
+    }
     '/(authenticated)/admin/dashboard': {
       id: '/(authenticated)/admin/dashboard'
       path: '/dashboard'
@@ -309,6 +329,7 @@ const authenticatedAdminRouteRouteWithChildren =
   )
 
 interface authenticatedDashboardRouteRouteChildren {
+  authenticatedDashboardAccessHistoryRoute: typeof authenticatedDashboardAccessHistoryRoute
   authenticatedDashboardEditProfileRoute: typeof authenticatedDashboardEditProfileRoute
   authenticatedDashboardProfileRoute: typeof authenticatedDashboardProfileRoute
   authenticatedDashboardSettingsRoute: typeof authenticatedDashboardSettingsRoute
@@ -317,6 +338,8 @@ interface authenticatedDashboardRouteRouteChildren {
 
 const authenticatedDashboardRouteRouteChildren: authenticatedDashboardRouteRouteChildren =
   {
+    authenticatedDashboardAccessHistoryRoute:
+      authenticatedDashboardAccessHistoryRoute,
     authenticatedDashboardEditProfileRoute:
       authenticatedDashboardEditProfileRoute,
     authenticatedDashboardProfileRoute: authenticatedDashboardProfileRoute,

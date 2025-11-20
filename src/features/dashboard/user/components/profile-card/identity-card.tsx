@@ -5,7 +5,7 @@ interface IdentityCardProps {
   profile: DataKtp;
 }
 
-function IdentityCard({ profile }: IdentityCardProps) {
+export function IdentityCard({ profile }: IdentityCardProps) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-center space-x-2 mb-6">
@@ -53,5 +53,3 @@ function IdentityCard({ profile }: IdentityCardProps) {
     </div>
   );
 }
-
-export default IdentityCard;

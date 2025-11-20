@@ -26,7 +26,12 @@ const menuItems: MenuItemsProps[] = [
   { id: "dashboard", label: "Dashboard", icon: Home, to: "/dashboard" },
   { id: "profile", label: "Profil Saya", icon: User, to: "/dashboard/profile" },
   { id: "consent", label: "Persetujuan", icon: Shield },
-  { id: "history", label: "Riwayat Akses", icon: History },
+  {
+    id: "history",
+    label: "Riwayat Akses",
+    icon: History,
+    to: "/dashboard/access-history",
+  },
   { id: "documents", label: "Dokumen", icon: FileText },
   {
     id: "settings",

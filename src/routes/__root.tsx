@@ -81,10 +81,6 @@ export const Route = createRootRouteWithContext<{
 }>()({
   beforeLoad: async ({ context }) => {
     context.queryClient.prefetchQuery(authQueryOptions.user());
-    // const userSession = await context.queryClient.fetchQuery(
-    //   authQueryOptions.user()
-    // );
-    // return { userSession };
   },
   head: getHeadMetadata,
   shellComponent: RootDocument,

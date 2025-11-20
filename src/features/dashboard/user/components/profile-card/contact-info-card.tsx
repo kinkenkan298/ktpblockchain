@@ -1,8 +1,7 @@
 import { CopyButton } from "@/components/animate-ui/components/buttons/copy";
 import { PersonalInfoSchema } from "@/features/auth/types/register-schema";
 import { User } from "better-auth";
-import { Mail, Phone, Wallet, Check, Copy } from "lucide-react";
-import { useState } from "react";
+import { Mail, Phone, Wallet, Check } from "lucide-react";
 
 interface ContactInfoCardProps {
   profile: PersonalInfoSchema;
@@ -18,16 +17,8 @@ export function ContactInfoCard({
   walletAddress,
   UserInfo,
 }: ContactInfoCardProps) {
-  const [copied, setCopied] = useState(false);
-
   const maskWallet = (address: string) => {
     return `${address.slice(0, 10)}...${address.slice(-6)}`;
-  };
-
-  const copyWalletAddress = () => {
-    navigator.clipboard.writeText(walletAddress);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
