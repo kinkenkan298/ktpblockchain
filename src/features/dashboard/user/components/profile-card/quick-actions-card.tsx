@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ToOptions } from "@tanstack/react-router";
+import { Link, ToOptions } from "@tanstack/react-router";
 import { Edit, FileText, Lock, Settings, Download } from "lucide-react";
 import React from "react";
 
@@ -18,18 +18,43 @@ interface ActionsMenu extends ToOptions {
 
 export function QuickActionsCard() {
   const actions: ActionsMenu[] = [
-    { icon: Edit, label: "Edit Personal Information", color: "blue" },
-    { icon: FileText, label: "Update Documents", color: "blue" },
-    { icon: Lock, label: "Change Password", color: "blue" },
-    { icon: Settings, label: "Privacy Settings", color: "blue" },
-    { icon: Download, label: "Download Digital ID", color: "blue" },
+    {
+      icon: Edit,
+      label: "Ubah Informasi Pribadi",
+      color: "blue",
+      to: "/dashboard/profile/edit",
+    },
+    {
+      icon: FileText,
+      label: "Update Dokumen",
+      color: "blue",
+      to: "/dashboard/dokument-wallet",
+    },
+    {
+      icon: Lock,
+      label: "Ganti Password",
+      color: "blue",
+      to: "/dashboard/profile/password",
+    },
+    {
+      icon: Settings,
+      label: "Pengaturan Privasi",
+      color: "blue",
+      to: "/dashboard/settings",
+    },
+    {
+      icon: Download,
+      label: "Unduh Digital ID",
+      color: "blue",
+      to: "/dashboard/profile/download",
+    },
   ];
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Quick Actions</CardTitle>
-        <CardDescription>Manage Your Profile</CardDescription>
+        <CardTitle>Aksi Cepat</CardTitle>
+        <CardDescription>Manajemen Profil</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
@@ -38,9 +63,12 @@ export function QuickActionsCard() {
               key={index}
               variant="outline"
               className="w-full flex items-center space-x-3"
+              asChild
             >
-              <action.icon className="w-4 h-4 text-blue-600" />
-              {action.label}
+              <Link to={action.to}>
+                <action.icon className="w-4 h-4 text-blue-600" />
+                {action.label}
+              </Link>
             </Button>
           ))}
         </div>

@@ -21,6 +21,7 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as authenticatedDashboardSettingsRouteImport } from './routes/(authenticated)/dashboard/settings'
 import { Route as authenticatedDashboardProfileRouteImport } from './routes/(authenticated)/dashboard/profile'
 import { Route as authenticatedDashboardEditProfileRouteImport } from './routes/(authenticated)/dashboard/edit-profile'
+import { Route as authenticatedDashboardDokumentWalletRouteImport } from './routes/(authenticated)/dashboard/dokument-wallet'
 import { Route as authenticatedDashboardActivityMonitoringRouteImport } from './routes/(authenticated)/dashboard/activity-monitoring'
 import { Route as authenticatedAdminDashboardRouteImport } from './routes/(authenticated)/admin/dashboard'
 
@@ -87,6 +88,12 @@ const authenticatedDashboardEditProfileRoute =
     path: '/edit-profile',
     getParentRoute: () => authenticatedDashboardRouteRoute,
   } as any)
+const authenticatedDashboardDokumentWalletRoute =
+  authenticatedDashboardDokumentWalletRouteImport.update({
+    id: '/dokument-wallet',
+    path: '/dokument-wallet',
+    getParentRoute: () => authenticatedDashboardRouteRoute,
+  } as any)
 const authenticatedDashboardActivityMonitoringRoute =
   authenticatedDashboardActivityMonitoringRouteImport.update({
     id: '/activity-monitoring',
@@ -108,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof authRegisterRoute
   '/admin/dashboard': typeof authenticatedAdminDashboardRoute
   '/dashboard/activity-monitoring': typeof authenticatedDashboardActivityMonitoringRoute
+  '/dashboard/dokument-wallet': typeof authenticatedDashboardDokumentWalletRoute
   '/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
   '/dashboard/profile': typeof authenticatedDashboardProfileRoute
   '/dashboard/settings': typeof authenticatedDashboardSettingsRoute
@@ -121,6 +129,7 @@ export interface FileRoutesByTo {
   '/register': typeof authRegisterRoute
   '/admin/dashboard': typeof authenticatedAdminDashboardRoute
   '/dashboard/activity-monitoring': typeof authenticatedDashboardActivityMonitoringRoute
+  '/dashboard/dokument-wallet': typeof authenticatedDashboardDokumentWalletRoute
   '/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
   '/dashboard/profile': typeof authenticatedDashboardProfileRoute
   '/dashboard/settings': typeof authenticatedDashboardSettingsRoute
@@ -138,6 +147,7 @@ export interface FileRoutesById {
   '/(auth)/register': typeof authRegisterRoute
   '/(authenticated)/admin/dashboard': typeof authenticatedAdminDashboardRoute
   '/(authenticated)/dashboard/activity-monitoring': typeof authenticatedDashboardActivityMonitoringRoute
+  '/(authenticated)/dashboard/dokument-wallet': typeof authenticatedDashboardDokumentWalletRoute
   '/(authenticated)/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
   '/(authenticated)/dashboard/profile': typeof authenticatedDashboardProfileRoute
   '/(authenticated)/dashboard/settings': typeof authenticatedDashboardSettingsRoute
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin/dashboard'
     | '/dashboard/activity-monitoring'
+    | '/dashboard/dokument-wallet'
     | '/dashboard/edit-profile'
     | '/dashboard/profile'
     | '/dashboard/settings'
@@ -167,6 +178,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/admin/dashboard'
     | '/dashboard/activity-monitoring'
+    | '/dashboard/dokument-wallet'
     | '/dashboard/edit-profile'
     | '/dashboard/profile'
     | '/dashboard/settings'
@@ -183,6 +195,7 @@ export interface FileRouteTypes {
     | '/(auth)/register'
     | '/(authenticated)/admin/dashboard'
     | '/(authenticated)/dashboard/activity-monitoring'
+    | '/(authenticated)/dashboard/dokument-wallet'
     | '/(authenticated)/dashboard/edit-profile'
     | '/(authenticated)/dashboard/profile'
     | '/(authenticated)/dashboard/settings'
@@ -283,6 +296,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedDashboardEditProfileRouteImport
       parentRoute: typeof authenticatedDashboardRouteRoute
     }
+    '/(authenticated)/dashboard/dokument-wallet': {
+      id: '/(authenticated)/dashboard/dokument-wallet'
+      path: '/dokument-wallet'
+      fullPath: '/dashboard/dokument-wallet'
+      preLoaderRoute: typeof authenticatedDashboardDokumentWalletRouteImport
+      parentRoute: typeof authenticatedDashboardRouteRoute
+    }
     '/(authenticated)/dashboard/activity-monitoring': {
       id: '/(authenticated)/dashboard/activity-monitoring'
       path: '/activity-monitoring'
@@ -330,6 +350,7 @@ const authenticatedAdminRouteRouteWithChildren =
 
 interface authenticatedDashboardRouteRouteChildren {
   authenticatedDashboardActivityMonitoringRoute: typeof authenticatedDashboardActivityMonitoringRoute
+  authenticatedDashboardDokumentWalletRoute: typeof authenticatedDashboardDokumentWalletRoute
   authenticatedDashboardEditProfileRoute: typeof authenticatedDashboardEditProfileRoute
   authenticatedDashboardProfileRoute: typeof authenticatedDashboardProfileRoute
   authenticatedDashboardSettingsRoute: typeof authenticatedDashboardSettingsRoute
@@ -340,6 +361,8 @@ const authenticatedDashboardRouteRouteChildren: authenticatedDashboardRouteRoute
   {
     authenticatedDashboardActivityMonitoringRoute:
       authenticatedDashboardActivityMonitoringRoute,
+    authenticatedDashboardDokumentWalletRoute:
+      authenticatedDashboardDokumentWalletRoute,
     authenticatedDashboardEditProfileRoute:
       authenticatedDashboardEditProfileRoute,
     authenticatedDashboardProfileRoute: authenticatedDashboardProfileRoute,

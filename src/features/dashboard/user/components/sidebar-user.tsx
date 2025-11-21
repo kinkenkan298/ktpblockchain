@@ -32,7 +32,12 @@ const menuItems: MenuItemsProps[] = [
     icon: Activity,
     to: "/dashboard/activity-monitoring",
   },
-  { id: "documents", label: "Dokumen", icon: FileText },
+  {
+    id: "documents",
+    label: "Dokumen",
+    icon: FileText,
+    to: "/dashboard/dokument-wallet",
+  },
   {
     id: "settings",
     label: "Pengaturan",

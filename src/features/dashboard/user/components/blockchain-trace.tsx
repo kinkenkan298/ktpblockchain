@@ -255,19 +255,19 @@ export function BlockchainTraceTool() {
             <CardContent className="p-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-blue-600">12</div>
+                  <div className="text-2xl font-bold text-blue-600">0</div>
                   <div className="text-sm text-gray-600">Total Transaksi</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-green-600">10</div>
+                  <div className="text-2xl font-bold text-green-600">0</div>
                   <div className="text-sm text-gray-600">Berhasil</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-gray-600">2</div>
+                  <div className="text-2xl font-bold text-gray-600">0</div>
                   <div className="text-sm text-gray-600">Menunggu</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-purple-600">7</div>
+                  <div className="text-2xl font-bold text-purple-600">0</div>
                   <div className="text-sm text-gray-600">Organisasi</div>
                 </div>
               </div>

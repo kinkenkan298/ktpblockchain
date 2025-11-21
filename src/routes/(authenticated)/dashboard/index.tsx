@@ -53,7 +53,7 @@ function RouteComponent() {
         />
         <StatsCard
           title="Data Terverifikasi"
-          value="100%"
+          value="0%"
           icon={FileCheck}
           color="green"
         />
