@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -7,13 +7,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 
 import { Shield, Eye, EyeOff, Download, Search, Filter } from "lucide-react";
-import { BlockchainTransaction } from "../types/blockchain-user";
-import { getActionLabel, getStatusIcon } from "../lib/function";
-import { TransactionDetailModal } from "./detail-transaction";
+import { TxItem, TxType } from "../types/blockchain-user";
 import {
   Tabs,
   TabsContent,
@@ -21,63 +18,128 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/animate-ui/components/radix/tabs";
-import { toast } from "sonner";
+import {
+  publicClient,
+  STORAGE_CONTRACT_ADDRESS,
+  storageContractAbi,
+} from "@/lib/blockchain";
+import { Log } from "viem";
+import { TransactionList } from "./transaction-list";
+import { DetailTransaction } from "./detail-transaction";
 
 export function BlockchainTraceTool() {
-  // const [transactions, setTransactions] = useState<BlockchainTransaction[]>([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [privacyMode, setPrivacyMode] = useState(true);
+  const [transactions, setTransactions] = useState<TxItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [privacyMode, setPrivacyMode] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedTransaction, setSelectedTransaction] =
-    useState<BlockchainTransaction | null>(null);
+  const [activeTab, setActiveTab] = useState<TxType>("ALL");
+  const [selectedTransaction, setSelectedTransaction] = useState<TxItem | null>(
+    null
+  );
 
-  const sampleTransactions: BlockchainTransaction[] = [
-    {
-      id: "1",
-      transactionHash: "0x8a3b9c4d5e6f...",
-      anonymousId: "USER_7X9Y2Z",
-      actionType: "data_share",
-      timestamp: new Date("2024-01-15T10:30:00"),
-      status: "completed",
-      involvedParties: 1,
-      dataFields: ["nama", "umur"],
-      blockchainNetwork: "polygon",
-      gasUsed: 0.0021,
-      blockNumber: 38475231,
-    },
-    {
-      id: "2",
-      transactionHash: "0x7b2c8d9e1f3a...",
-      anonymousId: "USER_7X9Y2Z",
-      actionType: "consent_given",
-      timestamp: new Date("2024-01-14T14:20:00"),
-      status: "completed",
-      involvedParties: 1,
-      dataFields: ["alamat"],
-      blockchainNetwork: "polygon",
-      blockNumber: 38475189,
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      const storeLogs = await publicClient.getContractEvents({
+        address: STORAGE_CONTRACT_ADDRESS,
+        abi: storageContractAbi,
+        eventName: "HashStored",
+        fromBlock: "earliest",
+      });
+      const requestsLog = await publicClient.getContractEvents({
+        address: STORAGE_CONTRACT_ADDRESS,
+        abi: storageContractAbi,
+        eventName: "DataRequested",
+        fromBlock: "earliest",
+      });
+      const approveLogs = await publicClient.getContractEvents({
+        address: STORAGE_CONTRACT_ADDRESS,
+        abi: storageContractAbi,
+        eventName: "DataApproved",
+        fromBlock: "earliest",
+      });
 
-  const maskTransactionHash = (hash: string) => {
-    if (privacyMode) {
-      return `${hash.substring(0, 8)}...${hash.substring(hash.length - 6)}`;
-    }
-    return hash;
-  };
+      const formattedLogs: TxItem[] = [];
 
-  const handleClickDetail = (tx: BlockchainTransaction) => {
+      storeLogs.forEach((log: Log) => {
+        formattedLogs.push({
+          hash: `${log.transactionHash}`,
+          category: "STORE",
+          title: "Penyimpanan Data",
+          timestamp: new Date(Number(log.args.timestamp) * 1000),
+          actor: log.args.owner,
+          metadata: ["E-Ktp", "Metadata", "File"],
+          rawEvent: log.args,
+        });
+      });
+      requestsLog.forEach((log: Log) => {
+        formattedLogs.push({
+          hash: `${log.transactionHash}`,
+          category: "CONSENT",
+          title: "Permintaan Data",
+          timestamp: new Date(Number(log.args.timestamp) * 1000),
+          actor: log.args.owner,
+          metadata: ["E-Ktp", "Metadata", "File"],
+          rawEvent: log.args,
+        });
+      });
+      approveLogs.forEach((log: Log) => {
+        formattedLogs.push({
+          hash: `${log.transactionHash}`,
+          category: "CONSENT",
+          title: "Persetujuan Data",
+          timestamp: new Date(Number(log.args.timestamp) * 1000),
+          actor: log.args.owner,
+          metadata: ["E-Ktp", "Metadata", "File"],
+          rawEvent: log.args,
+        });
+      });
+      setTransactions(
+        formattedLogs.sort(
+          (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
+        )
+      );
+    };
+    fetchData();
+  });
+
+  const searchedTransactions = transactions.filter(
+    (tx) =>
+      tx.hash.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tx.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tx.actor.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const dataSharingLogs = searchedTransactions.filter(
+    (t) => t.category === "STORE"
+  );
+  const consentLogs = searchedTransactions.filter(
+    (t) => t.category === "CONSENT"
+  );
+  const verifyLogs = searchedTransactions.filter(
+    (t) => t.category === "VERIFY"
+  );
+
+  const filteredTx = transactions.filter((tx) => {
+    const matchesTab =
+      activeTab === "ALL" ||
+      (activeTab === "STORE" && tx.category === "STORE") ||
+      (activeTab === "CONSENT" && tx.category === "CONSENT");
+
+    const matchesSearch =
+      tx.hash.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tx.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesTab && matchesSearch;
+  });
+
+  const handleClickDetail = (tx: TxItem) => {
     setSelectedTransaction(tx);
     setIsModalOpen(true);
   };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSelectedTransaction(null);
-  };
-
-  const handleCopyHash = () => {
-    navigator.clipboard.writeText("asd");
-    toast.success("Hash berhasil disalin ke clipboard");
   };
 
   return (
@@ -96,7 +158,7 @@ export function BlockchainTraceTool() {
             </div>
 
             <Button
-              variant="outline"
+              variant={privacyMode ? "default" : "outline"}
               size="sm"
               onClick={() => setPrivacyMode(!privacyMode)}
               className="flex items-center gap-2"
@@ -138,121 +200,56 @@ export function BlockchainTraceTool() {
             </div>
           )}
 
-          <Tabs defaultValue="all" className="w-full">
+          <Tabs defaultValue="ALL" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="all">Semua</TabsTrigger>
-              <TabsTrigger value="sharing">Berbagi Data</TabsTrigger>
-              <TabsTrigger value="consent">Persetujuan</TabsTrigger>
-              <TabsTrigger value="verify">Verifikasi</TabsTrigger>
+              <TabsTrigger value="ALL">Semua</TabsTrigger>
+              <TabsTrigger value="STORE">Penyimpanan Data</TabsTrigger>
+              <TabsTrigger value="CONSENT">Persetujuan</TabsTrigger>
+              <TabsTrigger value="VERIFY" disabled>
+                Verifikasi
+              </TabsTrigger>
             </TabsList>
             <TabsContents>
-              <TabsContent value="all" className="space-y-3">
-                {sampleTransactions.map((tx) => (
-                  <div
-                    key={tx.id}
-                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2 flex-1">
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(tx.status)}
-                          <span className="font-medium">
-                            {getActionLabel(tx.actionType)}
-                          </span>
-                          <Badge
-                            variant={
-                              tx.status === "completed"
-                                ? "default"
-                                : tx.status === "pending"
-                                  ? "secondary"
-                                  : "destructive"
-                            }
-                          >
-                            {tx.status === "completed"
-                              ? "Selesai"
-                              : tx.status === "pending"
-                                ? "Menunggu"
-                                : "Gagal"}
-                          </Badge>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">Hash:</span>
-                            <code className="text-xs bg-gray-100 px-2 py-1 rounded">
-                              {maskTransactionHash(tx.transactionHash)}
-                            </code>
-                            {!privacyMode && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-6 text-xs"
-                              >
-                                Salin
-                              </Button>
-                            )}
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">Waktu:</span>
-                            <span>{tx.timestamp.toLocaleString("id-ID")}</span>
-                          </div>
-
-                          {!privacyMode && (
-                            <>
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium">Block:</span>
-                                <span>#{tx.blockNumber}</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium">Network:</span>
-                                <Badge variant="outline" className="capitalize">
-                                  {tx.blockchainNetwork}
-                                </Badge>
-                              </div>
-                            </>
-                          )}
-                        </div>
-
-                        <div className="flex flex-wrap gap-1">
-                          <span className="text-sm text-gray-600">
-                            Data diakses:
-                          </span>
-                          {tx.dataFields.map((field, index) => (
-                            <Badge
-                              key={index}
-                              variant="secondary"
-                              className="text-xs"
-                            >
-                              {field}
-                            </Badge>
-                          ))}
-                        </div>
-
-                        {!privacyMode && (
-                          <div className="text-xs text-gray-500">
-                            Anonymous ID: {tx.anonymousId} • Pihak terlibat:{" "}
-                            {tx.involvedParties}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleClickDetail(tx)}
-                        >
-                          <Eye className="h-4 w-4 mr-1" />
-                          Detail
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+              {filteredTx.length === 0 && (
+                <div className="text-center py-10 text-muted-foreground border-2 border-dashed rounded-xl">
+                  Tidak ada transaksi ditemukan.
+                </div>
+              )}
+              <TabsContent value="ALL" className="space-y-3">
+                <TransactionList
+                  data={filteredTx}
+                  privacy={privacyMode}
+                  onDetail={handleClickDetail}
+                />
+              </TabsContent>
+              <TabsContent value="STORE">
+                <TransactionList
+                  data={dataSharingLogs}
+                  privacy={privacyMode}
+                  onDetail={handleClickDetail}
+                />
+              </TabsContent>
+              <TabsContent value="CONSENT">
+                <TransactionList
+                  data={consentLogs}
+                  privacy={privacyMode}
+                  onDetail={handleClickDetail}
+                />
+              </TabsContent>
+              <TabsContent value="VERIFY">
+                <TransactionList
+                  data={verifyLogs}
+                  privacy={privacyMode}
+                  onDetail={handleClickDetail}
+                />
               </TabsContent>
             </TabsContents>
           </Tabs>
+
+          <DetailTransaction
+            tx={selectedTransaction}
+            onClose={handleCloseModal}
+          />
 
           <Card className="bg-gray-50">
             <CardContent className="p-4">
@@ -288,13 +285,6 @@ export function BlockchainTraceTool() {
           </div>
         </CardContent>
       </Card>
-      <TransactionDetailModal
-        transaction={selectedTransaction}
-        open={isModalOpen}
-        onOpenChange={handleCloseModal}
-        privacyMode={privacyMode}
-        handleCopyHash={handleCopyHash}
-      />
     </>
   );
 }

@@ -52,7 +52,6 @@ async function approveAccess(recordId: string, waktu: number) {
 }
 
 (async () => {
-  // console.log(ownerAccount.address);
-  await requestAccess("0", "Cek kredit skor bank nasabah");
-  // await approveAccess("0", 60);
+  // await requestAccess("0", "Verifikasi bank");
+  await approveAccess("0", 120);
 })();

@@ -20,9 +20,7 @@ import {
   Wifi,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Hex, Log } from "viem";
-
-type AccessStatus = "request" | "approve" | "reject" | "store";
+import { Log } from "viem";
 
 interface EKTPLogArgs {
   permissionId?: string;
@@ -51,6 +49,7 @@ export function DataAccessActivity() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const formatLog = (log: Log, type: ActivityLog["type"]) => {
+    // @ts-ignore
     const args = log.args as EKTPLogArgs;
 
     const time = new Date(Number(args.timestamp) * 1000);
@@ -68,12 +67,6 @@ export function DataAccessActivity() {
       type: type,
     };
     return newActivity;
-    // setLogs((prev) => {
-    //   const isDuplicate = prev.some((log) => log.id === newActivity.id);
-    //   if (isDuplicate) return prev;
-
-    //   return [...prev, newActivity];
-    // });
   };
 
   useEffect(() => {
@@ -241,7 +234,7 @@ export function DataAccessActivity() {
           )}
           {logs.map((log) => (
             <div
-              key={log.id}
+              key={`${log.id}-${log.type}`}
               className="flex items-center justify-between p-4 border rounded-lg bg-card animate-in slide-in-from-top-2 fade-in duration-500 mt-5"
             >
               <div className="flex items-center gap-4">

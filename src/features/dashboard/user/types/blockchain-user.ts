@@ -15,3 +15,15 @@ export interface BlockchainTransaction {
   gasUsed?: number;
   blockNumber?: number;
 }
+
+export type TxType = "ALL" | "STORE" | "CONSENT" | "VERIFY";
+
+export type TxItem = {
+  hash: string;
+  category: TxType;
+  title: string;
+  timestamp: Date;
+  actor: string;
+  metadata: string[];
+  rawEvent: any;
+};
