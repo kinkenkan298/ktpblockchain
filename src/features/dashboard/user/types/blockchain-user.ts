@@ -1,20 +1,5 @@
-export interface BlockchainTransaction {
-  id: string;
-  transactionHash: string; // Full hash di blockchain
-  anonymousId: string; // ID anonim untuk user
-  actionType:
-    | "data_share"
-    | "consent_given"
-    | "identity_verify"
-    | "access_granted";
-  timestamp: Date;
-  status: "completed" | "pending" | "failed";
-  involvedParties: number; // Jumlah pihak terlibat (tanpa detail)
-  dataFields: string[]; // Jenis data yang diakses (tanpa konten)
-  blockchainNetwork: "polygon" | "ethereum";
-  gasUsed?: number;
-  blockNumber?: number;
-}
+import { Z } from "node_modules/better-auth/dist/shared/better-auth.BUpnjBGu";
+import z from "zod";
 
 export type TxType = "ALL" | "STORE" | "CONSENT" | "VERIFY";
 
@@ -27,3 +12,23 @@ export type TxItem = {
   metadata: string[];
   rawEvent: any;
 };
+
+export type DocumentData = {
+  id: string;
+  type: string;
+  name: string;
+  number: string;
+  hash: string;
+  color: string;
+  rawTimestamp: Date;
+};
+
+export const MetadataSchema = z.object({
+  id: z.string(),
+  nik: z.string(),
+  fullName: z.string(),
+  province: z.string(),
+  city: z.string(),
+});
+
+export type Metadata = z.infer<typeof MetadataSchema>;

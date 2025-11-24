@@ -1,4 +1,4 @@
-import { PersonalInfoSchema } from "@/features/auth/types/register-schema";
+import { MetadataSchema } from "@/features/dashboard/user/types/blockchain-user";
 import { db } from "@/lib/db";
 import { ktp_records } from "@/lib/db/schema";
 import { createServerFn } from "@tanstack/react-start";
@@ -7,7 +7,6 @@ import z from "zod";
 export const registerUserKtp = createServerFn()
   .inputValidator(
     z.object({
-      ...PersonalInfoSchema.shape,
       txHash: z.string(),
       blockNumber: z.string(),
       ipfsCid: z.string(),
@@ -15,36 +14,34 @@ export const registerUserKtp = createServerFn()
       contractRecordId: z.string(),
       blockchainHash: z.string(),
       userId: z.string(),
+      blockchainDate: z.date(),
+      metadata: MetadataSchema,
     })
   )
   .handler(async ({ data }) => {
     const {
-      kota,
-      nama_lengkap,
-      nik,
       txHash,
       ipfsCid,
       ipfsUrl,
       blockNumber,
       contractRecordId,
       blockchainHash,
-      provinsi,
       userId,
+      blockchainDate,
+      metadata,
     } = data;
     const recordId = await db
       .insert(ktp_records)
       .values({
-        userId: userId,
-        nik,
+        userId,
         txHash,
-        fullName: nama_lengkap,
-        city: kota,
-        province: provinsi,
         ipfsCid,
         ipfsUrl,
         blockchainHash,
         blockNumber,
         contractRecordId,
+        blockchainDate,
+        metadata,
         status: "PENDING",
         isVerified: false,
       })

@@ -77,6 +77,8 @@ const $registerUser = async (data: AllFormSchema) => {
     txHash,
     contractRecordId,
     blockNumber,
+    metadata,
+    blockchainDate,
   } = await createKtpRecord({
     data: personalInfoData,
   });
@@ -105,7 +107,8 @@ const $registerUser = async (data: AllFormSchema) => {
       ipfsUrl,
       contractRecordId,
       blockNumber,
-      ...personalInfoData,
+      metadata,
+      blockchainDate,
     },
   });
 

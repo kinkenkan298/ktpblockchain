@@ -4,12 +4,16 @@ import { Fingerprint, QrCode, Share2, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { easeOut, motion } from "motion/react";
 import { CopyButton } from "@/components/animate-ui/components/buttons/copy";
+import { DocumentData } from "../../types/blockchain-user";
 
-export function IdentityDocumentCard({ doc }: { doc: any }) {
+export function IdentityDocumentCard({ doc }: { doc: DocumentData }) {
   const [view, setView] = useState<"FRONT" | "BACK">("FRONT");
 
   const [isFlipped, setIsFlipped] = useState(false);
 
+  const sliceText = (text: string, max: number = 100) =>
+    text.length > max ? `${text.slice(0, max)}...` : text;
+  1;
   const isTouchDevice =
     typeof window !== "undefined" && "ontouchstart" in window;
 
@@ -70,7 +74,7 @@ export function IdentityDocumentCard({ doc }: { doc: any }) {
                 Nomor Identitas
               </p>
               <p className="text-xl font-mono tracking-wider text-white drop-shadow-sm">
-                {doc.number.replace(/(\d{4})(?=\d)/g, "$1 ")}
+                {doc.number.replace(/(\d{4})(?=\d)/g, "$1")}
               </p>
             </div>
           </div>
@@ -127,16 +131,10 @@ export function IdentityDocumentCard({ doc }: { doc: any }) {
                 </p>
                 <div className="flex items-center gap-2 bg-slate-800/50 p-1.5 rounded border border-slate-700">
                   <code className="text-[10px] font-mono truncate">
-                    {doc.hash}
+                    {sliceText(doc.hash, 10)}
                   </code>
                   <CopyButton variant="ghost" size="sm" content={doc.hash} />
                 </div>
-              </div>
-              <div className="space-y-1">
-                <p className="text-[10px] uppercase text-slate-500">
-                  Issued Date
-                </p>
-                <p className="text-sm font-medium">{doc.issued}</p>
               </div>
             </div>
           </div>

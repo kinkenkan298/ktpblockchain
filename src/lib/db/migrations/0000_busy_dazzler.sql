@@ -24,10 +24,8 @@ CREATE TABLE `ktp_records` (
 	`tx_hash` text NOT NULL,
 	`block_number` text,
 	`contract_record_id` text NOT NULL,
-	`nik` text NOT NULL,
-	`full_name` text NOT NULL,
-	`province` text,
-	`city` text,
+	`blockchain_date` timestamp NOT NULL,
+	`metadata` json NOT NULL,
 	`status` enum('PENDING','VERIFIED','REJECTED','SUSPENDED') DEFAULT 'PENDING',
 	`is_verified` boolean DEFAULT false,
 	`verified_at` timestamp,
@@ -35,8 +33,7 @@ CREATE TABLE `ktp_records` (
 	`updated_at` timestamp DEFAULT (now()),
 	CONSTRAINT `ktp_records_id` PRIMARY KEY(`id`),
 	CONSTRAINT `ktp_records_ipfs_cid_unique` UNIQUE(`ipfs_cid`),
-	CONSTRAINT `ktp_records_tx_hash_unique` UNIQUE(`tx_hash`),
-	CONSTRAINT `ktp_records_nik_unique` UNIQUE(`nik`)
+	CONSTRAINT `ktp_records_tx_hash_unique` UNIQUE(`tx_hash`)
 );
 --> statement-breakpoint
 CREATE TABLE `session` (

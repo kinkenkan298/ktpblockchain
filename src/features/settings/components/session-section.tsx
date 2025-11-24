@@ -1,8 +1,8 @@
-// features/settings/SessionSection.tsx
 import { useEffect, useState } from "react";
 import { Laptop, Smartphone, Trash2, Loader2 } from "lucide-react";
 import { authClient } from "@/lib/auth/client";
 import { SettingsCard } from "@/components/settings-card";
+import { useRouter } from "@tanstack/react-router";
 
 interface Session {
   id: string;
@@ -15,6 +15,7 @@ interface Session {
 }
 
 export function SessionSection() {
+  const { invalidate } = useRouter();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRevoking, setIsRevoking] = useState<string | null>(null);
@@ -42,6 +43,7 @@ export function SessionSection() {
     try {
       await authClient.revokeSession({ token });
       setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+      invalidate();
     } catch (error) {
       alert("Failed to revoke session");
     } finally {
@@ -89,7 +91,7 @@ export function SessionSection() {
                       </p>
                       {session.isCurrent && (
                         <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">
-                          THIS DEVICE
+                          DEVICE INI
                         </span>
                       )}
                     </div>

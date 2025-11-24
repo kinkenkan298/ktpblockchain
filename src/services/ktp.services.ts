@@ -20,15 +20,14 @@ export const createKtpRecord = createServerFn()
   .inputValidator(PersonalInfoSchema)
   .handler(async ({ data }) => {
     const { cid, url } = await $uploadData({ data });
-    console.log(`File uploaded to IPFS: ${cid}`);
 
     const generateHash = generateHashBlockchain(cid);
-    console.log("Storing to blockchain...");
 
     const metadata = {
-      id: `KTP-${data.nik}`,
+      id: `E-KTP`,
       nik: data.nik,
-      name: data.nama_lengkap,
+      fullName: data.nama_lengkap,
+      province: data.provinsi,
       city: data.kota,
     };
 
@@ -36,15 +35,18 @@ export const createKtpRecord = createServerFn()
       address: STORAGE_CONTRACT_ADDRESS,
       abi: storageContractAbi,
       functionName: "storeHash",
-      args: [cid, metadata],
+      args: [cid, JSON.stringify(metadata)],
     });
-
-    console.log(`Transaction sent: ${txHash}`);
 
     const receipt = await walletClient.waitForTransactionReceipt({
       hash: txHash,
     });
-    console.log(`Transaction confirmed at block ${receipt.blockNumber}`);
+
+    const blockTimestamp = await publicClient.getBlock({
+      blockHash: receipt.blockHash,
+    });
+
+    const blockchainDate = new Date(Number(blockTimestamp.timestamp) * 1000);
 
     let contractRecordId: string | undefined;
     for (const log of receipt.logs) {
@@ -69,6 +71,8 @@ export const createKtpRecord = createServerFn()
       txHash,
       blockNumber: receipt.blockNumber.toString(),
       generateHash,
+      blockchainDate,
+      metadata,
     };
   });
 
@@ -105,23 +109,7 @@ export const getHashChain = createServerFn()
 
     return result;
   });
-export const getKtpRecordById = createServerFn()
-  .inputValidator(z.object({ id: z.string() }))
-  .handler(async ({ data }) => {
-    const { id } = data;
 
-    const getRecord = await db
-      .select()
-      .from(ktp_records)
-      .where(eq(ktp_records.id, id))
-      .limit(1);
-
-    const record = getRecord[0];
-
-    if (!record) throw new Error("Data ktp tidak ada ditemukan!");
-
-    return record;
-  });
 export const getCidData = createServerFn()
   .inputValidator(z.object({ ipfsCid: z.string() }))
   .handler(async ({ data }) => {

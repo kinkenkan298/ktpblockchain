@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "5f46597f-9746-48cf-8f1e-67f61e3c4fba",
+  "id": "577a68a4-e2a4-45b1-9275-a36d130040cd",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -185,32 +185,18 @@
           "notNull": true,
           "autoincrement": false
         },
-        "nik": {
-          "name": "nik",
-          "type": "text",
+        "blockchain_date": {
+          "name": "blockchain_date",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "full_name": {
-          "name": "full_name",
-          "type": "text",
+        "metadata": {
+          "name": "metadata",
+          "type": "json",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "province": {
-          "name": "province",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "city": {
-          "name": "city",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
           "autoincrement": false
         },
         "status": {
@@ -288,12 +274,6 @@
           "name": "ktp_records_tx_hash_unique",
           "columns": [
             "tx_hash"
-          ]
-        },
-        "ktp_records_nik_unique": {
-          "name": "ktp_records_nik_unique",
-          "columns": [
-            "nik"
           ]
         }
       },
