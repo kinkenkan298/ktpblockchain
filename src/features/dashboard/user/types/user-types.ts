@@ -1,5 +1,6 @@
 import { User } from "better-auth";
 import { Metadata } from "./blockchain-user";
+import { PersonalInfo } from "@/features/auth/types/register-schema";
 
 export type AccessLog = {
   id: string;
@@ -46,7 +47,7 @@ export interface DataKtp {
 
 export interface ProfileCardProps {
   user?: User;
-  data_ktp: DataKtp;
+  personal_info: PersonalInfo;
 }
 
 export interface UserAddress {

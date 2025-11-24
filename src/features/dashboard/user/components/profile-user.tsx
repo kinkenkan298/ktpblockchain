@@ -3,19 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Link } from "@tanstack/react-router";
-import {
-  User as UserIcon,
-  MapPin,
-  Phone,
-  Mail,
-  CreditCard,
-} from "lucide-react";
+import { User as UserIcon, MapPin, Phone, Mail } from "lucide-react";
 import { ProfileCardProps } from "../types/user-types";
-import { Metadata } from "../types/blockchain-user";
 
-export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
-  const { metadata } = data_ktp;
-  const data = JSON.parse(metadata) as Metadata;
+export function ProfileCardUser({ user, personal_info }: ProfileCardProps) {
   return (
     <Card className="shadow-md border-slate-200">
       <CardHeader className="pb-4">
@@ -47,15 +38,26 @@ export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="text-xl font-bold text-slate-900">
-              {user?.name || data?.fullName || "User"}
+              {user?.name || personal_info?.nama_lengkap || "User"}
             </h4>
-            <p className="text-sm text-slate-500">Status: Terverifikasi</p>
-            <Badge
-              className="mt-2 bg-yellow-500 text-white"
-              variant={"default"}
-            >
-              Aktif
-            </Badge>
+            <p className="text-sm text-slate-500">
+              Status:{" "}
+              <Badge
+                className={
+                  personal_info?.status.toLowerCase() === "verified"
+                    ? "bg-green-500 text-white"
+                    : personal_info?.status.toLowerCase() === "pending"
+                      ? "bg-yellow-500 text-white"
+                      : personal_info?.status.toLowerCase() === "rejected"
+                        ? "bg-red-500 text-white"
+                        : "bg-gray-500 text-white"
+                }
+                variant={"default"}
+              >
+                {personal_info?.status.toLowerCase().charAt(0).toUpperCase() +
+                  personal_info?.status.toLowerCase().slice(1)}
+              </Badge>
+            </p>
           </div>
         </div>
 
@@ -67,7 +69,7 @@ export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
             <div className="flex-1 min-w-0">
               <p className="text-xs text-slate-500 mb-1">Kota</p>
               <p className="text-sm font-medium text-slate-900">
-                {data.city ?? "Kota Tidak Diketahui"}
+                {personal_info.kota ?? "Kota Tidak Diketahui"}
               </p>
             </div>
           </div>
@@ -77,7 +79,7 @@ export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
             <div className="flex-1 min-w-0">
               <p className="text-xs text-slate-500 mb-1">Provinsi</p>
               <p className="text-sm font-medium text-slate-900">
-                {data.province ?? "Provinsi Tidak Diketahui"}
+                {personal_info.provinsi ?? "Provinsi Tidak Diketahui"}
               </p>
             </div>
           </div>

@@ -4,10 +4,9 @@ import { PersonalInfoSchema } from "@/features/auth/types/register-schema";
 
 interface PersonalDataCardProps {
   profile: PersonalInfoSchema;
-  createAt: string;
 }
 
-export function PersonalDataCard({ profile, createAt }: PersonalDataCardProps) {
+export function PersonalDataCard({ profile }: PersonalDataCardProps) {
   const [showNIK, setShowNIK] = useState(false);
 
   const maskNIK = (nik: string) => {
@@ -86,10 +85,6 @@ export function PersonalDataCard({ profile, createAt }: PersonalDataCardProps) {
           </label>
           <p className="text-base text-gray-900">{profile.jenis_kelamin}</p>
         </div>
-      </div>
-
-      <div className="mt-6 pt-4 border-t border-gray-200">
-        <p className="text-xs text-gray-500">Dibuat pada: {createAt}</p>
       </div>
     </div>
   );

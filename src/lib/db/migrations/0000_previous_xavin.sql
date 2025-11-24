@@ -26,11 +26,6 @@ CREATE TABLE `blockchain_ktp_records` (
 	`contract_record_id` text,
 	`blockchain_date` timestamp,
 	`metadata` json,
-	`status` enum('PENDING','VERIFIED','REJECTED','SUSPENDED') DEFAULT 'PENDING',
-	`is_verified` boolean DEFAULT false,
-	`verified_at` timestamp,
-	`created_at` timestamp DEFAULT (now()),
-	`updated_at` timestamp DEFAULT (now()),
 	CONSTRAINT `blockchain_ktp_records_id` PRIMARY KEY(`id`),
 	CONSTRAINT `blockchain_ktp_records_ipfs_cid_unique` UNIQUE(`ipfs_cid`),
 	CONSTRAINT `blockchain_ktp_records_ipfs_url_unique` UNIQUE(`ipfs_url`),
@@ -53,6 +48,11 @@ CREATE TABLE `personal_info` (
 	`kode_pos` varchar(255) NOT NULL,
 	`jenis_kelamin` enum('male','female') NOT NULL,
 	`phone` varchar(255) NOT NULL,
+	`status` enum('PENDING','VERIFIED','REJECTED','SUSPENDED') DEFAULT 'PENDING',
+	`is_verified` boolean DEFAULT false,
+	`verified_at` timestamp,
+	`created_at` timestamp DEFAULT (now()),
+	`updated_at` timestamp DEFAULT (now()),
 	CONSTRAINT `personal_info_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint

@@ -15,6 +15,7 @@ import z from "zod";
 import { PersonalInfoSchema } from "@/features/auth/types/register-schema";
 import { eq } from "drizzle-orm";
 import { pinata } from "@/lib/pinata";
+import { MetadataSchema } from "@/features/dashboard/user/types/blockchain-user";
 
 export const createKtpRecord = createServerFn()
   .inputValidator(
@@ -78,7 +79,6 @@ export const createBlockchainKtpRecord = createServerFn()
   .inputValidator(PersonalInfoSchema)
   .handler(async ({ data }) => {
     const { cid, url } = await $uploadData({ data });
-
     const generateHash = generateHashBlockchain(cid);
 
     const metadata = {
@@ -89,41 +89,58 @@ export const createBlockchainKtpRecord = createServerFn()
       city: data.kota,
     };
 
+    const metadataString = JSON.stringify(metadata);
+
     const txHash = await walletClient.writeContract({
       address: STORAGE_CONTRACT_ADDRESS,
       abi: storageContractAbi,
       functionName: "storeHash",
-      args: [cid, JSON.stringify(metadata)],
+      args: [cid, metadataString],
     });
 
-    const receipt = await walletClient.waitForTransactionReceipt({
+    const receipt = await publicClient.waitForTransactionReceipt({
       hash: txHash,
     });
 
-    const blockTimestamp = await publicClient.getBlock({
+    const block = await publicClient.getBlock({
       blockHash: receipt.blockHash,
     });
-
-    const blockchainDate = new Date(Number(blockTimestamp.timestamp) * 1000);
+    const blockchainDate = new Date(Number(block.timestamp) * 1000);
 
     let contractRecordId: string | undefined;
+
     for (const log of receipt.logs) {
+      if (
+        log.address.toLowerCase() !== STORAGE_CONTRACT_ADDRESS.toLowerCase()
+      ) {
+        continue;
+      }
+
       try {
         const decoded = decodeEventLog({
           abi: storageContractAbi,
           data: log.data,
           topics: log.topics,
         });
+
         if (decoded.eventName === "HashStored") {
           contractRecordId = (decoded.args as any).id?.toString();
+          break;
         }
-      } catch {
+      } catch (err) {
+        console.warn("Log skip:", err);
         continue;
       }
     }
 
+    if (!contractRecordId) {
+      console.error("Logs ditemukan:", receipt.logs);
+      throw new Error(
+        `Gagal menemukan ID. Pastikan ABI mengandung 'event HashStored'. Tx: ${txHash}`
+      );
+    }
+
     return {
-      contractRecordId,
       ipfsCid: cid,
       ipfsUrl: url,
       txHash,
@@ -131,9 +148,62 @@ export const createBlockchainKtpRecord = createServerFn()
       generateHash,
       blockchainDate,
       metadata,
+      contractRecordId,
     };
   });
+export const createBlockchainRecord = createServerFn()
+  .inputValidator(
+    z.object({
+      personalId: z.string(),
+      contractRecordId: z.string(),
+      ipfsCid: z.string(),
+      ipfsUrl: z.string(),
+      txHash: z.string(),
+      blockNumber: z.string(),
+      generateHash: z.string(),
+      blockchainDate: z.date(),
+      metadata: MetadataSchema,
+    })
+  )
+  .handler(async ({ data }) => {
+    const {
+      personalId,
+      contractRecordId,
+      ipfsCid,
+      ipfsUrl,
+      txHash,
+      blockNumber,
+      generateHash,
+      blockchainDate,
+      metadata,
+    } = data;
 
+    const insertBlockchainRecord = await db
+      .insert(blockchain_ktp_records)
+      .values({
+        personalInfoId: personalId,
+        contractRecordId,
+        ipfsCid,
+        ipfsUrl,
+        txHash,
+        blockNumber,
+        blockchainDate,
+        metadata,
+        blockchainHash: generateHash,
+      })
+      .$returningId();
+
+    await db
+      .update(personal_info)
+      .set({
+        status: "VERIFIED",
+        isVerified: true,
+        verifiedAt: new Date(),
+      })
+      .where(eq(personal_info.id, personalId));
+
+    return insertBlockchainRecord;
+  });
 export const getKtpRecord = createServerFn()
   .inputValidator(z.object({ userId: z.string() }))
   .handler(async ({ data }) => {
@@ -141,8 +211,8 @@ export const getKtpRecord = createServerFn()
 
     const getRecord = await db
       .select()
-      .from(blockchain_ktp_records)
-      .where(eq(blockchain_ktp_records.ktpPersonalInfoId, userId))
+      .from(personal_info)
+      .where(eq(personal_info.userId, userId))
       .limit(1);
 
     const record = getRecord[0];
@@ -150,22 +220,6 @@ export const getKtpRecord = createServerFn()
     if (!record) throw new Error("Data ktp tidak ada ditemukan!");
 
     return record;
-  });
-export const getHashChain = createServerFn()
-  .inputValidator(z.object({ chainId: z.bigint() }))
-  .handler(async ({ data }) => {
-    const { chainId } = data;
-
-    const result = await publicClient.readContract({
-      address: STORAGE_CONTRACT_ADDRESS,
-      abi: storageContractAbi,
-      functionName: "getHash",
-      args: [BigInt(chainId)],
-    });
-
-    if (!result) throw new Error("id hash tidak ditemukan!");
-
-    return result;
   });
 
 export const getCidData = createServerFn()
@@ -200,3 +254,8 @@ export const getCidData = createServerFn()
       throw error;
     }
   });
+
+export const getAllDataKtp = createServerFn().handler(async () => {
+  const getAllData = await db.select().from(personal_info);
+  return getAllData;
+});

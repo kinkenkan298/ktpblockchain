@@ -15,46 +15,56 @@ import {
   StatusBadgeAdmin,
 } from "@/features/dashboard/admin/components/stats-card-admin";
 import { VerificationModal } from "@/features/dashboard/admin/components/verification-modal-admin";
-import { CheckCircle, Clock, Filter, Search, Users } from "lucide-react";
+import {
+  CheckCircle,
+  Clock,
+  Filter,
+  Loader2,
+  RefreshCcw,
+  Search,
+  Users,
+} from "lucide-react";
 import { useState } from "react";
 import {
   mockRegistrants,
   Registrant,
 } from "@/features/dashboard/admin/types/user-admin";
+import { PersonalInfo } from "@/features/auth/types/register-schema";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { ktpQueries } from "@/services/queries";
+import { getAllDataKtp } from "@/services/ktp.services";
 
 export const Route = createFileRoute("/(authenticated)/admin/dashboard/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [data, setData] = useState<Registrant[]>(mockRegistrants);
-  const [selectedRegistrant, setSelectedRegistrant] =
-    useState<Registrant | null>(null);
-  const [search, setSearch] = useState("");
+  const [selectedRegistrant, setSelectedRegistrant] = useState<{
+    data: PersonalInfo;
+    id: string;
+  } | null>(null);
 
-  const filteredData = data.filter(
-    (item) =>
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.nik.includes(search)
-  );
+  const {
+    data: registrants = [],
+    isLoading,
+    refetch,
+  } = useSuspenseQuery(ktpQueries.getAllDataKtp());
 
   const stats = {
-    total: data.length,
-    pending: data.filter((d) => d.status === "PENDING").length,
-    verified: data.filter((d) => d.status === "VERIFIED").length,
+    total: registrants.length,
+    pending: registrants.filter((d) => d.status === "PENDING").length,
+    verified: registrants.filter((d) => d.status === "VERIFIED").length,
   };
 
   const handleVerificationComplete = (
     id: string,
-    newStatus: "VERIFIED" | "REJECTED"
+    newStatus: "VERIFIED" | "REJECTED" | "SUSPENDED",
+    txHash?: string
   ) => {
-    setData((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, status: newStatus } : item
-      )
-    );
     setSelectedRegistrant(null);
+    refetch();
   };
+
   return (
     <div className="p-6 space-y-6 bg-slate-50/50 min-h-screen">
       <div className="grid gap-4 md:grid-cols-3">
@@ -74,26 +84,21 @@ function RouteComponent() {
           icon={<Users className="text-blue-500" />}
         />
       </div>
-
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
           <CardTitle className="text-lg font-medium">
             Daftar Permohonan E-KTP
           </CardTitle>
-          <div className="flex gap-2">
-            <div className="relative w-64">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Cari Nama atau NIK..."
-                className="pl-8"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <Button variant="outline">
-              <Filter className="w-4 h-4 mr-2" /> Filter
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            onClick={() => refetch()}
+            disabled={isLoading}
+          >
+            <RefreshCcw
+              className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+            />
+            Refresh Data
+          </Button>
         </CardHeader>
         <CardContent>
           <Table>
@@ -107,33 +112,47 @@ function RouteComponent() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filteredData.map((row) => (
-                <TableRow key={row.id} className="hover:bg-slate-50">
-                  <TableCell className="font-mono text-xs">
-                    {row.submittedAt}
-                  </TableCell>
-                  <TableCell className="font-medium">{row.nik}</TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>
-                    <StatusBadgeAdmin status={row.status} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {row.status === "PENDING" ? (
-                      <Button
-                        size="sm"
-                        onClick={() => setSelectedRegistrant(row)}
-                      >
-                        Tinjau Data
-                      </Button>
-                    ) : (
-                      <span className="text-xs text-muted-foreground">
-                        Selesai
-                      </span>
-                    )}
+              {isLoading && (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-24 text-center">
+                    <div className="flex justify-center items-center gap-2 text-muted-foreground">
+                      <Loader2 className="animate-spin" /> Memuat data...
+                    </div>
                   </TableCell>
                 </TableRow>
-              ))}
-              {filteredData.length === 0 && (
+              )}
+              {!isLoading &&
+                registrants.map((row) => (
+                  <TableRow key={row.id} className="hover:bg-slate-50">
+                    <TableCell className="font-mono text-xs">
+                      {new Date(
+                        row.createdAt || "2024-01-01"
+                      ).toLocaleString() || "-"}
+                    </TableCell>
+                    <TableCell className="font-medium">{row.nik}</TableCell>
+                    <TableCell>{row.nama_lengkap}</TableCell>
+                    <TableCell>
+                      <StatusBadgeAdmin status={row.status} />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      {row.status === "PENDING" ? (
+                        <Button
+                          size="sm"
+                          onClick={() =>
+                            setSelectedRegistrant({ data: row, id: row.id })
+                          }
+                        >
+                          Tinjau Data
+                        </Button>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">
+                          Selesai
+                        </span>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              {!isLoading && registrants.length === 0 && (
                 <TableRow>
                   <TableCell
                     colSpan={5}
@@ -151,7 +170,8 @@ function RouteComponent() {
       {selectedRegistrant && (
         <VerificationModal
           isOpen={!!selectedRegistrant}
-          data={selectedRegistrant}
+          data={selectedRegistrant.data}
+          id={selectedRegistrant.id}
           onClose={() => setSelectedRegistrant(null)}
           onComplete={handleVerificationComplete}
         />

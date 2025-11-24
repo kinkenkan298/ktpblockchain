@@ -156,3 +156,9 @@ export type AccountInfoSchema = z.infer<typeof AccountInfoSchema>;
 export type PersonalInfoSchema = z.infer<typeof PersonalInfoSchema>;
 export type DocumentUploadSchema = z.infer<typeof DocumentUploadSchema>;
 export type AgreementSchema = z.infer<typeof AgreementSchema>;
+
+export type PersonalInfo = z.infer<typeof PersonalInfoSchema> & {
+  isVerified: boolean;
+  verifiedAt?: Date | null;
+  status: string;
+};

@@ -11,18 +11,28 @@ import { Button } from "@/components/animate-ui/components/buttons/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, CheckCircle, ShieldAlert } from "lucide-react";
-import { Registrant } from "../types/user-admin";
+import { PersonalInfo } from "@/features/auth/types/register-schema";
+import {
+  createBlockchainKtpRecord,
+  createBlockchainRecord,
+} from "@/services/ktp.services";
 
 interface ModalProps {
   isOpen: boolean;
-  data: Registrant;
+  data: PersonalInfo;
+  id: string;
   onClose: () => void;
-  onComplete: (id: string, status: "VERIFIED" | "REJECTED") => void;
+  onComplete: (
+    id: string,
+    status: "VERIFIED" | "REJECTED",
+    txHash?: string
+  ) => void;
 }
 
 export function VerificationModal({
   isOpen,
   data,
+  id,
   onClose,
   onComplete,
 }: ModalProps) {
@@ -31,23 +41,36 @@ export function VerificationModal({
   const handleApprove = async () => {
     setIsProcessing(true);
     try {
-      console.log("🚀 MINTING DATA KE BLOCKCHAIN...");
+      const {
+        ipfsCid,
+        ipfsUrl,
+        generateHash,
+        txHash,
+        contractRecordId,
+        blockNumber,
+        metadata,
+        blockchainDate,
+      } = await createBlockchainKtpRecord({
+        data,
+      });
 
-      // --------------------------------------------------
-      // DISINI KAMU PANGGIL 'storeHash' / 'registerKTP'
-      // --------------------------------------------------
-      // await walletClient.writeContract({
-      //    address: CONTRACT_ADDRESS,
-      //    abi: ABI,
-      //    functionName: 'storeHash', // Atau registerKTP
-      //    args: [data.ipfsHash, JSON.stringify(data)]
-      // });
+      if (!contractRecordId) throw new Error("Contract Record ID tidak ada");
 
-      // Simulasi delay blockchain 2 detik
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const insertBlockchainRecord = await createBlockchainRecord({
+        data: {
+          personalId: id,
+          contractRecordId,
+          ipfsCid,
+          ipfsUrl,
+          txHash,
+          blockNumber,
+          generateHash,
+          blockchainDate,
+          metadata,
+        },
+      });
 
-      console.log("✅ Data on-chain confirmed!");
-      onComplete(data.id, "VERIFIED"); // Update state parent
+      onComplete(insertBlockchainRecord[0].id, "VERIFIED", txHash);
     } catch (error) {
       console.error("Gagal verifikasi:", error);
       alert("Gagal menulis ke blockchain!");
@@ -58,7 +81,7 @@ export function VerificationModal({
 
   const handleReject = async () => {
     if (!confirm("Yakin ingin menolak data ini?")) return;
-    onComplete(data.id, "REJECTED");
+    onComplete(id, "REJECTED");
   };
 
   return (
@@ -88,11 +111,11 @@ export function VerificationModal({
                 <Label className="text-xs text-muted-foreground">
                   Nama Lengkap
                 </Label>
-                <div className="font-medium">{data.name}</div>
+                <div className="font-medium">{data.nama_lengkap}</div>
               </div>
               <div className="grid gap-1">
                 <Label className="text-xs text-muted-foreground">Alamat</Label>
-                <div>{data.address}</div>
+                <div>{data.alamat}</div>
               </div>
             </div>
           </div>
@@ -106,7 +129,7 @@ export function VerificationModal({
               {/* <img src={`https://ipfs.io/ipfs/${data.ipfsHash}`} /> */}
               <p className="text-sm">Preview Dokumen (Foto/Scan)</p>
               <p className="text-xs font-mono mt-2 bg-slate-200 px-2 py-1 rounded">
-                CID: {data.ipfsHash.substring(0, 15)}...
+                {/* CID: {data.ipfsHash.substring(0, 15)}... */}
               </p>
             </div>
           </div>

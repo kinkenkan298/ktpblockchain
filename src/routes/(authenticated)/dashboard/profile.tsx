@@ -29,10 +29,6 @@ function RouteComponent() {
     ktpQueries.getDataKtp(user?.user?.id ?? "")
   );
 
-  const { data: cid_data } = useSuspenseQuery(
-    ktpQueries.getCidData(ktp_data.ipfsCid ?? "")
-  );
-
   const mockDocuments: UserDocument[] = [
     {
       id: "1",
@@ -80,16 +76,12 @@ function RouteComponent() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="space-y-6 lg:col-span-2">
           <IdentityCard profile={ktp_data} user={user?.user} />
-          <PersonalDataCard
-            profile={cid_data}
-            createAt={ktp_data.createdAt?.toLocaleString() || ""}
-          />
+          <PersonalDataCard profile={ktp_data} />
           <ContactInfoCard
-            profile={cid_data}
-            walletAddress={ktp_data.blockchainHash ?? ""}
+            profile={ktp_data}
             UserInfo={user?.user || { email: "", emailVerified: false }}
           />
-          <AddressCard address={cid_data} />
+          <AddressCard address={ktp_data} />
         </div>
 
         <div className="space-y-6">

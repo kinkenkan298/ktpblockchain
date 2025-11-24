@@ -52,6 +52,16 @@ export const personal_info = mysqlTable("personal_info", {
   kode_pos: varchar("kode_pos", { length: 255 }).notNull(),
   jenis_kelamin: mysqlEnum("jenis_kelamin", ["male", "female"]).notNull(),
   phone: varchar("phone", { length: 255 }).notNull(),
+
+  status: mysqlEnum("status", ["PENDING", "VERIFIED", "REJECTED", "SUSPENDED"])
+    .default("PENDING")
+    .notNull(),
+
+  isVerified: boolean("is_verified").notNull().default(false),
+  verifiedAt: timestamp("verified_at"),
+
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const blockchain_ktp_records = mysqlTable("blockchain_ktp_records", {
@@ -71,19 +81,6 @@ export const blockchain_ktp_records = mysqlTable("blockchain_ktp_records", {
   blockchainDate: timestamp("blockchain_date"),
 
   metadata: json("metadata").$type<Metadata>(),
-
-  status: mysqlEnum("status", [
-    "PENDING",
-    "VERIFIED",
-    "REJECTED",
-    "SUSPENDED",
-  ]).default("PENDING"),
-
-  isVerified: boolean("is_verified").default(false),
-  verifiedAt: timestamp("verified_at"),
-
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const session = mysqlTable("session", {

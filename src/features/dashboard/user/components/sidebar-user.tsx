@@ -25,19 +25,13 @@ interface MenuItemsProps extends ToOptions {
 const menuItems: MenuItemsProps[] = [
   { id: "dashboard", label: "Dashboard", icon: Home, to: "/dashboard" },
   { id: "profile", label: "Profil Saya", icon: User, to: "/dashboard/profile" },
-  { id: "consent", label: "Persetujuan", icon: Shield },
   {
     id: "pantau-aktivitas",
     label: "Pantauan Aktivitas",
     icon: Activity,
     to: "/dashboard/activity-monitoring",
   },
-  {
-    id: "documents",
-    label: "Dokumen",
-    icon: FileText,
-    to: "/dashboard/dokument-wallet",
-  },
+
   {
     id: "settings",
     label: "Pengaturan",

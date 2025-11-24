@@ -60,7 +60,7 @@ function RouteComponent() {
       </div>
       <div className="grid grid-cols-1 gap-5 mb-5">
         <div className="md:col-span-2">
-          <ProfileCardUser data_ktp={data_ktp} user={user?.user} />
+          <ProfileCardUser personal_info={data_ktp} user={user?.user} />
         </div>
 
         <div className="md:col-span-2">
