@@ -37,7 +37,11 @@ function UserAction() {
   return user ? (
     <div className="flex items-center gap-2">
       <Button type="button" asChild className="mb-2">
-        <Link to="/dashboard">Back to Dashboard</Link>
+        <Link
+          to={user.user.role === "admin" ? "/admin/dashboard" : "/dashboard"}
+        >
+          Back to Dashboard
+        </Link>
       </Button>
     </div>
   ) : (

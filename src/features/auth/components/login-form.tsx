@@ -35,7 +35,6 @@ export function LoginForm({ redirectUrl }: { redirectUrl?: string }) {
     mutationFn: Login,
     onSuccess: async (resp) => {
       toast.success(`${resp.user.name} Selamat datang!`);
-
       await queryClient.resetQueries();
 
       navigate({ to: redirectUrl || "/dashboard" });

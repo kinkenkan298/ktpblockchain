@@ -16,7 +16,6 @@ import { AllFormSchema } from "../types/auth-schema";
 const STEP_COMPONENTS = [
   AccountInfoFields,
   PersonalInfoFields,
-  DocumentInfoFields,
   AgreementInfoFields,
 ] as const;
 

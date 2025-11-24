@@ -1,9 +1,8 @@
-import { CheckSquare, Contact, FileText, User } from "lucide-react";
+import { CheckSquare, Contact, User } from "lucide-react";
 import {
   AccountInfoSchema,
   AgreementSchema,
   AllFormSchema,
-  DocumentUploadSchema,
   PersonalInfoSchema,
   Steps,
 } from "../types/auth-schema";
@@ -19,14 +18,12 @@ import { registerUserKtp } from "@/services/auth.api";
 const stepSchemas = [
   AccountInfoSchema,
   PersonalInfoSchema,
-  DocumentUploadSchema,
   AgreementSchema,
 ] as const;
 
 const steps: Steps[] = [
   { id: "account", name: "Akun", icon: User },
   { id: "personal", name: "Data", icon: Contact },
-  { id: "documents", name: "Dokumen", icon: FileText },
   { id: "agreement", name: "Persetujuan", icon: CheckSquare },
 ];
 

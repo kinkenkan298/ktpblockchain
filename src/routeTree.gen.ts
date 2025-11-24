@@ -23,7 +23,7 @@ import { Route as authenticatedDashboardProfileRouteImport } from './routes/(aut
 import { Route as authenticatedDashboardEditProfileRouteImport } from './routes/(authenticated)/dashboard/edit-profile'
 import { Route as authenticatedDashboardDokumentWalletRouteImport } from './routes/(authenticated)/dashboard/dokument-wallet'
 import { Route as authenticatedDashboardActivityMonitoringRouteImport } from './routes/(authenticated)/dashboard/activity-monitoring'
-import { Route as authenticatedAdminDashboardRouteImport } from './routes/(authenticated)/admin/dashboard'
+import { Route as authenticatedAdminDashboardRouteRouteImport } from './routes/(authenticated)/admin/dashboard/route'
 
 const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
   id: '/(authenticated)',
@@ -100,8 +100,8 @@ const authenticatedDashboardActivityMonitoringRoute =
     path: '/activity-monitoring',
     getParentRoute: () => authenticatedDashboardRouteRoute,
   } as any)
-const authenticatedAdminDashboardRoute =
-  authenticatedAdminDashboardRouteImport.update({
+const authenticatedAdminDashboardRouteRoute =
+  authenticatedAdminDashboardRouteRouteImport.update({
     id: '/dashboard',
     path: '/dashboard',
     getParentRoute: () => authenticatedAdminRouteRoute,
@@ -113,7 +113,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof authenticatedDashboardRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/admin/dashboard': typeof authenticatedAdminDashboardRoute
+  '/admin/dashboard': typeof authenticatedAdminDashboardRouteRoute
   '/dashboard/activity-monitoring': typeof authenticatedDashboardActivityMonitoringRoute
   '/dashboard/dokument-wallet': typeof authenticatedDashboardDokumentWalletRoute
   '/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
@@ -127,7 +127,7 @@ export interface FileRoutesByTo {
   '/admin': typeof authenticatedAdminRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/admin/dashboard': typeof authenticatedAdminDashboardRoute
+  '/admin/dashboard': typeof authenticatedAdminDashboardRouteRoute
   '/dashboard/activity-monitoring': typeof authenticatedDashboardActivityMonitoringRoute
   '/dashboard/dokument-wallet': typeof authenticatedDashboardDokumentWalletRoute
   '/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
@@ -145,7 +145,7 @@ export interface FileRoutesById {
   '/(authenticated)/dashboard': typeof authenticatedDashboardRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
-  '/(authenticated)/admin/dashboard': typeof authenticatedAdminDashboardRoute
+  '/(authenticated)/admin/dashboard': typeof authenticatedAdminDashboardRouteRoute
   '/(authenticated)/dashboard/activity-monitoring': typeof authenticatedDashboardActivityMonitoringRoute
   '/(authenticated)/dashboard/dokument-wallet': typeof authenticatedDashboardDokumentWalletRoute
   '/(authenticated)/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
@@ -314,7 +314,7 @@ declare module '@tanstack/react-router' {
       id: '/(authenticated)/admin/dashboard'
       path: '/dashboard'
       fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof authenticatedAdminDashboardRouteImport
+      preLoaderRoute: typeof authenticatedAdminDashboardRouteRouteImport
       parentRoute: typeof authenticatedAdminRouteRoute
     }
   }
@@ -335,12 +335,13 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
 )
 
 interface authenticatedAdminRouteRouteChildren {
-  authenticatedAdminDashboardRoute: typeof authenticatedAdminDashboardRoute
+  authenticatedAdminDashboardRouteRoute: typeof authenticatedAdminDashboardRouteRoute
 }
 
 const authenticatedAdminRouteRouteChildren: authenticatedAdminRouteRouteChildren =
   {
-    authenticatedAdminDashboardRoute: authenticatedAdminDashboardRoute,
+    authenticatedAdminDashboardRouteRoute:
+      authenticatedAdminDashboardRouteRoute,
   }
 
 const authenticatedAdminRouteRouteWithChildren =

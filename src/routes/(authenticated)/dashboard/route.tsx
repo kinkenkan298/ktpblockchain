@@ -1,14 +1,21 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { HeaderUser } from "@/features/dashboard/user/components/header-user";
 import { SidebarUser } from "@/features/dashboard/user/components/sidebar-user";
-import { ktpQueries } from "@/services/queries";
+import { authQueryOptions, ktpQueries } from "@/services/queries";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/(authenticated)/dashboard")({
   component: DashboardLayout,
   beforeLoad: async ({ context }) => {
+    const user = await context.queryClient.ensureQueryData({
+      ...authQueryOptions.user(),
+      revalidateIfStale: true,
+    });
+    if (user?.user?.role === "admin") {
+      throw redirect({ to: "/admin/dashboard" });
+    }
     context.queryClient.ensureQueryData(
-      ktpQueries.getDataKtp(context.user?.user?.id ?? "")
+      ktpQueries.getDataKtp(user?.user?.id ?? "")
     );
   },
   pendingComponent: () => (
