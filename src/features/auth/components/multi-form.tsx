@@ -13,8 +13,6 @@ import { useNavigate } from "@tanstack/react-router";
 import { authClient } from "@/lib/auth/client";
 import { createKtpRecord } from "@/services/ktp.services";
 
-import { registerUserKtp } from "@/services/auth.api";
-
 const stepSchemas = [
   AccountInfoSchema,
   PersonalInfoSchema,
@@ -67,21 +65,6 @@ const $registerUser = async (data: AllFormSchema) => {
 
   if (error_data) throw new Error(error_data.message);
 
-  const {
-    ipfsCid,
-    ipfsUrl,
-    generateHash,
-    txHash,
-    contractRecordId,
-    blockNumber,
-    metadata,
-    blockchainDate,
-  } = await createKtpRecord({
-    data: personalInfoData,
-  });
-
-  if (!contractRecordId) throw new Error("Contract Record ID tidak ada");
-
   const { error, data: signUpData } = await authClient.signUp.email({
     email,
     password,
@@ -95,24 +78,17 @@ const $registerUser = async (data: AllFormSchema) => {
     throw new Error("Berhasil membuat akun user namun user id tidak ada");
   }
 
-  const recordId = await registerUserKtp({
+  const userKtpId = await createKtpRecord({
     data: {
       userId: signUpData.user.id,
-      blockchainHash: generateHash,
-      txHash,
-      ipfsCid,
-      ipfsUrl,
-      contractRecordId,
-      blockNumber,
-      metadata,
-      blockchainDate,
+      ...personalInfoData,
     },
   });
 
   return {
     user: signUpData.user,
     personalInfo: personalInfoData,
-    recordId,
+    userKtpId,
   };
 };
 

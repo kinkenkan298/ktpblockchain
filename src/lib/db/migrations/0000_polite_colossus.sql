@@ -15,25 +15,45 @@ CREATE TABLE `account` (
 	CONSTRAINT `account_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
-CREATE TABLE `ktp_records` (
+CREATE TABLE `blockchain_ktp_records` (
 	`id` varchar(36) NOT NULL,
-	`user_id` varchar(36) NOT NULL,
-	`ipfs_cid` text NOT NULL,
-	`ipfs_url` text NOT NULL,
-	`blockchain_hash` text NOT NULL,
-	`tx_hash` text NOT NULL,
+	`personal_info_id` varchar(36) NOT NULL,
+	`ipfs_cid` text,
+	`ipfs_url` text,
+	`blockchain_hash` text,
+	`tx_hash` text,
 	`block_number` text,
-	`contract_record_id` text NOT NULL,
-	`blockchain_date` timestamp NOT NULL,
-	`metadata` json NOT NULL,
+	`contract_record_id` text,
+	`blockchain_date` timestamp,
+	`metadata` json,
 	`status` enum('PENDING','VERIFIED','REJECTED','SUSPENDED') DEFAULT 'PENDING',
 	`is_verified` boolean DEFAULT false,
 	`verified_at` timestamp,
 	`created_at` timestamp DEFAULT (now()),
 	`updated_at` timestamp DEFAULT (now()),
-	CONSTRAINT `ktp_records_id` PRIMARY KEY(`id`),
-	CONSTRAINT `ktp_records_ipfs_cid_unique` UNIQUE(`ipfs_cid`),
-	CONSTRAINT `ktp_records_tx_hash_unique` UNIQUE(`tx_hash`)
+	CONSTRAINT `blockchain_ktp_records_id` PRIMARY KEY(`id`),
+	CONSTRAINT `blockchain_ktp_records_ipfs_cid_unique` UNIQUE(`ipfs_cid`),
+	CONSTRAINT `blockchain_ktp_records_ipfs_url_unique` UNIQUE(`ipfs_url`),
+	CONSTRAINT `blockchain_ktp_records_tx_hash_unique` UNIQUE(`tx_hash`)
+);
+--> statement-breakpoint
+CREATE TABLE `personal_info` (
+	`id` varchar(36) NOT NULL,
+	`user_id` varchar(36) NOT NULL,
+	`nik` varchar(16) NOT NULL,
+	`nama_lengkap` varchar(255) NOT NULL,
+	`provinsi` varchar(255) NOT NULL,
+	`kota` varchar(255) NOT NULL,
+	`tempat_lahir` varchar(255) NOT NULL,
+	`tanggal_lahir` varchar(255) NOT NULL,
+	`alamat` varchar(255) NOT NULL,
+	`rt_rw` varchar(255) NOT NULL,
+	`kelurahan` varchar(255) NOT NULL,
+	`kecamatan` varchar(255) NOT NULL,
+	`kode_pos` varchar(255) NOT NULL,
+	`jenis_kelamin` enum('male','female') NOT NULL,
+	`phone` varchar(255) NOT NULL,
+	CONSTRAINT `personal_info_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `session` (
@@ -184,7 +204,8 @@ CREATE TABLE `verification_request` (
 );
 --> statement-breakpoint
 ALTER TABLE `account` ADD CONSTRAINT `account_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE `ktp_records` ADD CONSTRAINT `ktp_records_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `blockchain_ktp_records` ADD CONSTRAINT `blockchain_ktp_records_personal_info_id_personal_info_id_fk` FOREIGN KEY (`personal_info_id`) REFERENCES `personal_info`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `personal_info` ADD CONSTRAINT `personal_info_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `session` ADD CONSTRAINT `session_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `access_log` ADD CONSTRAINT `access_log_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `access_log` ADD CONSTRAINT `access_log_verifier_id_verification_request_id_fk` FOREIGN KEY (`verifier_id`) REFERENCES `verification_request`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

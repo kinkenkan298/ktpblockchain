@@ -1,39 +1,39 @@
 import { MetadataSchema } from "@/features/dashboard/user/types/blockchain-user";
 import { db } from "@/lib/db";
-import { ktp_records } from "@/lib/db/schema";
+import { blockchain_ktp_records } from "@/lib/db/schema";
 import { createServerFn } from "@tanstack/react-start";
 import z from "zod";
 
-export const registerUserKtp = createServerFn()
+export const createBlockchainKtpRecord = createServerFn()
   .inputValidator(
     z.object({
+      personalInfoId: z.string(),
       txHash: z.string(),
       blockNumber: z.string(),
       ipfsCid: z.string(),
       ipfsUrl: z.string(),
       contractRecordId: z.string(),
       blockchainHash: z.string(),
-      userId: z.string(),
       blockchainDate: z.date(),
       metadata: MetadataSchema,
     })
   )
   .handler(async ({ data }) => {
     const {
+      personalInfoId,
       txHash,
       ipfsCid,
       ipfsUrl,
       blockNumber,
       contractRecordId,
       blockchainHash,
-      userId,
       blockchainDate,
       metadata,
     } = data;
     const recordId = await db
-      .insert(ktp_records)
+      .insert(blockchain_ktp_records)
       .values({
-        userId,
+        personalInfoId,
         txHash,
         ipfsCid,
         ipfsUrl,

@@ -32,23 +32,45 @@ export const user = mysqlTable("user", {
   banExpires: timestamp("ban_expires", { fsp: 3 }),
 });
 
-export const ktp_records = mysqlTable("ktp_records", {
+export const personal_info = mysqlTable("personal_info", {
   id: varchar("id", { length: 36 }).primaryKey().$defaultFn(createId),
 
   userId: varchar("user_id", { length: 36 })
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
 
-  ipfsCid: text("ipfs_cid").notNull().unique(),
-  ipfsUrl: text("ipfs_url").notNull(),
+  nik: varchar("nik", { length: 16 }).notNull(),
+  nama_lengkap: varchar("nama_lengkap", { length: 255 }).notNull(),
+  provinsi: varchar("provinsi", { length: 255 }).notNull(),
+  kota: varchar("kota", { length: 255 }).notNull(),
+  tempat_lahir: varchar("tempat_lahir", { length: 255 }).notNull(),
+  tanggal_lahir: varchar("tanggal_lahir", { length: 255 }).notNull(),
+  alamat: varchar("alamat", { length: 255 }).notNull(),
+  rt_rw: varchar("rt_rw", { length: 255 }).notNull(),
+  kelurahan: varchar("kelurahan", { length: 255 }).notNull(),
+  kecamatan: varchar("kecamatan", { length: 255 }).notNull(),
+  kode_pos: varchar("kode_pos", { length: 255 }).notNull(),
+  jenis_kelamin: mysqlEnum("jenis_kelamin", ["male", "female"]).notNull(),
+  phone: varchar("phone", { length: 255 }).notNull(),
+});
 
-  blockchainHash: text("blockchain_hash").notNull(),
-  txHash: text("tx_hash").notNull().unique(),
+export const blockchain_ktp_records = mysqlTable("blockchain_ktp_records", {
+  id: varchar("id", { length: 36 }).primaryKey().$defaultFn(createId),
+
+  personalInfoId: varchar("personal_info_id", { length: 36 })
+    .notNull()
+    .references(() => personal_info.id, { onDelete: "cascade" }),
+
+  ipfsCid: text("ipfs_cid").unique(),
+  ipfsUrl: text("ipfs_url").unique(),
+
+  blockchainHash: text("blockchain_hash"),
+  txHash: text("tx_hash").unique(),
   blockNumber: text("block_number"),
-  contractRecordId: text("contract_record_id").notNull(),
-  blockchainDate: timestamp("blockchain_date").notNull(),
+  contractRecordId: text("contract_record_id"),
+  blockchainDate: timestamp("blockchain_date"),
 
-  metadata: json("metadata").$type<Metadata>().notNull(),
+  metadata: json("metadata").$type<Metadata>(),
 
   status: mysqlEnum("status", [
     "PENDING",

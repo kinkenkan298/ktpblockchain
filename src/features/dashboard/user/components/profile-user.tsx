@@ -11,8 +11,11 @@ import {
   CreditCard,
 } from "lucide-react";
 import { ProfileCardProps } from "../types/user-types";
+import { Metadata } from "../types/blockchain-user";
 
 export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
+  const { metadata } = data_ktp;
+  const data = JSON.parse(metadata) as Metadata;
   return (
     <Card className="shadow-md border-slate-200">
       <CardHeader className="pb-4">
@@ -44,7 +47,7 @@ export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="text-xl font-bold text-slate-900">
-              {user?.name || data_ktp?.fullName || "User"}
+              {user?.name || data?.fullName || "User"}
             </h4>
             <p className="text-sm text-slate-500">Status: Terverifikasi</p>
             <Badge
@@ -64,7 +67,7 @@ export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
             <div className="flex-1 min-w-0">
               <p className="text-xs text-slate-500 mb-1">Kota</p>
               <p className="text-sm font-medium text-slate-900">
-                {data_ktp.city ?? "Kota Tidak Diketahui"}
+                {data.city ?? "Kota Tidak Diketahui"}
               </p>
             </div>
           </div>
@@ -74,7 +77,7 @@ export function ProfileCardUser({ user, data_ktp }: ProfileCardProps) {
             <div className="flex-1 min-w-0">
               <p className="text-xs text-slate-500 mb-1">Provinsi</p>
               <p className="text-sm font-medium text-slate-900">
-                {data_ktp.province ?? "Provinsi Tidak Diketahui"}
+                {data.province ?? "Provinsi Tidak Diketahui"}
               </p>
             </div>
           </div>

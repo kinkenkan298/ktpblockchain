@@ -8,7 +8,7 @@ import {
   storageContractAbi,
   walletClient,
 } from "@/lib/blockchain";
-import { ktp_records } from "@/lib/db/schema";
+import { blockchain_ktp_records, personal_info } from "@/lib/db/schema";
 import { decodeEventLog } from "viem";
 import { createServerFn } from "@tanstack/react-start";
 import z from "zod";
@@ -17,6 +17,64 @@ import { eq } from "drizzle-orm";
 import { pinata } from "@/lib/pinata";
 
 export const createKtpRecord = createServerFn()
+  .inputValidator(
+    z.object({
+      userId: z.string(),
+      ...PersonalInfoSchema.shape,
+    })
+  )
+  .handler(async ({ data }) => {
+    const {
+      userId,
+      nik,
+      nama_lengkap,
+      provinsi,
+      kota,
+      tempat_lahir,
+      tanggal_lahir,
+      alamat,
+      rt_rw,
+      kelurahan,
+      kecamatan,
+      kode_pos,
+      jenis_kelamin,
+      phone,
+    } = data;
+
+    const getKtpRecord = await db
+      .select()
+      .from(personal_info)
+      .where(eq(personal_info.nik, nik))
+      .limit(1);
+
+    const record = getKtpRecord[0];
+
+    if (record) throw new Error("Data ktp sudah ada!");
+
+    const insertKtpRecord = await db
+      .insert(personal_info)
+      .values({
+        userId,
+        nik,
+        nama_lengkap,
+        provinsi,
+        kota,
+        tempat_lahir,
+        tanggal_lahir,
+        alamat,
+        rt_rw,
+        kelurahan,
+        kecamatan,
+        kode_pos,
+        jenis_kelamin,
+        phone,
+      })
+      .$returningId();
+
+    return insertKtpRecord;
+  });
+
+export const createBlockchainKtpRecord = createServerFn()
   .inputValidator(PersonalInfoSchema)
   .handler(async ({ data }) => {
     const { cid, url } = await $uploadData({ data });
@@ -83,8 +141,8 @@ export const getKtpRecord = createServerFn()
 
     const getRecord = await db
       .select()
-      .from(ktp_records)
-      .where(eq(ktp_records.userId, userId))
+      .from(blockchain_ktp_records)
+      .where(eq(blockchain_ktp_records.ktpPersonalInfoId, userId))
       .limit(1);
 
     const record = getRecord[0];

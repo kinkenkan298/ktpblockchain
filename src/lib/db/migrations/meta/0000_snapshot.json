@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "577a68a4-e2a4-45b1-9275-a36d130040cd",
+  "id": "6d81345d-e99a-467d-9b34-bf8f728dcfd2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -126,8 +126,8 @@
       "uniqueConstraints": {},
       "checkConstraint": {}
     },
-    "ktp_records": {
-      "name": "ktp_records",
+    "blockchain_ktp_records": {
+      "name": "blockchain_ktp_records",
       "columns": {
         "id": {
           "name": "id",
@@ -136,8 +136,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "user_id": {
-          "name": "user_id",
+        "personal_info_id": {
+          "name": "personal_info_id",
           "type": "varchar(36)",
           "primaryKey": false,
           "notNull": true,
@@ -147,28 +147,28 @@
           "name": "ipfs_cid",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "ipfs_url": {
           "name": "ipfs_url",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "blockchain_hash": {
           "name": "blockchain_hash",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "tx_hash": {
           "name": "tx_hash",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "block_number": {
@@ -182,21 +182,21 @@
           "name": "contract_record_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "blockchain_date": {
           "name": "blockchain_date",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "metadata": {
           "name": "metadata",
           "type": "json",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "status": {
@@ -241,9 +241,164 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "ktp_records_user_id_user_id_fk": {
-          "name": "ktp_records_user_id_user_id_fk",
-          "tableFrom": "ktp_records",
+        "blockchain_ktp_records_personal_info_id_personal_info_id_fk": {
+          "name": "blockchain_ktp_records_personal_info_id_personal_info_id_fk",
+          "tableFrom": "blockchain_ktp_records",
+          "tableTo": "personal_info",
+          "columnsFrom": [
+            "personal_info_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "blockchain_ktp_records_id": {
+          "name": "blockchain_ktp_records_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "blockchain_ktp_records_ipfs_cid_unique": {
+          "name": "blockchain_ktp_records_ipfs_cid_unique",
+          "columns": [
+            "ipfs_cid"
+          ]
+        },
+        "blockchain_ktp_records_ipfs_url_unique": {
+          "name": "blockchain_ktp_records_ipfs_url_unique",
+          "columns": [
+            "ipfs_url"
+          ]
+        },
+        "blockchain_ktp_records_tx_hash_unique": {
+          "name": "blockchain_ktp_records_tx_hash_unique",
+          "columns": [
+            "tx_hash"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "personal_info": {
+      "name": "personal_info",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nik": {
+          "name": "nik",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nama_lengkap": {
+          "name": "nama_lengkap",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "provinsi": {
+          "name": "provinsi",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kota": {
+          "name": "kota",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tempat_lahir": {
+          "name": "tempat_lahir",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tanggal_lahir": {
+          "name": "tanggal_lahir",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "alamat": {
+          "name": "alamat",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rt_rw": {
+          "name": "rt_rw",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kelurahan": {
+          "name": "kelurahan",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kecamatan": {
+          "name": "kecamatan",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kode_pos": {
+          "name": "kode_pos",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "jenis_kelamin": {
+          "name": "jenis_kelamin",
+          "type": "enum('male','female')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "personal_info_user_id_user_id_fk": {
+          "name": "personal_info_user_id_user_id_fk",
+          "tableFrom": "personal_info",
           "tableTo": "user",
           "columnsFrom": [
             "user_id"
@@ -256,27 +411,14 @@
         }
       },
       "compositePrimaryKeys": {
-        "ktp_records_id": {
-          "name": "ktp_records_id",
+        "personal_info_id": {
+          "name": "personal_info_id",
           "columns": [
             "id"
           ]
         }
       },
-      "uniqueConstraints": {
-        "ktp_records_ipfs_cid_unique": {
-          "name": "ktp_records_ipfs_cid_unique",
-          "columns": [
-            "ipfs_cid"
-          ]
-        },
-        "ktp_records_tx_hash_unique": {
-          "name": "ktp_records_tx_hash_unique",
-          "columns": [
-            "tx_hash"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "checkConstraint": {}
     },
     "session": {
