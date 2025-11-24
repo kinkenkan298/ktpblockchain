@@ -24,6 +24,7 @@ import { Route as authenticatedDashboardEditProfileRouteImport } from './routes/
 import { Route as authenticatedDashboardDokumentWalletRouteImport } from './routes/(authenticated)/dashboard/dokument-wallet'
 import { Route as authenticatedDashboardActivityMonitoringRouteImport } from './routes/(authenticated)/dashboard/activity-monitoring'
 import { Route as authenticatedAdminDashboardRouteRouteImport } from './routes/(authenticated)/admin/dashboard/route'
+import { Route as authenticatedAdminDashboardIndexRouteImport } from './routes/(authenticated)/admin/dashboard/index'
 
 const authenticatedRouteRoute = authenticatedRouteRouteImport.update({
   id: '/(authenticated)',
@@ -106,6 +107,12 @@ const authenticatedAdminDashboardRouteRoute =
     path: '/dashboard',
     getParentRoute: () => authenticatedAdminRouteRoute,
   } as any)
+const authenticatedAdminDashboardIndexRoute =
+  authenticatedAdminDashboardIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => authenticatedAdminDashboardRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -113,7 +120,7 @@ export interface FileRoutesByFullPath {
   '/dashboard': typeof authenticatedDashboardRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/admin/dashboard': typeof authenticatedAdminDashboardRouteRoute
+  '/admin/dashboard': typeof authenticatedAdminDashboardRouteRouteWithChildren
   '/dashboard/activity-monitoring': typeof authenticatedDashboardActivityMonitoringRoute
   '/dashboard/dokument-wallet': typeof authenticatedDashboardDokumentWalletRoute
   '/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
@@ -121,13 +128,13 @@ export interface FileRoutesByFullPath {
   '/dashboard/settings': typeof authenticatedDashboardSettingsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/dashboard/': typeof authenticatedDashboardIndexRoute
+  '/admin/dashboard/': typeof authenticatedAdminDashboardIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof authenticatedAdminRouteRouteWithChildren
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
-  '/admin/dashboard': typeof authenticatedAdminDashboardRouteRoute
   '/dashboard/activity-monitoring': typeof authenticatedDashboardActivityMonitoringRoute
   '/dashboard/dokument-wallet': typeof authenticatedDashboardDokumentWalletRoute
   '/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
@@ -135,6 +142,7 @@ export interface FileRoutesByTo {
   '/dashboard/settings': typeof authenticatedDashboardSettingsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/dashboard': typeof authenticatedDashboardIndexRoute
+  '/admin/dashboard': typeof authenticatedAdminDashboardIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -145,7 +153,7 @@ export interface FileRoutesById {
   '/(authenticated)/dashboard': typeof authenticatedDashboardRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
-  '/(authenticated)/admin/dashboard': typeof authenticatedAdminDashboardRouteRoute
+  '/(authenticated)/admin/dashboard': typeof authenticatedAdminDashboardRouteRouteWithChildren
   '/(authenticated)/dashboard/activity-monitoring': typeof authenticatedDashboardActivityMonitoringRoute
   '/(authenticated)/dashboard/dokument-wallet': typeof authenticatedDashboardDokumentWalletRoute
   '/(authenticated)/dashboard/edit-profile': typeof authenticatedDashboardEditProfileRoute
@@ -153,6 +161,7 @@ export interface FileRoutesById {
   '/(authenticated)/dashboard/settings': typeof authenticatedDashboardSettingsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/(authenticated)/dashboard/': typeof authenticatedDashboardIndexRoute
+  '/(authenticated)/admin/dashboard/': typeof authenticatedAdminDashboardIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -170,13 +179,13 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/api/auth/$'
     | '/dashboard/'
+    | '/admin/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/admin'
     | '/login'
     | '/register'
-    | '/admin/dashboard'
     | '/dashboard/activity-monitoring'
     | '/dashboard/dokument-wallet'
     | '/dashboard/edit-profile'
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
     | '/dashboard/settings'
     | '/api/auth/$'
     | '/dashboard'
+    | '/admin/dashboard'
   id:
     | '__root__'
     | '/'
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/(authenticated)/dashboard/settings'
     | '/api/auth/$'
     | '/(authenticated)/dashboard/'
+    | '/(authenticated)/admin/dashboard/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -317,6 +328,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authenticatedAdminDashboardRouteRouteImport
       parentRoute: typeof authenticatedAdminRouteRoute
     }
+    '/(authenticated)/admin/dashboard/': {
+      id: '/(authenticated)/admin/dashboard/'
+      path: '/'
+      fullPath: '/admin/dashboard/'
+      preLoaderRoute: typeof authenticatedAdminDashboardIndexRouteImport
+      parentRoute: typeof authenticatedAdminDashboardRouteRoute
+    }
   }
 }
 
@@ -334,14 +352,29 @@ const authRouteRouteWithChildren = authRouteRoute._addFileChildren(
   authRouteRouteChildren,
 )
 
+interface authenticatedAdminDashboardRouteRouteChildren {
+  authenticatedAdminDashboardIndexRoute: typeof authenticatedAdminDashboardIndexRoute
+}
+
+const authenticatedAdminDashboardRouteRouteChildren: authenticatedAdminDashboardRouteRouteChildren =
+  {
+    authenticatedAdminDashboardIndexRoute:
+      authenticatedAdminDashboardIndexRoute,
+  }
+
+const authenticatedAdminDashboardRouteRouteWithChildren =
+  authenticatedAdminDashboardRouteRoute._addFileChildren(
+    authenticatedAdminDashboardRouteRouteChildren,
+  )
+
 interface authenticatedAdminRouteRouteChildren {
-  authenticatedAdminDashboardRouteRoute: typeof authenticatedAdminDashboardRouteRoute
+  authenticatedAdminDashboardRouteRoute: typeof authenticatedAdminDashboardRouteRouteWithChildren
 }
 
 const authenticatedAdminRouteRouteChildren: authenticatedAdminRouteRouteChildren =
   {
     authenticatedAdminDashboardRouteRoute:
-      authenticatedAdminDashboardRouteRoute,
+      authenticatedAdminDashboardRouteRouteWithChildren,
   }
 
 const authenticatedAdminRouteRouteWithChildren =
