@@ -1,4 +1,5 @@
 import { User } from "better-auth";
+import { Metadata } from "./blockchain-user";
 
 export type AccessLog = {
   id: string;
@@ -27,11 +28,6 @@ export type ActiveConsent = {
 };
 
 export interface DataKtp {
-  fullName: string;
-  nik: string;
-  province: string | null;
-  city: string | null;
-
   ipfsCid: string;
   ipfsUrl: string;
 
@@ -39,6 +35,8 @@ export interface DataKtp {
   txHash: string;
   blockNumber: string | null;
   contractRecordId: string;
+
+  metadata: Metadata;
 
   isVerified: boolean | null;
   verifiedAt?: Date | null;

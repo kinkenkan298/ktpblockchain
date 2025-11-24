@@ -2,6 +2,7 @@ import { Check } from "lucide-react";
 import { DataKtp } from "../../types/user-types";
 import { User } from "better-auth";
 import { Image } from "@unpic/react";
+import { Metadata } from "../../types/blockchain-user";
 
 interface IdentityCardProps {
   profile: DataKtp;
@@ -9,6 +10,9 @@ interface IdentityCardProps {
 }
 
 export function IdentityCard({ profile, user }: IdentityCardProps) {
+  const { metadata } = profile;
+  const data = JSON.parse(metadata) as Metadata;
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <div className="flex items-center space-x-2 mb-6">
@@ -33,7 +37,7 @@ export function IdentityCard({ profile, user }: IdentityCardProps) {
                       height={128}
                     />
                   ) : (
-                    profile.fullName.charAt(0).toLocaleUpperCase()
+                    data.fullName.charAt(0).toLocaleUpperCase()
                   )}
                 </span>
               </div>
@@ -47,7 +51,7 @@ export function IdentityCard({ profile, user }: IdentityCardProps) {
 
           <div>
             <h3 className="text-xl font-bold text-gray-900 mb-2">
-              {profile.fullName}
+              {data.fullName}
             </h3>
 
             <div className="space-y-2">
