@@ -22,7 +22,6 @@ export function QuickActionsCard() {
       icon: Edit,
       label: "Ubah Informasi Pribadi",
       color: "blue",
-      to: "/dashboard/profile/edit",
     },
     {
       icon: FileText,
@@ -34,7 +33,6 @@ export function QuickActionsCard() {
       icon: Lock,
       label: "Ganti Password",
       color: "blue",
-      to: "/dashboard/profile/password",
     },
     {
       icon: Settings,
@@ -46,7 +44,6 @@ export function QuickActionsCard() {
       icon: Download,
       label: "Unduh Digital ID",
       color: "blue",
-      to: "/dashboard/profile/download",
     },
   ];
 

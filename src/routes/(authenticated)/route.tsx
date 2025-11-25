@@ -1,6 +1,6 @@
 import { authQueryOptions } from "@/services/queries";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { isAdmin, isAuthenticated } from "@/lib/auth/utils";
+import { isAuthenticated } from "@/lib/auth/utils";
 
 export const Route = createFileRoute("/(authenticated)")({
   beforeLoad: async ({ context }) => {

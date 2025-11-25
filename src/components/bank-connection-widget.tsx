@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Building2,
   ArrowRight,
@@ -12,8 +11,8 @@ type ConnectionStatus = "disconnected" | "connected" | "incomplete";
 
 interface BankWidgetProps {
   status?: ConnectionStatus;
-  bankName?: string; // e.g., 'BCA', 'Mandiri'
-  progress?: number; // 0-100, used for incomplete state
+  bankName?: string;
+  progress?: number;
   onAction?: () => void;
 }
 
@@ -23,11 +22,9 @@ export function BankConnectionWidget({
   progress = 50,
   onAction,
 }: BankWidgetProps) {
-  // --- STATE 1: DEFAULT (NOT CONNECTED) ---
   if (status === "disconnected") {
     return (
       <div className="bg-white rounded-xl border border-blue-100 shadow-sm p-4 relative overflow-hidden group">
-        {/* Decorative background blob */}
         <div className="absolute -top-4 -right-4 w-16 h-16 bg-blue-50 rounded-full z-0 group-hover:scale-125 transition-transform duration-500" />
 
         <div className="relative z-10">
@@ -35,7 +32,6 @@ export function BankConnectionWidget({
             <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
               <Building2 className="w-5 h-5" />
             </div>
-            {/* Optional: Secure Badge */}
             <div className="flex items-center gap-1 text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">
               <ShieldCheck className="w-3 h-3" /> Secure
             </div>
@@ -60,14 +56,12 @@ export function BankConnectionWidget({
     );
   }
 
-  // --- STATE 2: CONNECTED ---
   if (status === "connected") {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-4 flex items-center justify-between gap-3 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center border border-gray-100">
-              {/* Placeholder for Bank Logo - using Icon for demo */}
               <Building2 className="w-5 h-5 text-gray-600" />
             </div>
             <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5">
@@ -93,7 +87,6 @@ export function BankConnectionWidget({
     );
   }
 
-  // --- STATE 3: INCOMPLETE (WARNING) ---
   if (status === "incomplete") {
     return (
       <div className="bg-amber-50/50 rounded-xl border border-amber-200 p-4 relative overflow-hidden">
@@ -111,7 +104,6 @@ export function BankConnectionWidget({
           </div>
         </div>
 
-        {/* Progress Bar */}
         <div className="w-full bg-amber-100 h-1.5 rounded-full mb-3 overflow-hidden">
           <div
             className="bg-amber-500 h-full rounded-full transition-all duration-500"

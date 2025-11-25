@@ -1,5 +1,4 @@
 import { DashboardSkeleton } from "@/components/dashboard-skeleton";
-import { PersonalInfo } from "@/features/auth/types/register-schema";
 import { AddressCard } from "@/features/dashboard/user/components/profile-card/address-info-card";
 import { ConnectedServicesCard } from "@/features/dashboard/user/components/profile-card/connected-services-card";
 import { ContactInfoCard } from "@/features/dashboard/user/components/profile-card/contact-info-card";

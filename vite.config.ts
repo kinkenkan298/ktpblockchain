@@ -22,4 +22,15 @@ export default defineConfig({
       "@/": fileURLToPath(new URL(import.meta.url)),
     },
   },
+  optimizeDeps: {
+    exclude: ["better-auth"],
+  },
+  ssr: {
+    noExternal: ["better-auth"],
+  },
+  build: {
+    rollupOptions: {
+      external: ["better-auth", "node:async_hooks"],
+    },
+  },
 });

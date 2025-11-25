@@ -11,7 +11,7 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/animate-ui/components/radix/sidebar";
-import { Activity, FileText, Home, Settings, Shield, User } from "lucide-react";
+import { Activity, Home, Settings, Shield, User } from "lucide-react";
 import { ToOptions } from "@tanstack/react-router";
 import { Link } from "@tanstack/react-router";
 import React from "react";

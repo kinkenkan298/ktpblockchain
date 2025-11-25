@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createLink, useRouter } from "@tanstack/react-router";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { ChevronsUpDown, LogOut, User } from "lucide-react";
-import { authClient, useAuthenticatedUser } from "@/lib/auth/client";
+import { authClient } from "@/lib/auth/client";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -14,6 +14,7 @@ import {
 } from "./animate-ui/components/radix/dropdown-menu";
 import { SidebarMenuButton } from "./animate-ui/components/radix/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuthenticatedUser } from "@/hooks/use-auth";
 
 const ItemLink = createLink(DropdownMenuItem);
 

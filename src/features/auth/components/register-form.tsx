@@ -7,7 +7,6 @@ import { AccountInfoFields } from "./steps/AccountInfo";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PersonalInfoFields } from "./steps/PersonalInfo";
-import { DocumentInfoFields } from "./steps/DocumentInfo";
 import { AgreementInfoFields } from "./steps/AgreementInfo";
 import { toast } from "sonner";
 import { Link } from "@tanstack/react-router";

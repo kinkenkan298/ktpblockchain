@@ -1,26 +1,8 @@
 import { createAuthClient } from "better-auth/react";
 import { usernameClient, adminClient } from "better-auth/client/plugins";
 import { reactStartCookies } from "better-auth/react-start";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { authQueryOptions } from "../../services/queries";
 
 export const authClient = createAuthClient({
   baseURL: "http://localhost:3000/api/auth",
   plugins: [reactStartCookies(), usernameClient(), adminClient()],
 });
-
-export const useAuthentication = () => {
-  const { data: userSession } = useSuspenseQuery(authQueryOptions.user());
-
-  return { userSession, isAuthenticated: !!userSession };
-};
-
-export const useAuthenticatedUser = () => {
-  const { userSession, isAuthenticated } = useAuthentication();
-
-  return {
-    user: userSession?.user ?? null,
-    isAuthenticated,
-    session: userSession ?? null,
-  };
-};

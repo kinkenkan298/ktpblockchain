@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, Hash, XCircle } from "lucide-react";
+import { CheckCircle2, Clock, Hash } from "lucide-react";
 import { TxType } from "../types/blockchain-user";
 
 export const getActionLabel = (action: string) => {
