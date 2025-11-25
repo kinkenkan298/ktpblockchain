@@ -30,7 +30,7 @@ COPY --from=builder /app/public ./public
 
 # Copy database-related files for migrations and seeding
 COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
-COPY --from=builder /app/src/lib/db ./src/lib/db
+COPY --from=builder /app/src ./src
 COPY --from=builder /app/.env* ./
 
 # Copy node_modules from builder (includes all dependencies needed by the build)

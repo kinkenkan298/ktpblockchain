@@ -1,5 +1,7 @@
+import { eq } from "drizzle-orm";
 import { db } from ".";
 import { user } from "./schema";
+import { auth } from "../auth/auth";
 
 interface AdminUser {
   name: string;
@@ -22,21 +24,54 @@ async function createUser({
 }: AdminUser) {
   console.log(`Creating user: ${email}...`);
 
-  const users = await db
-    .insert(user)
-    .values({
-      id: crypto.randomUUID(),
-      name,
-      email,
-      image,
-      username,
-      displayUsername,
-      role: isAdmin ? "admin" : "user",
-      emailVerified: false,
-      createdAt: new Date("2024-01-15"),
-      updatedAt: new Date("2024-01-15"),
-    })
-    .$returningId();
+  try {
+    const existingUser = await db
+      .select()
+      .from(user)
+      .where(eq(user.email, email))
+      .limit(1);
+
+    if (existingUser.length > 0) {
+      console.log("⚠️  User Admin sudah ada. Melewati proses seeding.");
+      return;
+    }
+
+    console.log("👤 Membuat user admin baru...");
+
+    const newUser = await auth.api.signUpEmail({
+      body: {
+        email,
+        password,
+        name,
+        username,
+        displayUsername,
+        image,
+      },
+      asResponse: false,
+    });
+
+    if (!newUser?.user) {
+      throw new Error("Gagal membuat user via Better Auth");
+    }
+
+    console.log("✅ User berhasil dibuat. Mengupdate Role...");
+
+    if (isAdmin) {
+      await db
+        .update(user)
+        .set({ role: "admin" })
+        .where(eq(user.id, newUser.user.id));
+    }
+
+    console.log(`🎉 SUKSES! Admin siap digunakan.`);
+    console.log(`📧 Email: ${email}`);
+    console.log(`🔑 Pass:  ${password}`);
+  } catch (error) {
+    console.error("❌ Error saat seeding admin:", error);
+    process.exit(1);
+  } finally {
+    process.exit(0);
+  }
 }
 
 async function seed() {
@@ -44,20 +79,20 @@ async function seed() {
     console.log("🌱 Starting seed process...");
 
     await createUser({
-      name: "Admin Muda",
-      email: "admin2@admin.com",
+      name: "Admin Kecil",
+      email: "adminkecil@admin.com",
       password: "admin@1234",
-      username: "adminmuda",
-      displayUsername: "adminmuda",
+      username: "adminkecil",
+      displayUsername: "adminkecil",
       isAdmin: true,
     });
 
     await createUser({
-      name: "Admin Tua",
-      email: "admin3@admin.com",
+      name: "Admin Besar",
+      email: "adminbesar@admin.com",
       password: "admin@1234",
-      username: "admintua",
-      displayUsername: "admintua",
+      username: "adminbesar",
+      displayUsername: "adminbesar",
       isAdmin: true,
       image:
         "https://images.unsplash.com/photo-1494790108755-2616b9a0b1be?auto=format&fit=crop&w=150&q=80",
