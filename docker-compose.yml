@@ -36,7 +36,7 @@ services:
     volumes:
       - ./contracts:/app/contracts
     working_dir: /app/contracts
-    command: "anvil --host 0.0.0.0 --state /app/contracts/state.json --block-time 1"
+    command: "anvil --host 0.0.0.0 --state /app/contracts/ktpblockchain --block-time 1"
     ports:
       - "8545:8545"
     networks:
@@ -58,10 +58,8 @@ services:
       sh -c "
         echo 'Waiting for blockchain to be ready...' &&
         sleep 5 &&
-        echo 'Building contracts...' &&
-        forge build &&
-        echo 'Deploying contracts...' &&
-        forge script script/HashStorage.s.sol --rpc-url http://blockchain:8545 --broadcast --private-key 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d --legacy
+        chmod +x deploy.sh &&
+        ./deploy.sh
       "
     depends_on:
       blockchain:
@@ -77,6 +75,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    volumes:
+      - ./contracts:/app/contracts:ro
     env_file:
       - .env
     environment:

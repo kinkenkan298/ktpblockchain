@@ -12,7 +12,9 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 ENV NODE_ENV=production
-RUN bun run build
+
+# Load contract addresses and build
+RUN node load-contracts.js && bun run build
 
 FROM oven/bun:1 AS runner
 WORKDIR /app

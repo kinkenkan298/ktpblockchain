@@ -37,5 +37,9 @@ export const walletClient = createWalletClient({
 
 export const storageContractAbi =
   abi["contracts"]["src/HashStorage.sol:HashStorage"]["abi"];
-export const STORAGE_CONTRACT_ADDRESS =
-  "0x8464135c8F25Da09e49BC8782676a84730C318bC" as Hex;
+
+// Read contract address from environment variable (set during build)
+// Falls back to hardcoded address for local development
+export const STORAGE_CONTRACT_ADDRESS = (import.meta.env
+  .VITE_HASH_STORAGE_ADDRESS ||
+  "0x712516e61C8B383dF4A63CFe83d7701Bce54B03e") as Hex;
