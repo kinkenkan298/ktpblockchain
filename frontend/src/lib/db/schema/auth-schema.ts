@@ -71,11 +71,11 @@ export const blockchain_ktp_records = mysqlTable("blockchain_ktp_records", {
     .notNull()
     .references(() => personal_info.id, { onDelete: "cascade" }),
 
-  ipfsCid: text("ipfs_cid").unique(),
-  ipfsUrl: text("ipfs_url").unique(),
+  ipfsCid: varchar("ipfs_cid", { length: 500 }).unique(),
+  ipfsUrl: varchar("ipfs_url", { length: 500 }).unique(),
 
   blockchainHash: text("blockchain_hash"),
-  txHash: text("tx_hash").unique(),
+  txHash: varchar("tx_hash", { length: 66 }).unique(),
   blockNumber: text("block_number"),
   contractRecordId: text("contract_record_id"),
   blockchainDate: timestamp("blockchain_date"),

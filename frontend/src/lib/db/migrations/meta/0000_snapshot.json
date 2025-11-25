@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "57bf0161-90a8-45d6-9d3a-7d69b9ff2964",
+  "id": "94b1dcd5-3d9d-43d0-ad6a-e738e248ccfe",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -145,14 +145,14 @@
         },
         "ipfs_cid": {
           "name": "ipfs_cid",
-          "type": "text",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
         "ipfs_url": {
           "name": "ipfs_url",
-          "type": "text",
+          "type": "varchar(500)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -166,7 +166,7 @@
         },
         "tx_hash": {
           "name": "tx_hash",
-          "type": "text",
+          "type": "varchar(66)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -358,7 +358,7 @@
           "name": "status",
           "type": "enum('PENDING','VERIFIED','REJECTED','SUSPENDED')",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
           "default": "'PENDING'"
         },
@@ -366,7 +366,7 @@
           "name": "is_verified",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false,
           "default": false
         },

@@ -28,6 +28,11 @@ COPY --from=builder /app/server.ts ./server.ts
 # Copy public directory if exists
 COPY --from=builder /app/public ./public
 
+# Copy database-related files for migrations and seeding
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/src/lib/db ./src/lib/db
+COPY --from=builder /app/.env* ./
+
 # Copy node_modules from builder (includes all dependencies needed by the build)
 COPY --from=builder /app/node_modules ./node_modules
 
@@ -36,4 +41,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD bun run -e "fetch('http://localhost:3000').then(() => process.exit(0)).catch(() => process.exit(1))"
 
-CMD ["bun", "run", "start"]
+# Run database migrations and seed before starting the server
+CMD bun run db:migrate && bun run db:seed && bun run start

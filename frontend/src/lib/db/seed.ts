@@ -1,6 +1,4 @@
-import { eq } from "drizzle-orm";
 import { db } from ".";
-import { authClient } from "../auth/client";
 import { user } from "./schema";
 
 interface AdminUser {
@@ -22,31 +20,29 @@ async function createUser({
   image,
   isAdmin = false,
 }: AdminUser) {
-  const { data: admin_data, error } = await authClient.signUp.email({
-    name,
-    email,
-    image:
-      image ||
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80",
-    password,
-    username,
-    displayUsername,
-  });
+  console.log(`Creating user: ${email}...`);
 
-  if (error) throw new Error(`Failed to create admin user: ${error.message}`);
-  if (!admin_data?.user.id) throw new Error("Failed to create admin user");
-
-  if (isAdmin) {
-    await db
-      .update(user)
-      .set({
-        role: "admin",
-      })
-      .where(eq(user.id, admin_data?.user.id));
-  }
+  const users = await db
+    .insert(user)
+    .values({
+      id: crypto.randomUUID(),
+      name,
+      email,
+      image,
+      username,
+      displayUsername,
+      role: isAdmin ? "admin" : "user",
+      emailVerified: false,
+      createdAt: new Date("2024-01-15"),
+      updatedAt: new Date("2024-01-15"),
+    })
+    .$returningId();
 }
+
 async function seed() {
   try {
+    console.log("🌱 Starting seed process...");
+
     await createUser({
       name: "Admin Muda",
       email: "admin2@admin.com",
@@ -55,26 +51,29 @@ async function seed() {
       displayUsername: "adminmuda",
       isAdmin: true,
     });
+
     await createUser({
-      name: "Admin tua",
+      name: "Admin Tua",
       email: "admin3@admin.com",
       password: "admin@1234",
       username: "admintua",
       displayUsername: "admintua",
       isAdmin: true,
       image:
-        "https://images.unsplash.com/photo-1494790108755-2616b9a0b1be?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80",
+        "https://images.unsplash.com/photo-1494790108755-2616b9a0b1be?auto=format&fit=crop&w=150&q=80",
     });
   } catch (error) {
-    console.error("Error seeding database:", error);
+    console.error("❌ Error seeding database:", error);
+    process.exit(1);
   }
 }
+
 seed()
   .then(() => {
-    console.log("✅ Seeding process completed");
+    console.log("✅ Seeding process completed successfully");
     process.exit(0);
   })
   .catch((error) => {
-    console.error("❌ Seeding process failed:", error);
+    console.error("❌ Unhandled seeding error:", error);
     process.exit(1);
   });
