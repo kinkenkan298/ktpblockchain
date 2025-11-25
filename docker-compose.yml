@@ -1,0 +1,100 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: ktpblockchain-mysql
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Root@1234
+      MYSQL_DATABASE: ktpblockchain
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - ktpblockchain-net
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-pRoot@1234",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  blockchain:
+    container_name: ktpblockchain-anvil
+    image: ghcr.io/foundry-rs/foundry:latest
+    volumes:
+      - ./contracts:/app/contracts
+    working_dir: /app/contracts
+    command: "anvil --host 0.0.0.0 --state /app/contracts/state.json --block-time 1"
+    ports:
+      - "8545:8545"
+    networks:
+      - ktpblockchain-net
+    healthcheck:
+      test: ["CMD", "cast", "client", "--rpc-url", "http://localhost:8545"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  deploy-contracts:
+    container_name: ktpblockchain-deploy
+    image: ghcr.io/foundry-rs/foundry:latest
+    volumes:
+      - ./contracts:/app/contracts
+    working_dir: /app/contracts
+    command: >
+      sh -c "
+        echo 'Waiting for blockchain to be ready...' &&
+        sleep 5 &&
+        echo 'Building contracts...' &&
+        forge build &&
+        echo 'Deploying contracts...' &&
+        forge script script/HashStorage.s.sol --rpc-url http://blockchain:8545 --broadcast --private-key 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d --legacy
+      "
+    depends_on:
+      blockchain:
+        condition: service_healthy
+    networks:
+      - ktpblockchain-net
+    restart: "no"
+
+  app:
+    container_name: ktpblockchain-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mysql://root:Root@1234@db:3306/ktpblockchain
+      - VITE_RPC_URL=http://blockchain:8545
+      - VITE_PINATA_JWT=${VITE_PINATA_JWT}
+      - NODE_ENV=production
+    depends_on:
+      db:
+        condition: service_healthy
+      blockchain:
+        condition: service_healthy
+      deploy-contracts:
+        condition: service_completed_successfully
+    networks:
+      - ktpblockchain-net
+
+volumes:
+  mysql-data:
+
+networks:
+  ktpblockchain-net:
+    driver: bridge
