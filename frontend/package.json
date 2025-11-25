@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "bunx srvx --prod -s ../client dist/server/server.js",
+    "start": "bun run server.ts",
     "dev": "vite dev",
     "build": "vite build",
     "lint": "eslint .",

@@ -19,11 +19,15 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
+# Copy built files
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/bun.lock* ./
 
+# Copy public directory if exists
 COPY --from=builder /app/public ./public
 
+# Install production dependencies only
 RUN bun install --production --frozen-lockfile
 
 EXPOSE 3000
