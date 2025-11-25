@@ -79,7 +79,7 @@ Pastikan sistem Anda telah terinstall:
 ### 1️⃣ Clone Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/kinkenkan298/ktpblockchain
 cd ktpblockchain
 ```
 
@@ -154,6 +154,9 @@ bun install
 # Setup database
 bun run db:generate
 bun run db:migrate
+
+# Setup user data
+bun run db:seed
 
 # Run development server
 bun run dev
@@ -253,7 +256,7 @@ Contributions are welcome! Silakan buat issue atau pull request.
 
 ## 👨‍💻 Author
 
-Dibuat dengan ❤️ untuk sistem identitas digital yang lebih aman dan transparan.
+Dibuat dengan ❤️ oleh Kinkenkan untuk sistem identitas digital yang lebih aman dan transparan.
 
 ---
 
