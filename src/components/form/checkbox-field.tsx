@@ -38,7 +38,6 @@ export default function CheckboxField({
     field.handleChange(checked);
   };
 
-  // Handle blur event
   const handleBlur = () => {
     field.handleBlur();
   };

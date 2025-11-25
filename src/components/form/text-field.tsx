@@ -19,6 +19,7 @@ export interface TextFieldProps
   required?: boolean;
   error?: string;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
 }
 
 const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
@@ -34,36 +35,31 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       readOnly,
       className,
       onBlur,
+      onChange,
       ...props
     },
     ref
   ) => {
     const field = useFieldContext<string>();
 
-    // Determine if field is invalid
     const isInvalid = useMemo(
       () => field.state.meta.isTouched && !field.state.meta.isValid,
       [field.state.meta.isTouched, field.state.meta.isValid]
     );
 
-    // Get error message (from props or field state)
     const errorMessage = error || field.state.meta.errors?.[0]?.message;
-
-    // Handle value - ensure it's always a string
     const value = field.state.value ?? "";
 
-    // Handle change event
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       field.handleChange(e.target.value);
+      onChange?.(e);
     };
 
-    // Handle blur event
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
       field.handleBlur();
       onBlur?.(e);
     };
 
-    // Determine if field should be disabled
     const isDisabled = disabled;
 
     return (
