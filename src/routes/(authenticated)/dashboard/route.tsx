@@ -14,9 +14,10 @@ export const Route = createFileRoute("/(authenticated)/dashboard")({
     if (user?.user?.role === "admin") {
       throw redirect({ to: "/admin/dashboard" });
     }
-    context.queryClient.ensureQueryData(
-      ktpQueries.getDataKtp(user?.user?.id ?? "")
-    );
+    context.queryClient.ensureQueryData({
+      ...ktpQueries.getDataKtp(user?.user?.id ?? ""),
+      revalidateIfStale: true,
+    });
   },
   pendingComponent: () => (
     <div className="bg-gray-50">

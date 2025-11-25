@@ -14,6 +14,7 @@ import { ktpQueries } from "@/services/queries";
 import { BlockchainTraceTool } from "@/features/dashboard/user/components/blockchain-trace";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { PersonalInfo } from "@/features/auth/types/register-schema";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
   component: RouteComponent,
@@ -22,9 +23,22 @@ export const Route = createFileRoute("/(authenticated)/dashboard/")({
 function RouteComponent() {
   const { user } = Route.useRouteContext();
 
-  const { data: data_ktp } = useSuspenseQuery(
-    ktpQueries.getDataKtp(user?.user?.id ?? "")
-  );
+  const { data: data_ktp } = useSuspenseQuery({
+    ...ktpQueries.getDataKtp(user?.user?.id ?? ""),
+    refetchInterval: (query) => {
+      const data = query.state.data;
+
+      if (!data) return 1000;
+
+      const hasPending = (doc: PersonalInfo) => doc.status === "PENDING";
+
+      if (hasPending(data)) {
+        return 2000;
+      }
+
+      return false;
+    },
+  });
   const [accessLogs, setAccessLogs] = useState<AccessLog[]>([]);
   const [consents, setConsents] = useState<ActiveConsent[]>([]);
 
@@ -53,7 +67,7 @@ function RouteComponent() {
         />
         <StatsCard
           title="Data Terverifikasi"
-          value="0%"
+          value={data_ktp?.isVerified ? "100%" : "0%"}
           icon={FileCheck}
           color="green"
         />

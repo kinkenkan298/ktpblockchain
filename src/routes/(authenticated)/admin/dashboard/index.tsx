@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Button } from "@/components/animate-ui/components/buttons/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -15,24 +14,11 @@ import {
   StatusBadgeAdmin,
 } from "@/features/dashboard/admin/components/stats-card-admin";
 import { VerificationModal } from "@/features/dashboard/admin/components/verification-modal-admin";
-import {
-  CheckCircle,
-  Clock,
-  Filter,
-  Loader2,
-  RefreshCcw,
-  Search,
-  Users,
-} from "lucide-react";
+import { CheckCircle, Clock, Loader2, RefreshCcw, Users } from "lucide-react";
 import { useState } from "react";
-import {
-  mockRegistrants,
-  Registrant,
-} from "@/features/dashboard/admin/types/user-admin";
 import { PersonalInfo } from "@/features/auth/types/register-schema";
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { ktpQueries } from "@/services/queries";
-import { getAllDataKtp } from "@/services/ktp.services";
 
 export const Route = createFileRoute("/(authenticated)/admin/dashboard/")({
   component: RouteComponent,
@@ -48,7 +34,10 @@ function RouteComponent() {
     data: registrants = [],
     isLoading,
     refetch,
-  } = useSuspenseQuery(ktpQueries.getAllDataKtp());
+  } = useSuspenseQuery({
+    ...ktpQueries.getAllDataKtp(),
+    refetchInterval: 5000,
+  });
 
   const stats = {
     total: registrants.length,

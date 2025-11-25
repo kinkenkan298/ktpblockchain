@@ -1,4 +1,5 @@
 import { DashboardSkeleton } from "@/components/dashboard-skeleton";
+import { PersonalInfo } from "@/features/auth/types/register-schema";
 import { AddressCard } from "@/features/dashboard/user/components/profile-card/address-info-card";
 import { ConnectedServicesCard } from "@/features/dashboard/user/components/profile-card/connected-services-card";
 import { ContactInfoCard } from "@/features/dashboard/user/components/profile-card/contact-info-card";
@@ -25,9 +26,19 @@ export const Route = createFileRoute("/(authenticated)/dashboard/profile")({
 
 function RouteComponent() {
   const { user } = Route.useRouteContext();
-  const { data: ktp_data } = useSuspenseQuery(
-    ktpQueries.getDataKtp(user?.user?.id ?? "")
-  );
+  const { data: ktp_data } = useSuspenseQuery({
+    ...ktpQueries.getDataKtp(user?.user?.id ?? ""),
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      if (!data) return 1000;
+
+      if (data.status === "PENDING") {
+        return 2000;
+      }
+
+      return false;
+    },
+  });
 
   const mockDocuments: UserDocument[] = [
     {
