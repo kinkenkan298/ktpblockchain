@@ -23,12 +23,13 @@ ENV NODE_ENV=production
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/bun.lock* ./
+COPY --from=builder /app/server.ts ./server.ts
 
 # Copy public directory if exists
 COPY --from=builder /app/public ./public
 
-# Install production dependencies only
-RUN bun install --production --frozen-lockfile
+# Copy node_modules from builder (includes all dependencies needed by the build)
+COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 3000
 
