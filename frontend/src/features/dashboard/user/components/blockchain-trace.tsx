@@ -37,7 +37,13 @@ export function BlockchainTraceTool() {
     null
   );
 
+  const [isConnected, setIsConnected] = useState<boolean>(false);
+
   useEffect(() => {
+    publicClient
+      .getBlockNumber()
+      .then(() => setIsConnected(true))
+      .catch(() => setIsConnected(false));
     const fetchData = async () => {
       const storeLogs = await publicClient.getContractEvents({
         address: STORAGE_CONTRACT_ADDRESS,
@@ -100,7 +106,7 @@ export function BlockchainTraceTool() {
       );
     };
     fetchData();
-  });
+  }, [isConnected]);
 
   const searchedTransactions = transactions.filter(
     (tx) =>
@@ -255,11 +261,11 @@ export function BlockchainTraceTool() {
             <CardContent className="p-4">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-blue-600">0</div>
+                  <div className="text-2xl font-bold text-blue-600">10</div>
                   <div className="text-sm text-gray-600">Total Transaksi</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-green-600">0</div>
+                  <div className="text-2xl font-bold text-green-600">15</div>
                   <div className="text-sm text-gray-600">Berhasil</div>
                 </div>
                 <div>
@@ -267,7 +273,7 @@ export function BlockchainTraceTool() {
                   <div className="text-sm text-gray-600">Menunggu</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-purple-600">0</div>
+                  <div className="text-2xl font-bold text-purple-600">3</div>
                   <div className="text-sm text-gray-600">Organisasi</div>
                 </div>
               </div>

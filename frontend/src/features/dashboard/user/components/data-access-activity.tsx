@@ -196,7 +196,7 @@ export function DataAccessActivity() {
       unwatchReject();
       unwatchStore();
     };
-  }, []);
+  }, [isConnected]);
 
   return (
     <Card className="col-span-1 lg:col-span-3 h-full flex flex-col border-indigo-500/20">

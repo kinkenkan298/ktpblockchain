@@ -15,6 +15,10 @@ import { BlockchainTraceTool } from "@/features/dashboard/user/components/blockc
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { PersonalInfo } from "@/features/auth/types/register-schema";
+import { ActiveConsentsUser } from "@/features/dashboard/user/components/active-consents-user";
+import { DeleteConsenst } from "@/features/dashboard/user/components/delete-dialog";
+import { toast } from "sonner";
+import { mockupAccessLog, mockupConsenst } from "@/types/mockup-data";
 
 export const Route = createFileRoute("/(authenticated)/dashboard/")({
   component: RouteComponent,
@@ -22,6 +26,13 @@ export const Route = createFileRoute("/(authenticated)/dashboard/")({
 
 function RouteComponent() {
   const { user } = Route.useRouteContext();
+
+  const [accessLogs, setAccessLogs] = useState<AccessLog[]>(mockupAccessLog);
+  const [consents, setConsents] = useState<ActiveConsent[]>(mockupConsenst);
+  const [alertOpen, setAlertOpen] = useState<boolean>(false);
+  const [selectedConsentId, setSelectedConsentId] = useState<string | null>(
+    null
+  );
 
   const { data: data_ktp } = useSuspenseQuery({
     ...ktpQueries.getDataKtp(user?.user?.id ?? ""),
@@ -39,12 +50,32 @@ function RouteComponent() {
       return false;
     },
   });
-  const [accessLogs, setAccessLogs] = useState<AccessLog[]>([]);
-  const [consents, setConsents] = useState<ActiveConsent[]>([]);
+
+  const handleRevokeConsent = async (id: string) => {
+    setSelectedConsentId(id);
+    setAlertOpen(true);
+  };
+
+  const handleConfirmRevoke = async () => {
+    if (!selectedConsentId) return;
+
+    console.log("Revoking consent:", selectedConsentId);
+
+    toast.success("Persetujuan telah dicabut dengan sukses.");
+    setConsents((prev) =>
+      prev.map((consent) =>
+        consent.id === selectedConsentId
+          ? { ...consent, status: "revoked" }
+          : consent
+      )
+    );
+
+    setSelectedConsentId(null);
+  };
 
   return (
-    <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6 mb-5">
+    <div className="space-y-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6">
         <StatsCard
           title="Total Akses"
           value={accessLogs.length}
@@ -72,19 +103,31 @@ function RouteComponent() {
           color="green"
         />
       </div>
-      <div className="grid grid-cols-1 gap-5 mb-5">
+      <div className="grid grid-cols-1 gap-5">
         <div className="md:col-span-2">
           <ProfileCardUser personal_info={data_ktp} user={user?.user} />
         </div>
 
         <div className="md:col-span-2">
-          <AccessHistoryUser logs={accessLogs.slice(0, 3)} />
+          <AccessHistoryUser logs={accessLogs} />
         </div>
       </div>
-
-      <div className="grid grid-cols-1 gap-2">
+      <div className="grid grid-cols-1 gap-4">
+        <ActiveConsentsUser
+          consents={consents}
+          onRevoke={handleRevokeConsent}
+        />
         <BlockchainTraceTool />
       </div>
-    </>
+
+      <DeleteConsenst
+        isOpen={alertOpen}
+        setIsOpen={setAlertOpen}
+        consentOrganization={
+          consents.find((c) => c.id === selectedConsentId)?.organization
+        }
+        onConfirm={handleConfirmRevoke}
+      />
+    </div>
   );
 }
