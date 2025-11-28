@@ -1,5 +1,6 @@
 import { Metadata } from "@/features/dashboard/user/types/blockchain-user";
 import { createId } from "@paralleldrive/cuid2";
+import { sql } from "drizzle-orm";
 import {
   mysqlTable,
   varchar,
@@ -111,8 +112,10 @@ export const account = mysqlTable("account", {
   accessToken: text("access_token"),
   refreshToken: text("refresh_token"),
   idToken: text("id_token"),
-  accessTokenExpiresAt: timestamp("access_token_expires_at"),
-  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
+  accessTokenExpiresAt: timestamp("access_token_expires_at").default(sql`NULL`),
+  refreshTokenExpiresAt: timestamp("refresh_token_expires_at").default(
+    sql`NULL`
+  ),
   scope: text("scope"),
   password: text("password"),
   createdAt: timestamp("created_at")

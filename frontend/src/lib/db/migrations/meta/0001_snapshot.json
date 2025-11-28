@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "ab85605c-b864-42c8-8d44-22d0dc20606b",
+  "id": "b5a565e2-0ff6-40b3-8061-fb9470efab18",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
@@ -61,7 +61,8 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
-          "autoincrement": false
+          "autoincrement": false,
+          "default": "NULL"
         },
         "refresh_token_expires_at": {
           "name": "refresh_token_expires_at",

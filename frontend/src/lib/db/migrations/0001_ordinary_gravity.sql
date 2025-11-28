@@ -6,7 +6,7 @@ CREATE TABLE `account` (
 	`access_token` text,
 	`refresh_token` text,
 	`id_token` text,
-	`access_token_expires_at` timestamp,
+	`access_token_expires_at` timestamp DEFAULT NULL,
 	`refresh_token_expires_at` timestamp,
 	`scope` text,
 	`password` text,
