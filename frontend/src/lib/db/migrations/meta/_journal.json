@@ -3,10 +3,10 @@
   "dialect": "mysql",
   "entries": [
     {
-      "idx": 1,
+      "idx": 0,
       "version": "5",
-      "when": 1764307215348,
-      "tag": "0001_ordinary_gravity",
+      "when": 1764307955536,
+      "tag": "0000_ordinary_alex_wilder",
       "breakpoints": true
     }
   ]
