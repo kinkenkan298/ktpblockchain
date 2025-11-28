@@ -16,10 +16,10 @@ export const user = mysqlTable("user", {
   email: varchar("email", { length: 255 }).notNull().unique(),
   emailVerified: boolean("email_verified").default(false).notNull(),
   image: text("image"),
-  createdAt: timestamp("created_at", { fsp: 3 })
+  createdAt: timestamp("created_at")
     .$defaultFn(() => new Date())
     .notNull(),
-  updatedAt: timestamp("updated_at", { fsp: 3 })
+  updatedAt: timestamp("updated_at")
     .$defaultFn(() => new Date())
     .$onUpdate(() => new Date())
     .notNull(),
@@ -29,7 +29,7 @@ export const user = mysqlTable("user", {
   role: text("role"),
   banned: boolean("banned").default(false),
   banReason: text("ban_reason"),
-  banExpires: timestamp("ban_expires", { fsp: 3 }),
+  banExpires: timestamp("ban_expires"),
 });
 
 export const personal_info = mysqlTable("personal_info", {
@@ -85,12 +85,12 @@ export const blockchain_ktp_records = mysqlTable("blockchain_ktp_records", {
 
 export const session = mysqlTable("session", {
   id: varchar("id", { length: 36 }).primaryKey(),
-  expiresAt: timestamp("expires_at", { fsp: 3 }).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
   token: varchar("token", { length: 255 }).notNull().unique(),
-  createdAt: timestamp("created_at", { fsp: 3 })
+  createdAt: timestamp("created_at")
     .$defaultFn(() => new Date())
     .notNull(),
-  updatedAt: timestamp("updated_at", { fsp: 3 })
+  updatedAt: timestamp("updated_at")
     .$onUpdate(() => new Date())
     .notNull(),
   ipAddress: text("ip_address"),
@@ -111,14 +111,14 @@ export const account = mysqlTable("account", {
   accessToken: text("access_token"),
   refreshToken: text("refresh_token"),
   idToken: text("id_token"),
-  accessTokenExpiresAt: timestamp("access_token_expires_at", { fsp: 3 }),
-  refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { fsp: 3 }),
+  accessTokenExpiresAt: timestamp("access_token_expires_at"),
+  refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
   scope: text("scope"),
   password: text("password"),
-  createdAt: timestamp("created_at", { fsp: 3 })
+  createdAt: timestamp("created_at")
     .$defaultFn(() => new Date())
     .notNull(),
-  updatedAt: timestamp("updated_at", { fsp: 3 })
+  updatedAt: timestamp("updated_at")
     .$onUpdate(() => new Date())
     .notNull(),
 });
@@ -127,11 +127,11 @@ export const verification = mysqlTable("verification", {
   id: varchar("id", { length: 36 }).primaryKey(),
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
-  expiresAt: timestamp("expires_at", { fsp: 3 }).notNull(),
-  createdAt: timestamp("created_at", { fsp: 3 })
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at")
     .$defaultFn(() => new Date())
     .notNull(),
-  updatedAt: timestamp("updated_at", { fsp: 3 })
+  updatedAt: timestamp("updated_at")
     .$defaultFn(() => new Date())
     .$onUpdate(() => new Date())
     .notNull(),

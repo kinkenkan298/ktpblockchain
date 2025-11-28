@@ -1,4 +1,3 @@
-import { Z } from "node_modules/better-auth/dist/shared/better-auth.BUpnjBGu";
 import z from "zod";
 
 export type TxType = "ALL" | "STORE" | "CONSENT" | "VERIFY";

@@ -6,12 +6,12 @@ CREATE TABLE `account` (
 	`access_token` text,
 	`refresh_token` text,
 	`id_token` text,
-	`access_token_expires_at` timestamp(3),
-	`refresh_token_expires_at` timestamp(3),
+	`access_token_expires_at` timestamp,
+	`refresh_token_expires_at` timestamp,
 	`scope` text,
 	`password` text,
-	`created_at` timestamp(3) NOT NULL,
-	`updated_at` timestamp(3) NOT NULL,
+	`created_at` timestamp NOT NULL,
+	`updated_at` timestamp NOT NULL,
 	CONSTRAINT `account_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
@@ -58,10 +58,10 @@ CREATE TABLE `personal_info` (
 --> statement-breakpoint
 CREATE TABLE `session` (
 	`id` varchar(36) NOT NULL,
-	`expires_at` timestamp(3) NOT NULL,
+	`expires_at` timestamp NOT NULL,
 	`token` varchar(255) NOT NULL,
-	`created_at` timestamp(3) NOT NULL,
-	`updated_at` timestamp(3) NOT NULL,
+	`created_at` timestamp NOT NULL,
+	`updated_at` timestamp NOT NULL,
 	`ip_address` text,
 	`user_agent` text,
 	`user_id` varchar(36) NOT NULL,
@@ -76,14 +76,14 @@ CREATE TABLE `user` (
 	`email` varchar(255) NOT NULL,
 	`email_verified` boolean NOT NULL DEFAULT false,
 	`image` text,
-	`created_at` timestamp(3) NOT NULL,
-	`updated_at` timestamp(3) NOT NULL,
+	`created_at` timestamp NOT NULL,
+	`updated_at` timestamp NOT NULL,
 	`username` varchar(255),
 	`display_username` text,
 	`role` text,
 	`banned` boolean DEFAULT false,
 	`ban_reason` text,
-	`ban_expires` timestamp(3),
+	`ban_expires` timestamp,
 	CONSTRAINT `user_id` PRIMARY KEY(`id`),
 	CONSTRAINT `user_email_unique` UNIQUE(`email`),
 	CONSTRAINT `user_username_unique` UNIQUE(`username`)
@@ -93,9 +93,9 @@ CREATE TABLE `verification` (
 	`id` varchar(36) NOT NULL,
 	`identifier` text NOT NULL,
 	`value` text NOT NULL,
-	`expires_at` timestamp(3) NOT NULL,
-	`created_at` timestamp(3) NOT NULL,
-	`updated_at` timestamp(3) NOT NULL,
+	`expires_at` timestamp NOT NULL,
+	`created_at` timestamp NOT NULL,
+	`updated_at` timestamp NOT NULL,
 	CONSTRAINT `verification_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
