@@ -70,7 +70,7 @@ export function ActiveConsentsUser({
           </div>
         ) : (
           <>
-            <ScrollArea className="h-1001 rounded-md">
+            <ScrollArea className="h-100 rounded-md">
               <div className="space-y-4">
                 {activeConsents.map((consent) => {
                   const expiryStatus = getExpiryStatus(consent.expires_at);
